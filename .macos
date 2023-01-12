@@ -419,9 +419,8 @@ defaults write com.apple.terminal SecureKeyboardEntry -bool true
 # I don't have this problem right now
 # defaults write com.apple.Terminal ShowLineMarks -int 0
 
-# TODO
 # Install the Solarized Dark theme for iTerm
-# open "${HOME}/init/Solarized Dark.itermcolors"
+open "${HOME}/dotfiles/iterm/Solarized Dark.itermcolors"
 
 # Don’t display the annoying prompt when quitting iTerm
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
