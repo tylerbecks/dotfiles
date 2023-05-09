@@ -13,6 +13,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 rm -rf $HOME/.zshrc
 
 ln -s "${HOME}/dotfiles/.zshrc" "${HOME}/.zshrc"
+ln -s "${HOME}/dotfiles/.gitconfig" "${HOME}/.gitconfig"
 
 mkdir -p "${HOME}/.config/bat/themes"
 ln -s "${HOME}/.config/bat/config" "${DOTFILES}/.config/bat/config"
