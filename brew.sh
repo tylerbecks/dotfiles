@@ -26,6 +26,7 @@ ln -s "${BREW_PREFIX}/bin/gsha256sum" "${BREW_PREFIX}/bin/sha256sum"
 # Install GNU `sed`, overwriting the built-in `sed`.
 brew install gnu-sed --with-default-names
 
+
 # Install a modern version of Bash.
 brew install bash
 brew install bash-completion2
@@ -34,15 +35,20 @@ brew install bash-completion2
 brew install grep
 brew install php
 
-# Install useful cli tools.
 brew install ack
+# bat: A cat(1) clone with syntax highlighting and Git integration.
 brew install bat
+# hub: a github-specific version of git
+brew install hub
 brew install fd
 brew install gh
 brew install git
+# delta: A fantastic diff tool
+brew install git-delta
 brew install jq
 brew install fzf
 yes | $(brew --prefix)/opt/fzf/install # Install fzf key bindings and fuzzy completion
+# ripgrep: rg is faster than alternatives
 brew install ripgrep
 
 # Development

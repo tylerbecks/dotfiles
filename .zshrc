@@ -21,7 +21,12 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git fzf-tab)
+plugins=(
+  git
+  fzf-tab
+  zsh-syntax-highlighting
+  zsh-autosuggestions
+)
 
 # Silecne beep sounds from autocomplete
 unsetopt BEEP
@@ -44,6 +49,7 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
 # switch group using `,` and `.`
 zstyle ':fzf-tab:*' switch-group ',' '.'
+
 # pnpm
 export PNPM_HOME="/Users/tylerbecks/Library/pnpm"
 case ":$PATH:" in
@@ -51,3 +57,11 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+mg () { mkdir "$@" && cd "$@" || exit; }
+cdl() { cd "$@" && ll; }
+npm-latest() { npm info "$1" | grep latest; }
+killport() { lsof -i tcp:"$*" | awk 'NR!=1 {print $2}' | xargs kill -9 ;}
+
+# Github Copilot CLI
+eval "$(github-copilot-cli alias -- "$0")"

@@ -20,3 +20,8 @@ ln -s .zshrc $HOME/.zshrc
 
 rm -rf $HOME/.p10k.zsh
 ln -s .p10k.zsh $HOME/.p10k.zsh
+
+mkdir -p "${HOME}/.config/bat/themes"
+ln -s "${HOME}/dotfiles/.config/bat/config" "${HOME}/.config/bat/config"
+git clone https://github.com/batpigandme/night-owlish "${HOME}/.config/bat/themes/night-owlish"
+bat cache --build
