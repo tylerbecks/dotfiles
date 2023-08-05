@@ -2,8 +2,10 @@
 	s = status
 	co = checkout
 	b = branch -v --sort=-committerdate
+	del = branch -D
 	c = commit
 	d = diff
+	undo = reset HEAD~1 --mixed
 	unstage = reset HEAD --
 	last = log --name-only --relative-date --abbrev-commit -1 HEAD
 	hist = log --color --graph --all --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
