@@ -77,7 +77,7 @@ brew install whatsApp
 brew install zoom
 
 # Fonts
-brew install --cask font-fira-code
+# brew install --cask font-fira-code
 
 # Install Mac App Store apps
 brew install mas
