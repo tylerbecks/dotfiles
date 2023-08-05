@@ -1,17 +1,17 @@
 # dotfiles
 
 1. Run brew.sh
-  ```bash
-  source brew.sh
-  ```
+    ```bash
+    source brew.sh
+    ```
 2. Run fresh.sh
-```bash
-  source fresh.sh
-  ```
+  ```bash
+    source fresh.sh
+    ```
 3. Run .macos
-```bash
-  source .macos
-  ```
+  ```bash
+    source .macos
+    ```
 
 
 Apps to install manually
