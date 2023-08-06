@@ -2,6 +2,10 @@ echo "Setting up your Mac..."
 
 source $DOTFILES/brew.sh
 
+# Link iterm settings
+rm ~/Library/Preferences/com.googlecode.iterm2.plist
+ln -s $DOTFILES/config/com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist
+
 # Wipe all (default) app icons from the Dock
 # I don't want to do this every time I source .macos settings, only on installing a fresh computer
 defaults write com.apple.dock persistent-apps -array
