@@ -1,5 +1,6 @@
 echo "Setting up your Mac..."
 
+DOTFILES=$HOME/dotfiles
 source $DOTFILES/brew.sh
 
 # Link iterm settings
@@ -16,17 +17,19 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 # Removes .zshrc from $HOME (if it exists) and symlinks the .zshrc file from the .dotfiles
 rm -rf $HOME/.zshrc
 
-ln -s "${HOME}/dotfiles/.zshrc" "${HOME}/.zshrc"
-ln -s "${HOME}/dotfiles/.gitconfig" "${HOME}/.gitconfig"
+ln -s "${DOTFILES}/.zshrc" "${HOME}/.zshrc"
+ln -s "${DOTFILES}/.gitconfig" "${HOME}/.gitconfig"
 
 mkdir -p "${HOME}/.config/bat/themes"
-ln -s "${HOME}/.config/bat/config" "${DOTFILES}/.config/bat/config"
+ln -s "${DOTFILES}/config/bat/config" "${HOME}/.config/bat/config"
 git clone https://github.com/batpigandme/night-owlish "${HOME}/.config/bat/themes/night-owlish"
 bat cache --build
 
 # Install github copilot cli
 npm install -g @githubnext/github-copilot-cli
 github-copilot-cli auth
+
+source $DOTFILES/setup.zsh
 
 # Run this last because it will reload the shell
 # Set macOS preferences
