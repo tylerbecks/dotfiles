@@ -75,6 +75,7 @@ brew install todoist
 brew install visual-studio-code
 brew install whatsApp
 brew install zoom
+brew install --cask cleanshot
 
 # Fonts
 # brew install --cask font-fira-code
