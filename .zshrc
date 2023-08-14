@@ -6,13 +6,15 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 export VOLTA_HOME="$HOME/.volta"
-export PATH=/opt/homebrew/bin:$HOME/Library/pnpm:$VOLTA_HOME/bin:$PATH
+export PATH=$VOLTA_HOME/bin:/opt/homebrew/bin:$HOME/Library/pnpm:$PATH
 
 # Path to your dotfiles.
 export DOTFILES=$HOME/dotfiles
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+
+export NODE_OPTIONS="--max-old-space-size=16384"
 
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="powerlevel10k/powerlevel10k"

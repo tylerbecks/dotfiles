@@ -8,7 +8,8 @@
 	undo = reset HEAD~1 --mixed
 	unstage = reset HEAD --
 	last = log --name-only --relative-date --abbrev-commit -1 HEAD
-	hist = log --color --graph --all --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	rhist = log --color --graph --all --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	hist = log --color --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	f = fetch
 	r = rebase origin/master
 	a = add --all
