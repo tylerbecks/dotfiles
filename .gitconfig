@@ -20,6 +20,7 @@
 [user]
 	name = Tyler Becks
 	email = tylerdbecks@gmail.com
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAvSfUCULOJ7W3ZfnTS88VJXrhYB9TcNWsl/ONY8Khfu
 [includeIf "gitdir:~/Code/LinkedIn/"]
   path = .gitconfig-linkedin
 [fetch]
@@ -60,3 +61,9 @@
 [mergetool "meld"]
 	trustExitCode = true
 	cmd = open -W -a Meld --args --auto-merge \"$PWD/$LOCAL\" \"$PWD/$BASE\" \"$PWD/$REMOTE\" --output=\"$PWD/$MERGED\"
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[commit]
+	gpgsign = true

@@ -63,3 +63,5 @@ killport() { lsof -i tcp:"$*" | awk 'NR!=1 {print $2}' | xargs kill -9 ;}
 
 # Github Copilot CLI
 eval "$(github-copilot-cli alias -- "$0")"
+
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

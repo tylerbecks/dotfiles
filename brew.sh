@@ -21,9 +21,8 @@ BREW_PREFIX=$(brew --prefix)
 brew install coreutils
 ln -s "${BREW_PREFIX}/bin/gsha256sum" "${BREW_PREFIX}/bin/sha256sum"
 
-# Install GNU `sed`, overwriting the built-in `sed`.
-brew install gnu-sed --with-default-names
-
+# Install GNU `sed`
+brew install gnu-sed
 
 # Install a modern version of Bash.
 brew install bash
