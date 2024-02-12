@@ -14,8 +14,6 @@ export DOTFILES=$HOME/dotfiles
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-export NODE_OPTIONS="--max-old-space-size=16384"
-
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
