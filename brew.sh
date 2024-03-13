@@ -40,8 +40,8 @@ brew install hub
 brew install fd
 brew install gh
 brew install git
-# delta: A fantastic diff tool
-brew install git-delta
+# difftastic: A fantastic diff tool
+brew install difftastic
 brew install jq
 brew install fzf
 yes | $(brew --prefix)/opt/fzf/install # Install fzf key bindings and fuzzy completion

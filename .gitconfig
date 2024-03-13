@@ -41,29 +41,22 @@
 	diffFilter = delta
 [add.interactive]
 	useBuiltin = false # required for git 2.37.0
-[delta]
-	navigate = true    # use n and N to move between diff sections
-	light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
-	side-by-side = true
-	line-numbers = true
 [diff]
-	colorMoved = default
-  tool = meld
 	algorithm = histogram
+	colorMoved = default
 	colorMovedWS = allow-indentation-change
+	external = difft
+  tool = difftastic
+[pager]
+	difftool = true
 [merge]
 	conflictstyle = zdiff3
-	tool = meld
 [difftool]
   prompt = false
-[difftool "meld"]
-  trustExitCode = true
-  cmd = open -W -a Meld --args \"$LOCAL\" \"$REMOTE\"
+[difftool "difftastic"]
+	cmd = difft "$LOCAL" "$REMOTE"
 [mergetool]
   prompt = false
-[mergetool "meld"]
-	trustExitCode = true
-	cmd = open -W -a Meld --args --auto-merge \"$PWD/$LOCAL\" \"$PWD/$BASE\" \"$PWD/$REMOTE\" --output=\"$PWD/$MERGED\"
 [gpg]
 	format = ssh
 [gpg "ssh"]

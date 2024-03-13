@@ -63,3 +63,16 @@ killport() { lsof -i tcp:"$*" | awk 'NR!=1 {print $2}' | xargs kill -9 ;}
 eval "$(github-copilot-cli alias -- "$0")"
 
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Custom Git Function: Automatically append '--ext-diff' to 'git show' and 'git log -p' commands.
+# This ensures that Difftastic or any specified external diff tool is used for these commands,
+# enhancing the diff display without needing to specify '--ext-diff' manually each time.
+git() {
+    if [[ $1 == "show" ]]; then
+        command git "$@" --ext-diff
+    elif [[ $1 == "log" && "$*" == *"-p"* ]]; then
+        command git "$@" --ext-diff
+    else
+        command git "$@"
+    fi
+}
