@@ -75,6 +75,7 @@ brew install visual-studio-code
 brew install whatsApp
 brew install zoom
 brew install --cask cleanshot
+brew install 1password-cli
 
 # Fonts
 # brew install --cask font-fira-code

@@ -76,3 +76,6 @@ git() {
         command git "$@"
     fi
 }
+
+# setup 1password autocomplete
+eval "$(op completion zsh)"; compdef _op op
