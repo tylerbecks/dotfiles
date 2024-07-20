@@ -26,8 +26,8 @@ git clone https://github.com/batpigandme/night-owlish "${HOME}/.config/bat/theme
 bat cache --build
 
 # Install github copilot cli
-npm install -g @githubnext/github-copilot-cli
-github-copilot-cli auth
+gh auth login
+gh extension install github/gh-copilot
 
 source $DOTFILES/setup.zsh
 

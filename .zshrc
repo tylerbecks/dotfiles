@@ -59,9 +59,6 @@ cdl() { cd "$@" && ll; }
 npm-latest() { npm info "$1" | grep latest; }
 killport() { lsof -i tcp:"$*" | awk 'NR!=1 {print $2}' | xargs kill -9 ;}
 
-# Github Copilot CLI
-eval "$(github-copilot-cli alias -- "$0")"
-
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # Custom Git Function: Automatically append '--ext-diff' to 'git show' and 'git log -p' commands.
@@ -79,3 +76,6 @@ git() {
 
 # setup 1password autocomplete
 eval "$(op completion zsh)"; compdef _op op
+
+# Github Copilot CLI alias
+eval "$(gh copilot alias -- zsh)"
