@@ -21,7 +21,6 @@
 [user]
 	name = Tyler Becks
 	email = tylerdbecks@gmail.com
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAvSfUCULOJ7W3ZfnTS88VJXrhYB9TcNWsl/ONY8Khfu
 [fetch]
 	prune = true
 [pull]
@@ -59,10 +58,8 @@
   prompt = false
 [gpg]
 	format = ssh
-[gpg "ssh"]
-	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
 [commit]
-	gpgsign = true
+	gpgSign = false
 	verbose = true
 [maintenance]
 	repo = /Users/tylerbecks/Code/fuego-frontend
