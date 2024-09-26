@@ -14,4 +14,3 @@ Stuff to do manually
    a. Open each of the `*.otf` files
 1. Open and configure Rectangle
 1. Setup key for Alfred (make sure to deactivate the previous computer's license)
-1. Set up iTerm to load preferences from `$DOTFILES/iterm`. Preferences > General > Preferences > Load Preferences from a custom folder or URL. Below, set to save changes automatically.
