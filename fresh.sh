@@ -30,6 +30,13 @@ bat cache --build
 gh auth login
 gh extension install github/gh-copilot
 
+# Create the WezTerm config directory if it doesn't exist
+mkdir -p ~/.config/wezterm
+
+# Symlink the WezTerm config files from the dotfiles
+ln -sf ~/dotfiles/wezterm/appearance.lua ~/.config/wezterm/appearance.lua
+ln -sf ~/dotfiles/wezterm/wezterm.lua ~/.config/wezterm/wezterm.lua
+
 source $DOTFILES/setup.zsh
 
 # Run this last because it will reload the shell
