@@ -16,7 +16,14 @@ else
   config.color_scheme = 'Tokyo Night Day'
 end
 
-config.font = wezterm.font("MesloLGS Nerd Font Mono")
+config.font = wezterm.font_with_fallback({
+  "MesloLGS Nerd Font Mono", -- Your primary font
+  "JetBrains Mono",          -- Fallback font for better glyph support
+  "Noto Color Emoji",        -- For emoji rendering
+})
+
+
+config.scrollback_lines = 10000 -- Increase scrollback buffer to 10,000 lines
 
 -- And a font size that won't have you squinting
 config.font_size = 13
@@ -29,11 +36,29 @@ config.macos_window_background_blur = 20
 config.window_decorations = 'RESIZE|INTEGRATED_BUTTONS'
 
 local function segments_for_right_status(window)
-  return {
-    window:active_workspace(),
-    wezterm.strftime('%a %b %-d %H:%M'),
-    wezterm.hostname(),
-  }
+  -- Get the current workspace
+  local workspace = window:active_workspace()
+
+  -- Fetch battery information
+  local battery_info = wezterm.battery_info()
+  local battery = ""
+  if #battery_info > 0 then
+    local charge = battery_info[1].state_of_charge * 100
+    battery = string.format('Battery: %.0f%%', charge)
+  end
+
+  -- Add segments: Only include the workspace if it's not "default"
+  local segments = {}
+
+  if workspace ~= "default" then
+    table.insert(segments, workspace)
+  end
+
+  table.insert(segments, battery)
+  table.insert(segments, wezterm.strftime('%a %b %-d %H:%M'))
+  table.insert(segments, wezterm.hostname())
+
+  return segments
 end
 
 wezterm.on('update-status', function(window, _)
@@ -41,15 +66,9 @@ wezterm.on('update-status', function(window, _)
   local segments = segments_for_right_status(window)
 
   local color_scheme = window:effective_config().resolved_palette
-  -- Note the use of wezterm.color.parse here, this returns
-  -- a Color object, which comes with functionality for lightening
-  -- or darkening the colour (amongst other things).
   local bg = wezterm.color.parse(color_scheme.background)
   local fg = color_scheme.foreground
 
-  -- Each powerline segment is going to be coloured progressively
-  -- darker/lighter depending on whether we're on a dark/light colour
-  -- scheme. Let's establish the "from" and "to" bounds of our gradient.
   local gradient_to, gradient_from = bg
   if appearance.is_dark() then
     gradient_from = gradient_to:lighten(0.2)
@@ -57,19 +76,14 @@ wezterm.on('update-status', function(window, _)
     gradient_from = gradient_to:darken(0.2)
   end
 
-  -- Yes, WezTerm supports creating gradients, because why not?! Although
-  -- they'd usually be used for setting high fidelity gradients on your terminal's
-  -- background, we'll use them here to give us a sample of the powerline segment
-  -- colours we need.
   local gradient = wezterm.color.gradient(
     {
       orientation = 'Horizontal',
       colors = { gradient_from, gradient_to },
     },
-    #segments -- only gives us as many colours as we have segments.
+    #segments
   )
 
-  -- We'll build up the elements to send to wezterm.format in this table.
   local elements = {}
 
   for i, seg in ipairs(segments) do
