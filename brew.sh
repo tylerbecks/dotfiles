@@ -33,23 +33,21 @@ brew install grep
 brew install php
 
 brew install ack
-# bat: A cat(1) clone with syntax highlighting and Git integration.
-brew install bat
-# hub: a github-specific version of git
-brew install hub
+brew install bat # A cat(1) clone with syntax highlighting and Git integration.
+brew install hub # a github-specific version of git
 brew install fd
 brew install gh
 brew install git
-# difftastic: A fantastic diff tool
-brew install difftastic
+brew install difftastic # A fantastic diff tool
 brew install jq
-# eza: A modern replacement for ls
-brew install eza
+brew install eza # A modern replacement for ls
 brew install fzf
 yes | $(brew --prefix)/opt/fzf/install # Install fzf key bindings and fuzzy completion
-# ripgrep: rg is faster than alternatives
-brew install ripgrep
-brew install powerlevel10k
+brew install ripgrep # rg is faster than alternatives
+brew install thefuck # 
+brew install zoxide # a smarter cd command, It remembers which directories you use most frequently, so you can "jump" to them in just a few keystrokes.
+brew install zsh-autopair
+
 
 # Development
 brew install git
