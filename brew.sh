@@ -43,10 +43,13 @@ brew install git
 # difftastic: A fantastic diff tool
 brew install difftastic
 brew install jq
+# eza: A modern replacement for ls
+brew install eza
 brew install fzf
 yes | $(brew --prefix)/opt/fzf/install # Install fzf key bindings and fuzzy completion
 # ripgrep: rg is faster than alternatives
 brew install ripgrep
+brew install powerlevel10k
 
 # Development
 brew install git
@@ -58,27 +61,26 @@ brew install yarn
 brew install mackup
 
 # Download Apps
+brew install --cask cleanshot # Screenshot tool
+brew install --cask karabiner-elements # Keyboard remapping
+brew install --cask wezterm # Terminal
 brew install 1password
+brew install 1password-cli
 brew install alfred
-brew install dash
+brew install dash # API documentation
 brew install dropbox
 brew install google-chrome
-brew install hyperkey
-brew install iterm2
-brew install obsidian
 brew install raindropio
 brew install rectangle
 brew install slack
 brew install spotify
-brew install todoist
 brew install visual-studio-code
 brew install whatsApp
 brew install zoom
-brew install --cask cleanshot
-brew install 1password-cli
 
 # Fonts
-# brew install --cask font-fira-code
+brew install font-meslo-lg-nerd-font
+
 
 # Install Mac App Store apps
 brew install mas

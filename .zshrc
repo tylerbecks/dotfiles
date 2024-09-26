@@ -79,3 +79,7 @@ eval "$(op completion zsh)"; compdef _op op
 
 # Github Copilot CLI alias
 eval "$(gh copilot alias -- zsh)"
+
+# ---- Eza (better ls) -----
+
+alias ls="eza --icons=always --hyperlink"
