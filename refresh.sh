@@ -1,7 +1,7 @@
 brew update
 brew upgrade
 mas upgrade
-npm install npm -g
+npm install -g npm@latest
 npm update -g
-pnpm add -g pnpm
+pnpm self-update
 gh extension upgrade gh-copilot
