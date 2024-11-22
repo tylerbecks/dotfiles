@@ -60,6 +60,7 @@ brew install mackup
 
 # Download Apps
 brew install --cask cleanshot # Screenshot tool
+brew install --cask flux
 brew install --cask karabiner-elements # Keyboard remapping
 brew install --cask wezterm # Terminal
 brew install 1password

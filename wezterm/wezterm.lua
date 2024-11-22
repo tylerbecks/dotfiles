@@ -22,7 +22,7 @@ config.font = wezterm.font_with_fallback({
   "Noto Color Emoji",        -- For emoji rendering
 })
 
-
+config.enable_scroll_bar = true
 config.scrollback_lines = 10000 -- Increase scrollback buffer to 10,000 lines
 
 -- And a font size that won't have you squinting
