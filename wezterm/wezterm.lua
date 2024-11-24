@@ -249,6 +249,76 @@ config.keys = {
     mods = 'CMD',
     action = act.EmitEvent 'close-pane-or-exit'
   },
+
+  -- Clear search and start fresh with CMD+F
+  {
+    key = 'f',
+    mods = 'CMD',
+    action = wezterm.action_callback(function(window, pane)
+      -- First clear any existing search
+      window:perform_action(
+        act.Multiple {
+          act.CopyMode 'ClearPattern',
+          act.Search { CaseInSensitiveString = '' }
+        },
+        pane
+      )
+    end),
+  },
+
+  -- Quick clear search with Escape (when not in search mode)
+  {
+    key = 'Escape',
+    mods = 'NONE',
+    action = act.CopyMode 'ClearPattern',
+  },
+
+  -- Search for selected text
+  {
+    key = 'f',
+    mods = 'CMD|SHIFT',
+    action = act.Search 'CurrentSelectionOrEmptyString',
+  },
+}
+
+config.key_tables = {
+  search_mode = {
+    -- Natural navigation
+    { key = 'Enter', mods = 'NONE',  action = act.CopyMode 'NextMatch' },
+    { key = 'Tab',   mods = 'NONE',  action = act.CopyMode 'NextMatch' },
+    { key = 'Tab',   mods = 'SHIFT', action = act.CopyMode 'PriorMatch' },
+
+    -- Quick clear with Escape
+    {
+      key = 'Escape',
+      mods = 'NONE',
+      action = act.Multiple {
+        act.CopyMode 'ClearPattern',
+        act.CopyMode 'Close',
+      }
+    },
+
+    -- Standard arrow navigation
+    { key = 'UpArrow',   mods = 'NONE', action = act.CopyMode 'PriorMatch' },
+    { key = 'DownArrow', mods = 'NONE', action = act.CopyMode 'NextMatch' },
+
+    -- Quick copy with CMD+C
+    {
+      key = 'c',
+      mods = 'CMD',
+      action = act.Multiple {
+        act({ CopyTo = 'Clipboard' }),
+        act.CopyMode 'Close',
+      }
+    },
+
+    -- Toggle case sensitivity with CMD+i
+    { key = 'i',        mods = 'CMD',  action = act.CopyMode 'CycleMatchType' },
+
+    -- Page navigation
+    { key = 'PageUp',   mods = 'NONE', action = act.CopyMode 'PriorMatchPage' },
+    { key = 'PageDown', mods = 'NONE', action = act.CopyMode 'NextMatchPage' },
+  },
 }
 
 return config

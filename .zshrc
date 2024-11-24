@@ -19,7 +19,17 @@ bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
 
 export VOLTA_HOME="$HOME/.volta"
-export PATH=$VOLTA_HOME/bin:/opt/homebrew/bin:$HOME/Library/pnpm:$PATH
+export PATH=$VOLTA_HOME/bin:/opt/homebrew/bin:$HOME/Library/pnpm:$HOME/.deno/bin:$PATH
+
+# deno
+export DENO_INSTALL="$HOME/.deno"
+
+# bun completions
+[ -s "/Users/tylerbecks/.bun/_bun" ] && source "/Users/tylerbecks/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
 
 # Path to your dotfiles.
 export DOTFILES=$HOME/dotfiles
@@ -170,4 +180,3 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-
