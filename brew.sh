@@ -44,10 +44,9 @@ brew install eza # A modern replacement for ls
 brew install fzf
 yes | $(brew --prefix)/opt/fzf/install # Install fzf key bindings and fuzzy completion
 brew install ripgrep # rg is faster than alternatives
-brew install thefuck # 
+brew install thefuck # Magnificent app which corrects your previous console command.
 brew install zoxide # a smarter cd command, It remembers which directories you use most frequently, so you can "jump" to them in just a few keystrokes.
 brew install zsh-autopair
-
 
 # Development
 brew install git
@@ -65,10 +64,9 @@ brew install --cask karabiner-elements # Keyboard remapping
 brew install --cask wezterm # Terminal
 brew install 1password
 brew install 1password-cli
-brew install alfred
-brew install dash # API documentation
+brew install --cask raycast
 brew install dropbox
-brew install google-chrome
+brew install --cask arc
 brew install raindropio
 brew install rectangle
 brew install slack
@@ -77,9 +75,11 @@ brew install visual-studio-code
 brew install whatsApp
 brew install zoom
 
+# npm packages
+npm install -g better-commits 
+
 # Fonts
 brew install font-meslo-lg-nerd-font
-
 
 # Install Mac App Store apps
 brew install mas

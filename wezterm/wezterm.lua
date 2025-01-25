@@ -17,9 +17,9 @@ else
 end
 
 config.font = wezterm.font_with_fallback({
-  "MesloLGS Nerd Font Mono", -- Your primary font
-  "JetBrains Mono",          -- Fallback font for better glyph support
-  "Noto Color Emoji",        -- For emoji rendering
+  "MesloLGS NF",      -- Your primary font
+  "JetBrains Mono",   -- Fallback font for better glyph support
+  "Noto Color Emoji", -- For emoji rendering
 })
 
 config.enable_scroll_bar = true
