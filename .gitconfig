@@ -3,7 +3,7 @@
 	co = checkout
 	b = branch -v --sort=-committerdate
 	del = branch -D
-	commit = "!better-commits"
+	c = "!better-commits"
 	d = diff
 	undo = reset HEAD~1 --mixed
 	unstage = reset HEAD --
