@@ -76,7 +76,8 @@ brew install whatsApp
 brew install zoom
 
 # npm packages
-npm install -g better-commits 
+npm install -g better-commits
+npm install -g tldr # Better man pages
 
 # Fonts
 brew install font-meslo-lg-nerd-font
