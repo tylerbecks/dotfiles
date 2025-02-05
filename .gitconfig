@@ -11,7 +11,7 @@
 	rhist = log --color --graph --all --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	hist = log --color --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	f = fetch
-	r = rebase origin/master
+	r = "!f() { git rev-parse --verify --quiet origin/main && git rebase origin/main || git rebase origin/master; }; f"
 	a = add --all
 	oops = commit --amend --no-edit
 	enforce = push --force-with-lease
