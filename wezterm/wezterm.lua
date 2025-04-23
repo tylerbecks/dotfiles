@@ -10,11 +10,7 @@ local hyper_key = 'CTRL|ALT|CMD'
 -- Creates a config object which we will be adding our config to
 local config = wezterm.config_builder()
 
-if appearance.is_dark() then
-  config.color_scheme = 'Tokyo Night'
-else
-  config.color_scheme = 'Tokyo Night Day'
-end
+config.color_scheme = 'Tokyo Night'
 
 config.font = wezterm.font_with_fallback({
   "MesloLGS NF",      -- Your primary font

@@ -9,7 +9,7 @@
 	unstage = reset HEAD --
 	last = log --name-only --relative-date --abbrev-commit -1 HEAD
 	rhist = log --color --graph --all --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-	hist = log --color --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	hist = log --color --graph --branches --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	f = fetch
 	r = "!f() { git rev-parse --verify --quiet origin/main && git rebase origin/main || git rebase origin/master; }; f"
 	a = add --all

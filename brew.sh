@@ -34,7 +34,6 @@ brew install php
 
 brew install ack
 brew install bat # A cat(1) clone with syntax highlighting and Git integration.
-brew install hub # a github-specific version of git
 brew install fd
 brew install gh
 brew install git
@@ -75,9 +74,13 @@ brew install visual-studio-code
 brew install whatsApp
 brew install zoom
 
+brew install zsh-syntax-highlighting
+brew install delta
+
 # npm packages
 npm install -g better-commits
 npm install -g tldr # Better man pages
+npm install -g rimraf # Better rm -rf
 
 # Fonts
 brew install font-meslo-lg-nerd-font
