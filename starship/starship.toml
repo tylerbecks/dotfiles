@@ -1,0 +1,61 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Don't print a new line at the start of the prompt
+add_newline = false
+
+# Wait 10 milliseconds for starship to check files under the current directory.
+scan_timeout = 10
+
+# Use custom format
+format = """
+$directory\
+$git_branch\
+$git_status\
+$nodejs\
+$python\
+$cmd_duration\
+$character
+"""
+
+# Disable the package module to avoid looking for a package.json file
+[package]
+disabled = true
+
+# Make prompt symbols more succinct
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[✗](bold red)"
+
+# Style for git branch
+[git_branch]
+style = "bold purple"
+format = '[$symbol$branch]($style) '
+
+# Git status styling
+[git_status]
+style = "bold red"
+format = '([$all_status$ahead_behind]($style) )'
+
+# Directory styling
+[directory]
+style = "bold blue"
+truncation_length = 3
+truncation_symbol = "…/"
+truncate_to_repo = true
+
+# Command duration
+[cmd_duration]
+min_time = 500
+format = "[$duration]($style) "
+style = "bold yellow"
+
+# Node.js configuration
+[nodejs]
+format = '[$symbol($version )]($style)'
+style = "bold green"
+
+# Python configuration
+[python]
+format = '[$symbol($version )]($style)'
+style = "bold yellow"

@@ -19,6 +19,11 @@ ln -sf "${DOTFILES}/.gitconfig" "${HOME}/.gitconfig"
 ln -sf "${DOTFILES}/.asdfrc" "${HOME}/.asdfrc"
 ln -sf "${DOTFILES}/karabiner/karabiner.json" ~/.config/karabiner/karabiner.json
 
+# Create Starship config directory and symlink config
+mkdir -p "${HOME}/.config"
+# Use copy instead of symlink for Starship config to avoid permission issues
+cp "${DOTFILES}/starship/starship.toml" "${HOME}/.config/starship.toml"
+
 mkdir -p "${HOME}/.config/bat/themes"
 ln -sf "${DOTFILES}/config/bat/config" "${HOME}/.config/bat/config"
 git clone https://github.com/batpigandme/night-owlish "${HOME}/.config/bat/themes/night-owlish"

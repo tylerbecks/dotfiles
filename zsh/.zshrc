@@ -1,8 +1,8 @@
 # Path to your oh-my-zsh installation
 export ZSH="$HOME/.oh-my-zsh"
 
-# Load theme settings
-source "$HOME/dotfiles/zsh/config/theme.zsh"
+# Load prompt settings
+source "$HOME/dotfiles/zsh/config/prompt.zsh"
 
 # Load Oh-My-Zsh
 source $ZSH/oh-my-zsh.sh

@@ -32,7 +32,6 @@ source fresh.sh
 
 The ZSH configuration is organized into modules:
 
-- `theme.zsh`: Powerlevel10k theme configuration
 - `history.zsh`: Command history settings
 - `path.zsh`: PATH environment variable configuration
 - `fzf.zsh`: Fuzzy finder configuration

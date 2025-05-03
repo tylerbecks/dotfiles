@@ -59,7 +59,6 @@ brew install mackup
 # Download Apps
 brew install --cask cleanshot # Screenshot tool
 brew install --cask flux
-brew install --cask karabiner-elements # Keyboard remapping
 brew install --cask wezterm # Terminal
 brew install 1password
 brew install 1password-cli
@@ -76,6 +75,7 @@ brew install zoom
 
 brew install zsh-syntax-highlighting
 brew install delta
+brew install starship # Cross-shell prompt
 
 # Note: npm packages are now installed in setup-asdf.sh after Node.js is installed
 
