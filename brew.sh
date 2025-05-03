@@ -49,7 +49,7 @@ brew install zsh-autopair
 
 # Development
 brew install git
-brew install node
+brew install asdf # Version manager for multiple languages
 brew install pnpm
 brew install yarn
 
@@ -77,10 +77,7 @@ brew install zoom
 brew install zsh-syntax-highlighting
 brew install delta
 
-# npm packages
-npm install -g better-commits
-npm install -g tldr # Better man pages
-npm install -g rimraf # Better rm -rf
+# Note: npm packages are now installed in setup-asdf.sh after Node.js is installed
 
 # Fonts
 brew install font-meslo-lg-nerd-font

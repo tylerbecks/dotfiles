@@ -18,8 +18,8 @@ setopt hist_verify
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
 
-export VOLTA_HOME="$HOME/.volta"
-export PATH=$VOLTA_HOME/bin:/opt/homebrew/bin:$HOME/Library/pnpm:$PATH
+# Path configuration
+export PATH=/opt/homebrew/bin:$HOME/Library/pnpm:$PATH
 
 # bun completions
 [ -s "/Users/tylerbecks/.bun/_bun" ] && source "/Users/tylerbecks/.bun/_bun"

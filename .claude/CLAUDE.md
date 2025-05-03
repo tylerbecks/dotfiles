@@ -1,4 +1,4 @@
-# Available CLI Tools
+## Available CLI Tools
 
 When suggesting command-line solutions, use these modern tools:
 
@@ -21,3 +21,15 @@ When suggesting command-line solutions, use these modern tools:
   Example: `history | fzf`
 
 Prefer these tools over older alternatives when applicable.
+
+## Git Commits
+
+Use conventional commits with these prefixes:
+
+- 🚀 feat: New features
+- 🐛 fix: Bug fixes
+- 📚 docs: Documentation changes
+- 🛠️ refactor: Code refactoring
+- ⚡ perf: Performance improvements
+- 🧪 test: Adding or updating tests
+- 🧹 chore: Maintenance tasks

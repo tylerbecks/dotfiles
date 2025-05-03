@@ -13,8 +13,10 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 # Removes .zshrc from $HOME (if it exists) and symlinks the .zshrc file from the .dotfiles
 rm -rf $HOME/.zshrc
 
-ln -sf "${DOTFILES}/.zshrc" "${HOME}/.zshrc"
+# Symlink the new modular zsh configuration
+ln -sf "${DOTFILES}/zsh/.zshrc" "${HOME}/.zshrc"
 ln -sf "${DOTFILES}/.gitconfig" "${HOME}/.gitconfig"
+ln -sf "${DOTFILES}/.asdfrc" "${HOME}/.asdfrc"
 ln -sf "${DOTFILES}/karabiner/karabiner.json" ~/.config/karabiner/karabiner.json
 
 mkdir -p "${HOME}/.config/bat/themes"
