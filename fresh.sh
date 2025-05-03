@@ -33,6 +33,10 @@ mkdir -p ~/.config/wezterm
 ln -sf ~/dotfiles/wezterm/appearance.lua ~/.config/wezterm/appearance.lua
 ln -sf ~/dotfiles/wezterm/wezterm.lua ~/.config/wezterm/wezterm.lua
 
+# Create Claude config directory and symlink config file
+mkdir -p ~/.claude
+ln -sf ~/dotfiles/.claude/CLAUDE.md ~/.claude/CLAUDE.md
+
 source $DOTFILES/setup.zsh
 
 # Run this last because it will reload the shell
