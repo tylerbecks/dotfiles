@@ -19,10 +19,7 @@ bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
 
 export VOLTA_HOME="$HOME/.volta"
-export PATH=$VOLTA_HOME/bin:/opt/homebrew/bin:$HOME/Library/pnpm:$HOME/.deno/bin:$PATH
-
-# deno
-export DENO_INSTALL="$HOME/.deno"
+export PATH=$VOLTA_HOME/bin:/opt/homebrew/bin:$HOME/Library/pnpm:$PATH
 
 # bun completions
 [ -s "/Users/tylerbecks/.bun/_bun" ] && source "/Users/tylerbecks/.bun/_bun"
@@ -151,9 +148,6 @@ git() {
 # setup 1password autocomplete
 eval "$(op completion zsh)"; compdef _op op
 
-# Github Copilot CLI alias
-eval "$(gh copilot alias -- zsh)"
-
 # ---- Eza (better ls) -----
 alias ls="eza --icons=always"
 
@@ -165,3 +159,4 @@ eval $(thefuck --alias fk)
 eval "$(zoxide init zsh)"
 
 alias cd="z"
+alias claude="/Users/tylerbecks/.claude/local/claude"

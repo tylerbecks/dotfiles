@@ -1,7 +1,18 @@
+[user]
+	name = Tyler Becks
+	email = tylerdbecks@gmail.com
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
+[tag]
+	sort = version:refname
+[init]
+	defaultBranch = main
 [alias]
-	s = status
+	s = status -s
 	co = checkout
-	b = branch -v --sort=-committerdate
+	b = branch -v
 	del = branch -D
 	c = "!better-commits"
 	d = diff
@@ -16,18 +27,21 @@
 	oops = commit --amend --no-edit
 	enforce = push --force-with-lease
 [push]
-	default = current
+	default = simple
 	autoSetupRemote = true
-[user]
-	name = Tyler Becks
-	email = tylerdbecks@gmail.com
+	followTags = true
 [fetch]
+	all = true
 	prune = true
+	pruneTags = true
 [pull]
 	rebase = true
 [rebase]
 	autoStash = true
 	autosquash = true
+	updateRefs = true
+[help]
+	autocorrect = prompt
 [sequence]
 	editor = code --wait
 [rerere]
@@ -36,13 +50,18 @@
 [core]
 	pager = delta
 	editor = code --wait
+	excludesfile = ~/.gitignore
+	fsmonitor = true
+	untrackedCache = true
 [interactive]
   diffFilter = delta --color-only
 [add.interactive]
 	useBuiltin = false # required for git 2.37.0
 [diff]
-	algorithm = histogram
-	colorMoved = default
+	algorithm = patience
+	colorMoved = plain
+	mnemonicPrefix = true
+	renames = true
 	colorMovedWS = allow-indentation-change
 	external = difft
   tool = difftastic
@@ -61,7 +80,3 @@
 [commit]
 	gpgSign = false
 	verbose = true
-[maintenance]
-	repo = /Users/tylerbecks/Code/fuego-frontend
-[branch]
-	sort = -committerdate
