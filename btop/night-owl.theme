@@ -1,0 +1,84 @@
+# Night Owl theme for btop
+# Inspired by the Night Owl VS Code theme
+
+# Main bg
+theme[main_bg]="#011627"
+
+# Main text color
+theme[main_fg]="#d6deeb"
+
+# Title color for boxes
+theme[title]="#82aaff"
+
+# Highlight for the selected item
+theme[hi_fg]="#7fdbca"
+
+# Background of selected item in processes box
+theme[selected_bg]="#1d3b53"
+
+# Foreground of selected item in processes box
+theme[selected_fg]="#ffffff"
+
+# Color of inactive/disabled text
+theme[inactive_fg]="#637777"
+
+# Border of inactive boxes
+theme[inactive_border]="#1d3b53"
+
+# CPU box outline color
+theme[cpu_box]="#82aaff"
+
+# Memory/disks box outline color
+theme[mem_box]="#c792ea"
+
+# Net box outline color
+theme[net_box]="#ffcb8b"
+
+# Processes box outline color
+theme[proc_box]="#7fdbca"
+
+# Scaling graph color
+theme[cpu_start]="#82aaff"
+theme[cpu_mid]="#c792ea"
+theme[cpu_end]="#ff5874"
+
+# Temperature graph colors
+theme[temp_start]="#7fdbca"
+theme[temp_mid]="#ffcb8b"
+theme[temp_end]="#ff5874"
+
+# CPU threads (0=low 100=high load)
+theme[cpu_low]="#7fdbca"
+theme[cpu_half]="#ffcb8b"
+theme[cpu_full]="#ff5874"
+
+# Process box color for running process
+theme[process_start]="#7fdbca"
+theme[process_mid]="#82aaff"
+theme[process_end]="#c792ea"
+
+# RAM/disks/other meters
+theme[meter_bg]="#1d3b53"
+theme[used_start]="#7fdbca"
+theme[used_mid]="#82aaff"
+theme[used_end]="#c792ea"
+theme[free_start]="#2a4257"
+theme[free_mid]="#2a4257"
+theme[free_end]="#2a4257"
+
+# Download graph colors
+theme[download_start]="#7fdbca"
+theme[download_mid]="#82aaff"
+theme[download_end]="#c792ea"
+
+# Upload graph colors
+theme[upload_start]="#ffcb8b"
+theme[upload_mid]="#f78c6c"
+theme[upload_end]="#ff5874"
+
+# Process tree view
+theme[process_tree]="#c792ea"
+
+# Network download/upload speed chart
+theme[network_download]="#82aaff"
+theme[network_upload]="#ffcb8b"

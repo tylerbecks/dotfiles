@@ -46,6 +46,7 @@ brew install ripgrep # rg is faster than alternatives
 brew install thefuck # Magnificent app which corrects your previous console command.
 brew install zoxide # a smarter cd command, It remembers which directories you use most frequently, so you can "jump" to them in just a few keystrokes.
 brew install zsh-autopair
+brew install btop # Resource monitor with TUI (better than htop)
 
 # Development
 brew install git

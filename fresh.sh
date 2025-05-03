@@ -19,10 +19,16 @@ ln -sf "${DOTFILES}/.gitconfig" "${HOME}/.gitconfig"
 ln -sf "${DOTFILES}/.asdfrc" "${HOME}/.asdfrc"
 ln -sf "${DOTFILES}/karabiner/karabiner.json" ~/.config/karabiner/karabiner.json
 
-# Create Starship config directory and symlink config
+# Create config directories
 mkdir -p "${HOME}/.config"
-# Use copy instead of symlink for Starship config to avoid permission issues
+mkdir -p "${HOME}/.config/btop/themes"
+
+# Copy Starship config (using copy instead of symlink to avoid permission issues)
 cp "${DOTFILES}/starship/starship.toml" "${HOME}/.config/starship.toml"
+
+# Copy btop config and theme
+cp "${DOTFILES}/btop/btop.conf" "${HOME}/.config/btop/btop.conf"
+cp "${DOTFILES}/btop/night-owl.theme" "${HOME}/.config/btop/themes/night-owl.theme"
 
 mkdir -p "${HOME}/.config/bat/themes"
 ln -sf "${DOTFILES}/config/bat/config" "${HOME}/.config/bat/config"

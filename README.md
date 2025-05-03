@@ -27,6 +27,8 @@ source fresh.sh
 - `karabiner/`: Keyboard customization
 - `config/`: Various application configurations
 - `.claude/`: Claude AI configuration settings
+- `btop/`: System monitoring configuration with Night Owl theme
+- `starship/`: Shell prompt configuration
 
 ## ZSH Configuration
 
