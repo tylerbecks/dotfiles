@@ -12,36 +12,70 @@ format = """
 $directory\
 $git_branch\
 $git_status\
-$nodejs\
 $python\
-$cmd_duration\
 $character
+"""
+
+right_format = """
+$cmd_duration
 """
 
 # Disable the package module to avoid looking for a package.json file
 [package]
-disabled = true
+disabled = false
 
-# Make prompt symbols more succinct
 [character]
-success_symbol = "[➜](bold green)"
-error_symbol = "[✗](bold red)"
+success_symbol = '[➜](bold green)'
+error_symbol = '[✗](bold red)'
 
 # Style for git branch
 [git_branch]
 style = "bold purple"
 format = '[$symbol$branch]($style) '
 
-# Git status styling
+# Git Status module (Highly customized for detailed counts)
 [git_status]
-style = "bold red"
-format = '([$all_status$ahead_behind]($style) )'
+# --- Symbols and Formats ---
+# Based on Powerlevel10k style: ?<untracked> +<staged> !<modified> -<deleted> »<renamed> ~<stashed> =<conflicted>
+# Ahead/Behind format uses counts directly
+ahead = '⇡${count}'          # e.g., ⇡3
+behind = '⇣${count}'         # e.g., ⇣2
+diverged = '⇕⇡${ahead_count}⇣${behind_count}' # e.g., ⇕⇡3⇣2
+up_to_date = ''            # No symbol when up to date for succinctness
+
+# File status counts (using colors for clarity)
+untracked = '[?$count](cyan)'       # e.g., ?2 (cyan)
+staged = '[+$count](bold green)'   # e.g., +1 (bold green)
+modified = '[!$count](bold yellow)' # e.g., !5 (bold yellow)
+renamed = '[»$count](magenta)'     # e.g., »1 (magenta)
+deleted = '[✘$count](red)'         # e.g., ✘1 (red)
+stashed = '[$$$count](bright-black)' # e.g., $1 (grey) - Note: $$ escapes the $ for the variable
+conflicted = '[=$count](bold red)'    # e.g., =1 (bold red)
+
+# --- Overall Format String ---
+# Order: Ahead/Behind, Stashed, Conflicted, Staged, Modified, Renamed, Deleted, Untracked
+# Only shows elements if they exist (have non-zero count or status)
+# The space at the end provides separation from the next module
+format = '([$ahead_behind$stashed$conflicted$staged$modified$renamed$deleted$untracked]($style)) '
+
+# --- Behavior ---
+style = 'fg:bright-black' # Base style for the status string (applied if no specific color override)
+ignore_submodules = false
+disabled = false
+
+# Git State module (for rebase, merge, etc.) - kept from your original config
+[git_state]
+format = '[\($state( $progress_current of $progress_total)\)]($style) '
+cherry_pick = '[🍒 PICKING](bold red)'
+rebase = '[🔄 REBASE](bold yellow)'
+revert = '[↩️ REVERT](bold green)'
+merge = '[⚡ MERGE](bold blue)'
+disabled = false # Make sure it's not disabled
 
 # Directory styling
 [directory]
 style = "bold blue"
 truncation_length = 3
-truncation_symbol = "…/"
 truncate_to_repo = true
 
 # Command duration
@@ -50,12 +84,137 @@ min_time = 500
 format = "[$duration]($style) "
 style = "bold yellow"
 
-# Node.js configuration
-[nodejs]
-format = '[$symbol($version )]($style)'
-style = "bold green"
-
-# Python configuration
 [python]
 format = '[$symbol($version )]($style)'
-style = "bold yellow"
+
+[bun]
+format = "via [$symbol]($style)"
+
+[buf]
+format = "via [$symbol]($style)"
+
+[cmake]
+format = "via [$symbol]($style)"
+
+[cobol]
+format = "via [$symbol]($style)"
+
+[crystal]
+format = "via [$symbol]($style)"
+
+[daml]
+format = "via [$symbol]($style)"
+
+[dart]
+format = "via [$symbol]($style)"
+
+[deno]
+format = "via [$symbol]($style)"
+
+[dotnet]
+format = "[$symbol(🎯 $tfm )]($style)"
+
+[elixir]
+format = 'via [$symbol]($style)'
+
+[elm]
+format = 'via [$symbol]($style)'
+
+[erlang]
+format = 'via [$symbol]($style)'
+
+[fennel]
+format = 'via [$symbol]($style)'
+
+[gleam]
+format = 'via [$symbol]($style)'
+
+[golang]
+format = 'via [$symbol]($style)'
+
+[gradle]
+format = 'via [$symbol]($style)'
+
+[haxe]
+format = 'via [$symbol]($style)'
+
+[helm]
+format = 'via [$symbol]($style)'
+
+[java]
+format = 'via [$symbol]($style)'
+
+[julia]
+format = 'via [$symbol]($style)'
+
+[kotlin]
+format = 'via [$symbol]($style)'
+
+[lua]
+format = 'via [$symbol]($style)'
+
+[meson]
+format = 'via [$symbol]($style)'
+
+[nim]
+format = 'via [$symbol]($style)'
+
+[nodejs]
+format = 'via [$symbol]($style)'
+
+[ocaml]
+format = 'via [$symbol(\($switch_indicator$switch_name\) )]($style)'
+
+[opa]
+format = 'via [$symbol]($style)'
+
+[perl]
+format = 'via [$symbol]($style)'
+
+[pixi]
+format = 'via [$symbol($environment )]($style)'
+
+[php]
+format = 'via [$symbol]($style)'
+
+[pulumi]
+format = 'via [$symbol$stack]($style)'
+
+[purescript]
+format = 'via [$symbol]($style)'
+
+[quarto]
+format = 'via [$symbol]($style)'
+
+[raku]
+format = 'via [$symbol]($style)'
+
+[red]
+format = 'via [$symbol]($style)'
+
+[rlang]
+format = 'via [$symbol]($style)'
+
+[ruby]
+format = 'via [$symbol]($style)'
+
+[rust]
+format = 'via [$symbol]($style)'
+
+[solidity]
+format = 'via [$symbol]($style)'
+
+[typst]
+format = 'via [$symbol]($style)'
+
+[swift]
+format = 'via [$symbol]($style)'
+
+[vagrant]
+format = 'via [$symbol]($style)'
+
+[vlang]
+format = 'via [$symbol]($style)'
+
+[zig]
+format = 'via [$symbol]($style)'
