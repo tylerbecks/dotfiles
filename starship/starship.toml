@@ -7,6 +7,9 @@ add_newline = false
 # Wait 10 milliseconds for starship to check files under the current directory.
 scan_timeout = 10
 
+# Timeout for commands executed by starship (in milliseconds)
+command_timeout = 5000
+
 # Use custom format
 format = """
 $directory\
@@ -43,14 +46,14 @@ behind = '⇣${count}'         # e.g., ⇣2
 diverged = '⇕⇡${ahead_count}⇣${behind_count}' # e.g., ⇕⇡3⇣2
 up_to_date = ''            # No symbol when up to date for succinctness
 
-# File status counts (using colors for clarity)
-untracked = '[?$count](cyan)'       # e.g., ?2 (cyan)
-staged = '[+$count](bold green)'   # e.g., +1 (bold green)
-modified = '[!$count](bold yellow)' # e.g., !5 (bold yellow)
-renamed = '[»$count](magenta)'     # e.g., »1 (magenta)
-deleted = '[✘$count](red)'         # e.g., ✘1 (red)
-stashed = '[$$$count](bright-black)' # e.g., $1 (grey) - Note: $$ escapes the $ for the variable
-conflicted = '[=$count](bold red)'    # e.g., =1 (bold red)
+# File status counts with emojis for better visibility
+untracked = '[🔍$count](cyan)'       # e.g., 🔍2 (cyan)
+staged = '[✅$count](bold green)'    # e.g., ✅1 (bold green)
+modified = '[✏️ $count](bold yellow)' # e.g., 📝5 (bold yellow)
+renamed = '[🔄$count](magenta)'     # e.g., 🔄1 (magenta)
+deleted = '[🗑️$count](red)'         # e.g., 🗑️1 (red)
+stashed = '[📦$count](bright-black)' # e.g., 📦1 (grey)
+conflicted = '[⚠️$count](bold red)'   # e.g., ⚠️1 (bold red)
 
 # --- Overall Format String ---
 # Order: Ahead/Behind, Stashed, Conflicted, Staged, Modified, Renamed, Deleted, Untracked
