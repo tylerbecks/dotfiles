@@ -4,6 +4,9 @@ export ZSH="$HOME/.oh-my-zsh"
 # Load prompt settings
 source "$HOME/dotfiles/zsh/config/prompt.zsh"
 
+# Define plugins before loading Oh-My-Zsh
+plugins=(fzf-tab zsh-syntax-highlighting zsh-autosuggestions you-should-use zsh-autopair)
+
 # Load Oh-My-Zsh
 source $ZSH/oh-my-zsh.sh
 

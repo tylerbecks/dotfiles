@@ -1,5 +1,4 @@
-# Define plugins
-plugins=(fzf-tab zsh-syntax-highlighting zsh-autosuggestions you-should-use zsh-autopair)
+# Plugins are now defined in .zshrc before oh-my-zsh is sourced
 
 # Syntax highlighting must be sourced after oh-my-zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
