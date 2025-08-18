@@ -4,6 +4,11 @@ export ZSH="$HOME/.oh-my-zsh"
 # Java environment
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
 
+# Android SDK environment
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
 # Load prompt settings
 source "$HOME/dotfiles/zsh/config/prompt.zsh"
 
