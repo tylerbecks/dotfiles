@@ -1,6 +1,9 @@
 # Path to your oh-my-zsh installation
 export ZSH="$HOME/.oh-my-zsh"
 
+# Java environment
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+
 # Load prompt settings
 source "$HOME/dotfiles/zsh/config/prompt.zsh"
 
