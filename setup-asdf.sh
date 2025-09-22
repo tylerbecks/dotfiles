@@ -19,13 +19,13 @@ echo "Installing latest versions of plugins..."
 
 # Node.js 
 echo "Installing Node.js latest LTS version..."
-asdf install nodejs latest
-asdf global nodejs latest
+asdf install nodejs lts
+asdf set nodejs lts
 
 # Python
 echo "Installing Python latest version..."
 asdf install python latest
-asdf global python latest
+asdf set python latest
 
 # Install global npm packages
 echo "Installing global npm packages..."
