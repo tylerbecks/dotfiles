@@ -1,8 +1,0 @@
-# Support legacy version files from other version managers
-# Like .nvmrc from nvm and .ruby-version from rbenv
-legacy_version_file = yes
-
-# Activates reshimming after installing a new package with e.g. pip or npm
-# This gives you access to binaries from packages that you install with e.g. pip install or npm install
-# without having to manually run asdf reshim every time
-reshim_on_package_install = yes

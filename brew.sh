@@ -50,7 +50,7 @@ brew install btop # Resource monitor with TUI (better than htop)
 
 # Development
 brew install git
-brew install asdf # Version manager for multiple languages
+brew install mise # Version manager for multiple languages
 brew install pnpm
 brew install yarn
 
@@ -78,7 +78,7 @@ brew install zsh-syntax-highlighting
 brew install delta
 brew install starship # Cross-shell prompt
 
-# Note: npm packages are now installed in setup-asdf.sh after Node.js is installed
+# Note: npm packages are now installed in setup-mise.sh after Node.js is installed
 
 # Fonts
 brew install font-meslo-lg-nerd-font

@@ -36,7 +36,5 @@ done
 # Load plugins (this should be after custom configs to allow for plugin customization)
 source "$HOME/dotfiles/zsh/config/plugins.zsh"
 
-# Ensure asdf shims are first in PATH (must be last)
-export PATH="$HOME/.asdf/shims:$PATH"
 
 alias claude="/Users/tylerbecks/.claude/local/claude"
