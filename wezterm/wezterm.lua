@@ -13,7 +13,7 @@ local config = wezterm.config_builder()
 config.color_scheme = 'Tokyo Night'
 
 config.font = wezterm.font_with_fallback({
-  "MesloLGS NF",      -- Your primary font
+  "MesloLGS Nerd Font",      -- Your primary font
   "JetBrains Mono",   -- Fallback font for better glyph support
   "Noto Color Emoji", -- For emoji rendering
 })
