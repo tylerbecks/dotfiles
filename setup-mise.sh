@@ -19,7 +19,7 @@ mise use --global python@3
 
 # Install global npm packages
 echo "Installing global npm packages..."
-npm install -g better-commits tldr rimraf
+npm install -g @anthropic-ai/claude-code better-commits tldr rimraf
 
 echo "mise setup complete! The following versions are now available:"
 mise ls

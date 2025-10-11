@@ -12,5 +12,3 @@ case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
-
-# Note: asdf shims are automatically added to PATH by the asdf.zsh configuration file

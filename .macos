@@ -114,22 +114,22 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow showInputMenu -bo
 sudo pmset -a autorestart 1
 
 # Restart automatically if the computer freezes
-sudo systemsetup -setrestartfreeze on
+# Note: This command has known issues on modern macOS and may fail with Error:-99
+sudo systemsetup -setrestartfreeze on 2>/dev/null || true
 
-# Sleep the display after 15 minutes
-sudo pmset -a displaysleep 10
+# Sleep the display after 5 minutes (must be lower than system sleep on battery)
+sudo pmset -a displaysleep 5
 
 # Disable machine sleep while charging
 sudo pmset -c sleep 0
 
-# Set machine sleep to 5 minutes on battery
-sudo pmset -b sleep 5
+# Set machine sleep to 10 minutes on battery (must be higher than display sleep)
+sudo pmset -b sleep 10
 
 # Set standby delay to 24 hours (default is 1 hour)
 sudo pmset -a standbydelay 86400
 
-# Never go into computer sleep mode
-sudo systemsetup -setcomputersleep Off > /dev/null
+# Note: Removed conflicting 'systemsetup -setcomputersleep Off' which would override battery sleep settings
 
 # Hibernation mode
 # 0: Disable hibernation (speeds up entering sleep mode)
@@ -138,10 +138,10 @@ sudo systemsetup -setcomputersleep Off > /dev/null
 sudo pmset -a hibernatemode 0
 
 # Remove the sleep image file to save disk space
-sudo rm /private/var/vm/sleepimage
+sudo rm -f /private/var/vm/sleepimage
 # Create a zero-byte file instead…
 sudo touch /private/var/vm/sleepimage
-# …and make sure it can’t be rewritten
+# …and make sure it can't be rewritten
 sudo chflags uchg /private/var/vm/sleepimage
 
 ###############################################################################
@@ -313,17 +313,27 @@ defaults write com.apple.dock show-recents -bool false
 defaults write com.apple.dock showLaunchpadGestureEnabled -int 0
 
 # Reset Launchpad, but keep the desktop wallpaper intact
-find "${HOME}/Library/Application Support/Dock" -name "*-*.db" -maxdepth 1 -delete
+if [ -d "${HOME}/Library/Application Support/Dock" ]; then
+    find "${HOME}/Library/Application Support/Dock" -name "*-*.db" -maxdepth 1 -delete
+fi
 
-# Add iOS & Watch Simulator to Launchpad
-sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app" "/Applications/Simulator.app"
-sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator (Watch).app" "/Applications/Simulator (Watch).app"
+# Add iOS & Watch Simulator to Launchpad (only if Xcode is installed)
+if [ -d "/Applications/Xcode.app" ]; then
+    sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app" "/Applications/Simulator.app"
+    sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator (Watch).app" "/Applications/Simulator (Watch).app"
+fi
 
 ###############################################################################
 # Safari & WebKit                                                             #
 ###############################################################################
 
-# Privacy: don’t send search queries to Apple
+# IMPORTANT: Safari settings require Terminal to have Full Disk Access
+# Go to: System Settings > Privacy & Security > Full Disk Access
+# Add Terminal.app (or your terminal emulator) to the list
+# Without this, Safari settings will fail silently or write to wrong location
+# See: https://lapcatsoftware.com/articles/containers.html
+
+# Privacy: don't send search queries to Apple
 defaults write com.apple.Safari UniversalSearchEnabled -bool false
 defaults write com.apple.Safari SuppressSearchSuggestions -bool true
 
@@ -439,8 +449,9 @@ defaults write com.apple.ActivityMonitor SortDirection -int 0
 # Address Book, Dashboard, iCal, TextEdit, and Disk Utility                   #
 ###############################################################################
 
-# Enable the debug menu in Address Book
-defaults write com.apple.addressbook ABShowDebugMenu -bool true
+# Enable the debug menu in Address Book (renamed to Contacts in modern macOS)
+# Note: May not work on fresh installs until the app has been launched
+defaults write com.apple.addressbook ABShowDebugMenu -bool true 2>/dev/null || true
 
 # Enable Dashboard dev mode (allows keeping widgets on the desktop)
 defaults write com.apple.dashboard devmode -bool true

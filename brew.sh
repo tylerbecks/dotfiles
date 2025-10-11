@@ -1,11 +1,24 @@
 #!/usr/bin/env bash
 
+# Install Xcode Command Line Tools if not already installed
+if ! xcode-select -p &> /dev/null; then
+    echo "Installing Xcode Command Line Tools..."
+    xcode-select --install
+    echo "Please complete the Xcode Command Line Tools installation and re-run this script."
+    exit 1
+fi
+
+# Accept Xcode license if not already accepted
+if ! sudo xcodebuild -license check &> /dev/null; then
+    echo "Accepting Xcode license..."
+    sudo xcodebuild -license accept
+fi
+
 # Check for Homebrew and install if we don't have it
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# Extend homebrew with taps
-brew tap homebrew/cask
-brew tap homebrew/cask-fonts
+# Add Homebrew to PATH for this script session
+eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv)"
 
 # Make sure we’re using the latest Homebrew.
 brew update
@@ -36,23 +49,20 @@ brew install ack
 brew install bat # A cat(1) clone with syntax highlighting and Git integration.
 brew install fd
 brew install gh
-brew install git
+brew install N
 brew install difftastic # A fantastic diff tool
 brew install jq
 brew install eza # A modern replacement for ls
 brew install fzf
 yes | $(brew --prefix)/opt/fzf/install # Install fzf key bindings and fuzzy completion
 brew install ripgrep # rg is faster than alternatives
-brew install thefuck # Magnificent app which corrects your previous console command.
 brew install zoxide # a smarter cd command, It remembers which directories you use most frequently, so you can "jump" to them in just a few keystrokes.
 brew install zsh-autopair
 brew install btop # Resource monitor with TUI (better than htop)
 
 # Development
-brew install git
 brew install mise # Version manager for multiple languages
 brew install pnpm
-brew install yarn
 
 # Install mackup to backup app preferences
 brew install mackup
@@ -61,18 +71,17 @@ brew install mackup
 brew install --cask cleanshot # Screenshot tool
 brew install --cask flux
 brew install --cask wezterm # Terminal
-brew install 1password
+brew install --cask 1password
 brew install 1password-cli
 brew install --cask raycast
-brew install dropbox
+brew install --cask dropbox
 brew install --cask arc
-brew install raindropio
-brew install rectangle
-brew install slack
-brew install spotify
-brew install visual-studio-code
-brew install whatsApp
-brew install zoom
+brew install --cask raindropio
+brew install --cask rectangle
+brew install --cask slack
+brew install --cask spotify
+brew install --cask whatsapp
+brew install --cask zoom
 
 brew install zsh-syntax-highlighting
 brew install delta

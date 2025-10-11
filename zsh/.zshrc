@@ -38,3 +38,5 @@ source "$HOME/dotfiles/zsh/config/plugins.zsh"
 
 
 alias claude="/Users/tylerbecks/.claude/local/claude"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

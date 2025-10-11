@@ -3,6 +3,10 @@ echo "Setting up your Mac..."
 DOTFILES=$HOME/dotfiles
 source $DOTFILES/brew.sh
 
+# Setup mise (version manager) and install Node.js, Python, and global npm packages
+eval "$(mise activate bash)"
+source $DOTFILES/setup-mise.sh
+
 # Wipe all (default) app icons from the Dock
 # I don't want to do this every time I source .macos settings, only on installing a fresh computer
 defaults write com.apple.dock persistent-apps -array
@@ -16,8 +20,6 @@ rm -rf $HOME/.zshrc
 # Symlink the new modular zsh configuration
 ln -sf "${DOTFILES}/zsh/.zshrc" "${HOME}/.zshrc"
 ln -sf "${DOTFILES}/.gitconfig" "${HOME}/.gitconfig"
-ln -sf "${DOTFILES}/.asdfrc" "${HOME}/.asdfrc"
-ln -sf "${DOTFILES}/karabiner/karabiner.json" ~/.config/karabiner/karabiner.json
 
 # Create config directories
 mkdir -p "${HOME}/.config"

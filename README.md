@@ -24,7 +24,6 @@ source fresh.sh
   - `plugins/`: Plugin configurations
   - `themes/`: Theme configurations
 - `wezterm/`: Terminal configuration
-- `karabiner/`: Keyboard customization
 - `config/`: Various application configurations
 - `.claude/`: Claude AI configuration settings
 - `btop/`: System monitoring configuration with Night Owl theme

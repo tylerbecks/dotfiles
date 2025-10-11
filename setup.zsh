@@ -13,8 +13,3 @@ git clone https://github.com/junegunn/fzf-git.sh.git $HOME/fzf-git.sh
 git clone https://github.com/hlissner/zsh-autopair ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autopair
 
 git clone https://github.com/MichaelAquilina/zsh-you-should-use.git $ZSH_CUSTOM/plugins/you-should-use
-
-# Install asdf plugins and set default versions if asdf is installed
-if command -v asdf &> /dev/null; then
-  source $DOTFILES/setup-asdf.sh
-fi

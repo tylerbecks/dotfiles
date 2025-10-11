@@ -3,7 +3,8 @@
     "allow": [
       "Bash(find:*)",
       "Bash(rg:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "WebSearch"
     ]
   },
   "enableAllProjectMcpServers": false
