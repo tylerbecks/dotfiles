@@ -12,7 +12,6 @@ alias cdl="cd $1 && ll"
 alias mg="mkdir -p $1 && cd $1"
 
 # Application shortcuts
-alias claude="/Users/tylerbecks/.claude/local/claude"
 
 # Development helpers
 alias npm-latest="npm info $1 | grep latest"

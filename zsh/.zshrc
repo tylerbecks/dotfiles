@@ -36,7 +36,4 @@ done
 # Load plugins (this should be after custom configs to allow for plugin customization)
 source "$HOME/dotfiles/zsh/config/plugins.zsh"
 
-
-alias claude="/Users/tylerbecks/.claude/local/claude"
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

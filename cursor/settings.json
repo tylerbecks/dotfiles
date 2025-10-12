@@ -58,7 +58,7 @@
   "editor.find.cursorMoveOnType": true,
   "editor.fontFamily": "Berkeley Mono Variable",
   "editor.fontLigatures": true,
-  "editor.fontSize": 16,
+  "editor.fontSize": 15,
   "editor.formatOnSaveMode": "file",
   "editor.inlineSuggest.enabled": true,
   "editor.minimap.enabled": false,
