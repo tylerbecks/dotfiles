@@ -26,6 +26,7 @@ source fresh.sh
 - `wezterm/`: Terminal configuration
 - `config/`: Various application configurations
 - `.claude/`: Claude AI configuration settings
+- `cursor/`: Cursor IDE settings, keybindings, and snippets
 - `btop/`: System monitoring configuration with Night Owl theme
 - `starship/`: Shell prompt configuration
 

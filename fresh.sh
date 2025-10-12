@@ -138,6 +138,16 @@ step "Configuring Claude Code..."
 ln -sf "${DOTFILES}/.claude/CLAUDE.md" "${HOME}/.claude/CLAUDE.md"
 success "Claude Code configured"
 
+# Cursor config
+step "Configuring Cursor..."
+mkdir -p "${HOME}/Library/Application Support/Cursor/User"
+ln -sf "${DOTFILES}/cursor/settings.json" "${HOME}/Library/Application Support/Cursor/User/settings.json"
+ln -sf "${DOTFILES}/cursor/keybindings.json" "${HOME}/Library/Application Support/Cursor/User/keybindings.json"
+if [ -d "${DOTFILES}/cursor/snippets" ] && [ "$(ls -A ${DOTFILES}/cursor/snippets)" ]; then
+    ln -sf "${DOTFILES}/cursor/snippets" "${HOME}/Library/Application Support/Cursor/User/snippets"
+fi
+success "Cursor configured"
+
 ###############################################################################
 # GitHub CLI
 ###############################################################################
