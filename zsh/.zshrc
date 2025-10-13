@@ -37,3 +37,8 @@ done
 source "$HOME/dotfiles/zsh/config/plugins.zsh"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# bun completions
+[ -s "/Users/tyler/.bun/_bun" ] && source "/Users/tyler/.bun/_bun"
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
