@@ -1,50 +1,11 @@
 {
-  "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[handlebars]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[hbs]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
   "[lua]": {
     "editor.defaultFormatter": "sumneko.lua"
-  },
-  "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[python]": {
     "editor.formatOnType": true,
     "editor.insertSpaces": true,
     "editor.tabSize": 4
-  },
-  "[scss]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[yaml]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "breadcrumbs.filePath": "on",
   "breadcrumbs.symbolPath": "off",
@@ -78,9 +39,7 @@
   "editor.tokenColorCustomizations": {
     "textMateRules": [
       {
-        "scope": [
-          "entity.name.function"
-        ],
+        "scope": ["entity.name.function"],
         "settings": {
           "fontStyle": "bold"
         }
@@ -122,16 +81,8 @@
   "search.followSymlinks": false,
   "search.useGlobalIgnoreFiles": true,
   "security.workspace.trust.untrustedFiles": "open",
-  "tailwindCSS.experimental.classRegex": [
-    [
-      "clsx\\(([^)]*)\\)",
-      "(?:'|\"|`)([^']*)(?:'|\"|`)"
-    ]
-  ],
-  "tailwindCSS.classFunctions": [
-    "cva",
-    "cx"
-  ],
+  "tailwindCSS.experimental.classRegex": [["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]],
+  "tailwindCSS.classFunctions": ["cva", "cx"],
   "terminal.integrated.enableMultiLinePasteWarning": false,
   "terminal.integrated.enablePersistentSessions": false,
   "terminal.integrated.fontSize": 13,
@@ -172,11 +123,7 @@
     "file:///home/coder/.vscode-server/extensions/atlassian.atlascode-2.10.12/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
   },
   "editor.multiCursorLimit": 50000,
-  "cursor.cpp.disabledLanguages": [
-    "markdown",
-    "plaintext",
-    "scminput"
-  ],
+  "cursor.cpp.disabledLanguages": ["markdown", "plaintext", "scminput"],
   "terminal.integrated.defaultProfile.osx": "zsh",
   "editor.formatOnSave": true,
   "git.autofetch": true,
@@ -195,5 +142,28 @@
   "debug.javascript.defaultRuntimeExecutable": {
     "pwa-node": "/Users/tylerbecks/.local/share/mise/shims/node"
   },
-  "python.defaultInterpreterPath": "/Users/tylerbecks/.local/share/mise/installs/python/3.13.7/bin/python"
+  "python.defaultInterpreterPath": "/Users/tylerbecks/.local/share/mise/installs/python/3.13.7/bin/python",
+  "eslint.codeActionsOnSave.mode": "problems",
+  "eslint.ignoreUntitled": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "versionlens.npm.dependencyProperties": [
+    "version",
+    "packageManager",
+    "dependencies",
+    "devDependencies",
+    "peerDependencies",
+    "optionalDependencies",
+    "overrides",
+    "overrides.*",
+    "jspm.dependencies",
+    "jspm.devDependencies",
+    "jspm.peerDependencies",
+    "jspm.optionalDependencies",
+    "pnpm.overrides",
+    "pnpm.overrides.*",
+    "catalog",
+    "catalogs.*",
+    "workspaces.catalog",
+    "workspaces.catalogs.*"
+  ]
 }

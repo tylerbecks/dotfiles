@@ -5,7 +5,7 @@ local appearance = require 'appearance'
 local act = wezterm.action
 
 -- Define variable for Hyperkey
-local hyper_key = 'CTRL|ALT|CMD'
+local hyper_key = 'CTRL|ALT|CMD|SHIFT'
 
 -- Creates a config object which we will be adding our config to
 local config = wezterm.config_builder()
@@ -13,9 +13,9 @@ local config = wezterm.config_builder()
 config.color_scheme = 'Tokyo Night'
 
 config.font = wezterm.font_with_fallback({
-  "MesloLGS Nerd Font",      -- Your primary font
-  "JetBrains Mono",   -- Fallback font for better glyph support
-  "Noto Color Emoji", -- For emoji rendering
+  "MesloLGS Nerd Font", -- Your primary font
+  "JetBrains Mono",     -- Fallback font for better glyph support
+  "Noto Color Emoji",   -- For emoji rendering
 })
 
 config.enable_scroll_bar = true
