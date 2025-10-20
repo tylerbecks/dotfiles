@@ -17,7 +17,3 @@ git() {
 
 # 1Password autocomplete
 eval "$(op completion zsh)"; compdef _op op
-
-# Zoxide (better cd)
-eval "$(zoxide init zsh)"
-alias cd="z"

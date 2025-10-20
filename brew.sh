@@ -126,7 +126,7 @@ step "Installing search and navigation tools..."
 brew install ack fd ripgrep fzf jq &> /dev/null && ((FORMULAE_COUNT+=5))
 
 step "Installing modern replacements..."
-brew install bat eza zoxide &> /dev/null && ((FORMULAE_COUNT+=3))
+brew install bat eza &> /dev/null && ((FORMULAE_COUNT+=2))
 
 step "Installing system monitoring..."
 brew install btop &> /dev/null && ((FORMULAE_COUNT++))
