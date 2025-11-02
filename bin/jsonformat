@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -e
+set -u
+set -o pipefail
+
+if hash node 2>/dev/null; then
+  # Use Node.js with colors if available
+  node -e "
+    const input = require('fs').readFileSync(0, 'utf-8');
+    const json = JSON.parse(input);
+    console.log(JSON.stringify(json, null, 2));
+  "
+elif hash jq 2>/dev/null; then
+  # Fallback to jq
+  jq '.'
+else
+  echo "Error: Neither node nor jq found. Please install one of them." >&2
+  exit 1
+fi

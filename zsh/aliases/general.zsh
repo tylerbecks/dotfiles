@@ -11,6 +11,11 @@ alias l="eza -l --icons=always"
 alias cdl="cd $1 && ll"
 alias mg="mkdir -p $1 && cd $1"
 
+# Safe file operations (interactive + verbose)
+alias mv='mv -i -v'
+alias cp='cp -i -v'
+alias mkdir='mkdir -p -v'
+
 # Application shortcuts
 
 # Development helpers

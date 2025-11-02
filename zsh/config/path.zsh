@@ -5,12 +5,14 @@ export PATH=/opt/homebrew/bin:$PATH
 # Add dotfiles bin directory for custom scripts
 export PATH="$HOME/dotfiles/bin:$PATH"
 
-# bun
-export BUN_INSTALL="$HOME/.bun"
+# Android SDK (ANDROID_HOME set in env.zsh)
+export PATH="$PATH:$ANDROID_HOME/emulator"
+export PATH="$PATH:$ANDROID_HOME/platform-tools"
+
+# bun (BUN_INSTALL set in env.zsh)
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# pnpm
-export PNPM_HOME="$HOME/Library/pnpm"
+# pnpm (PNPM_HOME set in env.zsh)
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;

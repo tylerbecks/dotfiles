@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -e
+set -u
+set -o pipefail
+
+# Check if ffmpeg is installed
+if ! hash ffmpeg 2>/dev/null; then
+  echo "Error: ffmpeg is not installed. Install it with: brew install ffmpeg" >&2
+  exit 1
+fi
+
+# Check if arguments are provided
+if [ $# -eq 0 ]; then
+  echo "Usage: heic2jpg <file.heic> [file2.heic ...]" >&2
+  echo "   or: heic2jpg *.heic" >&2
+  exit 1
+fi
+
+# Convert each file
+for file in "$@"; do
+  if [ ! -f "$file" ]; then
+    echo "Error: File not found: $file" >&2
+    continue
+  fi
+
+  # Get the base name without extension
+  base="${file%.*}"
+  output="${base}.jpg"
+
+  echo "Converting: $file -> $output"
+
+  # Convert with ffmpeg (quality 95%)
+  ffmpeg -i "$file" -q:v 2 "$output" -loglevel error
+
+  if [ -f "$output" ]; then
+    echo "✓ Created: $output"
+  else
+    echo "✗ Failed: $file" >&2
+  fi
+done
+
+echo "Done!"

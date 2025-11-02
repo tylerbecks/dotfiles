@@ -26,23 +26,6 @@
 	a = add --all
 	oops = commit --amend --no-edit
 	enforce = push --force-with-lease
-
-	# Typo corrections
-	ad = add
-	checkotu = checkout
-	checkou = checkout
-	checout = checkout
-	comit = commit
-	comitt = commit
-	committ = commit
-	fetc = fetch
-	fethc = fetch
-	mereg = merge
-	merg = merge
-	puhs = push
-	stat = status
-	statu = status
-	stauts = status
 [push]
 	default = simple
 	autoSetupRemote = true

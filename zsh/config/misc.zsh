@@ -1,9 +1,6 @@
 # Silence beep sounds from autocomplete
 unsetopt BEEP
 
-# Path to your dotfiles
-export DOTFILES=$HOME/dotfiles
-
 # Custom Git Function for diff tools
 git() {
     if [[ $1 == "show" ]]; then

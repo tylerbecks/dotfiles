@@ -1,14 +1,3 @@
-# Path to your oh-my-zsh installation
-export ZSH="$HOME/.oh-my-zsh"
-
-# Java environment
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
-
-# Android SDK environment
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-
 # Load prompt settings
 source "$HOME/dotfiles/zsh/config/prompt.zsh"
 
@@ -40,5 +29,3 @@ source "$HOME/dotfiles/zsh/config/plugins.zsh"
 
 # bun completions
 [ -s "/Users/tyler/.bun/_bun" ] && source "/Users/tyler/.bun/_bun"
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"

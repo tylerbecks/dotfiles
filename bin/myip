@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -e
+set -u
+set -o pipefail
+
+show_local() {
+  if [[ "$(uname)" == 'Darwin' ]]; then
+    ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo "No local IP found"
+  else
+    hostname -I | awk '{print $1}'
+  fi
+}
+
+show_global() {
+  curl -s https://api.ipify.org || curl -s https://ifconfig.me || echo "Failed to get global IP"
+}
+
+case "${1:-both}" in
+  local|l)
+    show_local
+    ;;
+  global|g)
+    show_global
+    ;;
+  both|gl|*)
+    echo "Local:  $(show_local)"
+    echo "Global: $(show_global)"
+    ;;
+esac
