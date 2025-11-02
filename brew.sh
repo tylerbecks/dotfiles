@@ -131,6 +131,9 @@ brew install bat eza &> /dev/null && ((FORMULAE_COUNT+=2))
 step "Installing system monitoring..."
 brew install btop &> /dev/null && ((FORMULAE_COUNT++))
 
+step "Installing media player..."
+brew install mpv &> /dev/null && ((FORMULAE_COUNT++))
+
 step "Installing backup tool..."
 brew install mackup &> /dev/null && ((FORMULAE_COUNT++))
 

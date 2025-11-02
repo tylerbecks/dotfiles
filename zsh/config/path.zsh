@@ -2,6 +2,9 @@
 # Put Homebrew's bin directory at the front of PATH
 export PATH=/opt/homebrew/bin:$PATH
 
+# Add dotfiles bin directory for custom scripts
+export PATH="$HOME/dotfiles/bin:$PATH"
+
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"

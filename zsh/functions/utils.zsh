@@ -59,3 +59,14 @@ function c() {
 function genssh() {
   ssh-keygen -t ed25519 -C "$1"
 }
+
+# Play sound effect based on last command's exit status
+function boop() {
+  local last="$?"
+  if [[ "$last" == '0' ]]; then
+    sfx good
+  else
+    sfx bad
+  fi
+  $(exit "$last")
+}
