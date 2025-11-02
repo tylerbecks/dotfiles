@@ -1,3 +1,6 @@
+# Load environment variables first (needed for oh-my-zsh)
+source "$HOME/dotfiles/zsh/config/env.zsh"
+
 # Load prompt settings
 source "$HOME/dotfiles/zsh/config/prompt.zsh"
 
@@ -7,8 +10,9 @@ plugins=(fzf-tab zsh-syntax-highlighting zsh-autosuggestions you-should-use zsh-
 # Load Oh-My-Zsh
 source $ZSH/oh-my-zsh.sh
 
-# Load configs
+# Load remaining configs (skip env.zsh since already loaded)
 for config_file ($HOME/dotfiles/zsh/config/*.zsh); do
+  [[ "$config_file" == *"/env.zsh" ]] && continue
   source $config_file
 done
 
