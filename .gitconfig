@@ -26,6 +26,23 @@
 	a = add --all
 	oops = commit --amend --no-edit
 	enforce = push --force-with-lease
+
+	# Typo corrections
+	ad = add
+	checkotu = checkout
+	checkou = checkout
+	checout = checkout
+	comit = commit
+	comitt = commit
+	committ = commit
+	fetc = fetch
+	fethc = fetch
+	mereg = merge
+	merg = merge
+	puhs = push
+	stat = status
+	statu = status
+	stauts = status
 [push]
 	default = simple
 	autoSetupRemote = true
@@ -34,6 +51,17 @@
 	all = true
 	prune = true
 	pruneTags = true
+	fsckobjects = true
+
+[transfer]
+	fsckobjects = true
+
+[receive]
+	fsckobjects = true
+
+[grep]
+	lineNumber = true
+	fallbackToNoIndex = true
 [pull]
 	rebase = true
 [rebase]
@@ -53,6 +81,10 @@
 	excludesfile = ~/.gitignore
 	fsmonitor = true
 	untrackedCache = true
+	whitespace = blank-at-eol,space-before-tab,-indent-with-non-tab,-tab-in-indent,blank-at-eof
+
+[apply]
+	whitespace = fix
 [interactive]
   diffFilter = delta --color-only
 [add.interactive]
