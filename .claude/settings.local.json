@@ -4,7 +4,10 @@
       "Bash(find:*)",
       "Bash(rg:*)",
       "Bash(ls:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(eza:*)",
+      "Bash(echo:*)",
+      "Bash(brew list:*)"
     ]
   },
   "enableAllProjectMcpServers": false

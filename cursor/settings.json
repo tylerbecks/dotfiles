@@ -85,6 +85,7 @@
   "tailwindCSS.classFunctions": ["cva", "cx"],
   "terminal.integrated.enableMultiLinePasteWarning": false,
   "terminal.integrated.enablePersistentSessions": false,
+  "terminal.integrated.fontFamily": "MesloLGS Nerd Font",
   "terminal.integrated.fontSize": 13,
   "terminal.integrated.inheritEnv": false,
   "terminal.integrated.shellIntegration.enabled": true,
