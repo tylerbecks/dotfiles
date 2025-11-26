@@ -24,11 +24,6 @@
     "when": "accessibleViewIsShown"
   },
   {
-    "key": "ctrl+shift+alt+cmd+k",
-    "command": "aipopup.action.modal.generate",
-    "when": "editorFocus && !composerBarIsVisible"
-  },
-  {
     "key": "cmd+k",
     "command": "-aipopup.action.modal.generate",
     "when": "editorFocus && !composerBarIsVisible"
@@ -72,50 +67,54 @@
     "key": "cmd+k",
     "command": "-workbench.action.terminal.clear",
     "when": "terminalFocus && terminalHasBeenCreated && !accessibilityModeEnabled || terminalFocus && terminalProcessSupported && !accessibilityModeEnabled || accessibilityModeEnabled && accessibleViewIsShown && terminalHasBeenCreated && accessibleViewCurrentProviderId == 'terminal' || accessibilityModeEnabled && accessibleViewIsShown && terminalProcessSupported && accessibleViewCurrentProviderId == 'terminal'"
-},
-{
+  },
+  {
     "key": "shift+enter",
     "command": "workbench.action.terminal.sendSequence",
     "args": {
-        "text": "\\\r\n"
+      "text": "\\\r\n"
     },
     "when": "terminalFocus"
-},
-{
-  "key": "cmd+escape",
-  "command": "-workbench.action.chat.cancel"
-},
-{
-  "key": "cmd+escape",
-  "command": "-workbench.action.backgroundComposer.escapeToClose",
-  "when": "backgroundComposerEnabled && isInBackgroundComposerWindow"
-},
-{
-  "key": "alt+cmd+k",
-  "command": "-bookmarks.toggle",
-  "when": "editorTextFocus"
-},
-{
-  "key": "alt+cmd+k",
-  "command": "-keybindings.editor.recordSearchKeys",
-  "when": "inKeybindings && inKeybindingsSearch"
-},
-{
-  "key": "ctrl+alt+cmd+k",
-  "command": "claude-code.insertAtMentioned",
-  "when": "editorTextFocus"
-},
-{
-  "key": "alt+cmd+k",
-  "command": "-claude-code.insertAtMentioned",
-  "when": "editorTextFocus"
-},
-{
-  "key": "ctrl+alt+cmd+y",
-  "command": "claude-code.acceptProposedDiff"
-},
-{
-  "key": "ctrl+alt+cmd+n",
-  "command": "claude-code.rejectProposedDiff"
-}
+  },
+  {
+    "key": "cmd+escape",
+    "command": "-workbench.action.chat.cancel"
+  },
+  {
+    "key": "cmd+escape",
+    "command": "-workbench.action.backgroundComposer.escapeToClose",
+    "when": "backgroundComposerEnabled && isInBackgroundComposerWindow"
+  },
+  {
+    "key": "alt+cmd+k",
+    "command": "-bookmarks.toggle",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "alt+cmd+k",
+    "command": "-keybindings.editor.recordSearchKeys",
+    "when": "inKeybindings && inKeybindingsSearch"
+  },
+  {
+    "key": "ctrl+shift+alt+cmd+k",
+    "command": "claude-code.insertAtMentioned",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "alt+cmd+k",
+    "command": "-claude-code.insertAtMentioned",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+shift+alt+cmd+y",
+    "command": "claude-code.acceptProposedDiff"
+  },
+  {
+    "key": "ctrl+shift+alt+cmd+n",
+    "command": "claude-code.rejectProposedDiff"
+  },
+  {
+    "key": "shift+cmd+l",
+    "command": "-composer.newAgentChat"
+  }
 ]

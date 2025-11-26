@@ -14,6 +14,7 @@ command_timeout = 5000
 format = """
 $directory\
 $git_branch\
+$git_state\
 $git_status\
 $python\
 $character
@@ -73,6 +74,7 @@ cherry_pick = '[🍒 PICKING](bold red)'
 rebase = '[🔄 REBASE](bold yellow)'
 revert = '[↩️ REVERT](bold green)'
 merge = '[⚡ MERGE](bold blue)'
+bisect = '[🔍 BISECT](bold magenta)'
 disabled = false # Make sure it's not disabled
 
 # Directory styling
