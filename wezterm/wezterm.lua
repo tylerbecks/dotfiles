@@ -21,6 +21,19 @@ config.font = wezterm.font_with_fallback({
 config.enable_scroll_bar = true
 config.scrollback_lines = 10000 -- Increase scrollback buffer to 10,000 lines
 
+-- Option key sends escape sequences (like iTerm2's "Esc+" mode)
+config.send_composed_key_when_left_alt_is_pressed = false
+config.send_composed_key_when_right_alt_is_pressed = false
+
+-- Notification settings for Claude Code task completion alerts
+config.audible_bell = 'Disabled'
+config.visual_bell = {
+  fade_in_duration_ms = 75,
+  fade_out_duration_ms = 75,
+  target = 'CursorColor',
+}
+config.notification_handling = 'AlwaysShow'
+
 -- And a font size that won't have you squinting
 config.font_size = 13
 
@@ -139,6 +152,18 @@ local function resize_pane(key, direction)
 end
 
 config.keys = {
+  -- Shift+Enter and Option+Enter for newlines (useful for Claude Code)
+  {
+    key = 'Enter',
+    mods = 'SHIFT',
+    action = act.SendString '\n',
+  },
+  {
+    key = 'Enter',
+    mods = 'OPT',
+    action = act.SendString '\x1b\x0d',  -- ESC + CR
+  },
+
   -- Pane navigation with Hyperkey + Arrow
   move_pane('DownArrow', 'Down'),
   move_pane('UpArrow', 'Up'),
