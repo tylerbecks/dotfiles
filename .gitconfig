@@ -26,6 +26,7 @@
 	a = add --all
 	oops = commit --amend --no-edit
 	enforce = push --force-with-lease
+	cleanup = "!git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D"
 [push]
 	default = simple
 	autoSetupRemote = true

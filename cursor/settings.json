@@ -166,5 +166,6 @@
     "catalogs.*",
     "workspaces.catalog",
     "workspaces.catalogs.*"
-  ]
+  ],
+  "claudeCode.preferredLocation": "panel"
 }

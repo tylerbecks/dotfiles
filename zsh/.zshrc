@@ -33,3 +33,5 @@ source "$HOME/dotfiles/zsh/config/plugins.zsh"
 
 # bun completions
 [ -s "/Users/tyler/.bun/_bun" ] && source "/Users/tyler/.bun/_bun"
+# Added by Antigravity
+export PATH="/Users/tyler/.antigravity/antigravity/bin:$PATH"
