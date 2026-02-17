@@ -1,3 +1,6 @@
+# Homebrew (must be early so subsequent configs can find brew-installed tools)
+export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH
+
 # Dotfiles location
 export DOTFILES="$HOME/dotfiles"
 
