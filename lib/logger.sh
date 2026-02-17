@@ -73,3 +73,9 @@ summary() {
 list_item() {
     echo -e "  ${DIM}•${NC} $1"
 }
+
+# Display a skipped message (tool not installed)
+# Usage: skipped "mas (Mac App Store CLI)"
+skipped() {
+    echo -e "  ${DIM}-${NC} $1 ${DIM}(skipped)${NC}"
+}

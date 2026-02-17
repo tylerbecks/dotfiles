@@ -5,6 +5,16 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/logger.sh"
 
 ###############################################################################
+# Setup
+###############################################################################
+
+START_TIME=$SECONDS
+ERRORS=()
+TMPFILE=$(mktemp)
+trap 'rm -f "$TMPFILE"' EXIT
+trap 'echo ""; warning "Interrupted by user"; exit 130' INT TERM
+
+###############################################################################
 # System Update
 ###############################################################################
 
@@ -17,20 +27,25 @@ header "System Update"
 header "Homebrew"
 
 step "Updating Homebrew..."
-if brew update &> /dev/null; then
+if brew update 2>"$TMPFILE" >/dev/null; then
     success "Homebrew updated"
 else
     error "Failed to update Homebrew"
+    [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
+    ERRORS+=("brew update")
 fi
 
 step "Upgrading packages..."
 OUTDATED=$(brew outdated | wc -l | tr -d ' ')
 if [ "$OUTDATED" -gt 0 ]; then
     info "Upgrading $OUTDATED package(s)..."
-    if brew upgrade; then
+    brew upgrade
+    BREW_EXIT=$?
+    if [ $BREW_EXIT -eq 0 ]; then
         success "Packages upgraded"
     else
         error "Some packages failed to upgrade"
+        ERRORS+=("brew upgrade")
     fi
 else
     success "All packages are up to date"
@@ -42,17 +57,23 @@ fi
 
 header "Mac App Store"
 
-step "Checking for App Store updates..."
-MAS_OUTDATED=$(mas outdated | wc -l | tr -d ' ')
-if [ "$MAS_OUTDATED" -gt 0 ]; then
-    info "Upgrading $MAS_OUTDATED app(s)..."
-    if mas upgrade; then
-        success "App Store apps upgraded"
-    else
-        warning "Some apps failed to upgrade"
-    fi
+if ! command -v mas &>/dev/null; then
+    skipped "mas (Mac App Store CLI not installed)"
 else
-    success "All App Store apps are up to date"
+    step "Checking for App Store updates..."
+    MAS_OUTDATED=$(mas outdated | wc -l | tr -d ' ')
+    if [ "$MAS_OUTDATED" -gt 0 ]; then
+        info "Upgrading $MAS_OUTDATED app(s)..."
+        if mas upgrade 2>"$TMPFILE"; then
+            success "App Store apps upgraded"
+        else
+            error "Some App Store apps failed to upgrade"
+            [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
+            ERRORS+=("mas upgrade")
+        fi
+    else
+        success "All App Store apps are up to date"
+    fi
 fi
 
 ###############################################################################
@@ -61,24 +82,32 @@ fi
 
 header "npm"
 
-step "Updating npm itself..."
-NPM_CURRENT=$(npm -v 2>/dev/null)
-if npm install -g npm@latest &> /dev/null; then
-    NPM_NEW=$(npm -v 2>/dev/null)
-    if [ "$NPM_CURRENT" != "$NPM_NEW" ]; then
-        success "npm updated: $NPM_CURRENT → $NPM_NEW"
+if ! command -v npm &>/dev/null; then
+    skipped "npm (not installed)"
+else
+    step "Updating npm itself..."
+    NPM_CURRENT=$(npm -v 2>/dev/null)
+    if npm install -g npm@latest 2>"$TMPFILE" >/dev/null; then
+        NPM_NEW=$(npm -v 2>/dev/null)
+        if [ "$NPM_CURRENT" != "$NPM_NEW" ]; then
+            success "npm updated: $NPM_CURRENT → $NPM_NEW"
+        else
+            success "npm already up to date ($NPM_CURRENT)"
+        fi
     else
-        success "npm already up to date ($NPM_CURRENT)"
+        error "Failed to update npm"
+        [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
+        ERRORS+=("npm update")
     fi
-else
-    error "Failed to update npm"
-fi
 
-step "Updating global npm packages..."
-if npm update -g &> /dev/null; then
-    success "Global npm packages updated"
-else
-    warning "Some npm packages failed to update"
+    step "Updating global npm packages..."
+    if npm update -g 2>"$TMPFILE" >/dev/null; then
+        success "Global npm packages updated"
+    else
+        error "Some npm packages failed to update"
+        [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
+        ERRORS+=("npm global update")
+    fi
 fi
 
 ###############################################################################
@@ -87,30 +116,76 @@ fi
 
 header "pnpm"
 
-step "Updating pnpm..."
-PNPM_CURRENT=$(pnpm -v 2>/dev/null)
-if pnpm self-update &> /dev/null; then
-    PNPM_NEW=$(pnpm -v 2>/dev/null)
-    if [ "$PNPM_CURRENT" != "$PNPM_NEW" ]; then
-        success "pnpm updated: $PNPM_CURRENT → $PNPM_NEW"
-    else
-        success "pnpm already up to date ($PNPM_CURRENT)"
-    fi
+if ! command -v pnpm &>/dev/null; then
+    skipped "pnpm (not installed)"
+elif brew list pnpm &>/dev/null 2>&1; then
+    skipped "pnpm self-update (managed by Homebrew, updated above)"
 else
-    warning "Failed to update pnpm"
+    step "Updating pnpm..."
+    PNPM_CURRENT=$(pnpm -v 2>/dev/null)
+    if pnpm self-update 2>"$TMPFILE" >/dev/null; then
+        PNPM_NEW=$(pnpm -v 2>/dev/null)
+        if [ "$PNPM_CURRENT" != "$PNPM_NEW" ]; then
+            success "pnpm updated: $PNPM_CURRENT → $PNPM_NEW"
+        else
+            success "pnpm already up to date ($PNPM_CURRENT)"
+        fi
+    else
+        error "Failed to update pnpm"
+        [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
+        ERRORS+=("pnpm self-update")
+    fi
 fi
 
 ###############################################################################
-# GitHub Copilot CLI
+# GitHub CLI Extensions
 ###############################################################################
 
 header "GitHub CLI Extensions"
 
-step "Updating gh-copilot extension..."
-if gh extension upgrade gh-copilot &> /dev/null; then
-    success "gh-copilot updated"
+if ! command -v gh &>/dev/null; then
+    skipped "gh (GitHub CLI not installed)"
 else
-    warning "gh-copilot update failed (may already be up to date)"
+    step "Updating all gh extensions..."
+    if gh extension upgrade --all 2>"$TMPFILE" >/dev/null; then
+        success "gh extensions updated"
+    else
+        error "Some gh extensions failed to update"
+        [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
+        ERRORS+=("gh extension upgrade")
+    fi
+fi
+
+###############################################################################
+# mise
+###############################################################################
+
+header "mise"
+
+if ! command -v mise &>/dev/null; then
+    skipped "mise (not installed)"
+else
+    if brew list mise &>/dev/null 2>&1; then
+        skipped "mise self-update (managed by Homebrew, updated above)"
+    else
+        step "Updating mise..."
+        if mise self-update --yes 2>"$TMPFILE" >/dev/null; then
+            success "mise updated"
+        else
+            error "Failed to update mise"
+            [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
+            ERRORS+=("mise self-update")
+        fi
+    fi
+
+    step "Upgrading mise-managed tools..."
+    if mise upgrade 2>"$TMPFILE" >/dev/null; then
+        success "mise tools upgraded"
+    else
+        error "Some mise tools failed to upgrade"
+        [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
+        ERRORS+=("mise upgrade")
+    fi
 fi
 
 ###############################################################################
@@ -120,22 +195,37 @@ fi
 header "Cleanup"
 
 step "Cleaning up Homebrew..."
-if brew cleanup &> /dev/null; then
+if brew cleanup 2>"$TMPFILE" >/dev/null; then
     success "Cleanup complete"
 else
     warning "Cleanup had issues (non-critical)"
+    [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
 fi
 
 ###############################################################################
 # Summary
 ###############################################################################
 
-summary "All systems updated!"
+ELAPSED=$((SECONDS - START_TIME))
+ERROR_COUNT=${#ERRORS[@]}
+
+echo ""
+if [ "$ERROR_COUNT" -eq 0 ]; then
+    summary "All systems updated!"
+else
+    echo -e "\n${YELLOW}⚠${NC} ${BOLD}Completed with $ERROR_COUNT error(s)${NC}\n"
+    for err in "${ERRORS[@]}"; do
+        echo -e "  ${RED}✗${NC} $err"
+    done
+    echo ""
+fi
 
 info "Current versions:"
 list_item "Homebrew: $(brew --version | head -n1)"
-list_item "Node.js: $(node -v 2>/dev/null || echo 'not installed')"
-list_item "npm: $(npm -v 2>/dev/null || echo 'not installed')"
-list_item "pnpm: $(pnpm -v 2>/dev/null || echo 'not installed')"
+command -v node &>/dev/null && list_item "Node.js: $(node -v)"
+command -v npm &>/dev/null && list_item "npm: $(npm -v)"
+command -v pnpm &>/dev/null && list_item "pnpm: $(pnpm -v)"
+command -v mise &>/dev/null && list_item "mise: $(mise --version)"
+info "Completed in ${ELAPSED}s"
 
 echo ""
