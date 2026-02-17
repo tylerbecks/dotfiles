@@ -35,3 +35,4 @@ source "$HOME/dotfiles/zsh/config/plugins.zsh"
 [ -s "/Users/tyler/.bun/_bun" ] && source "/Users/tyler/.bun/_bun"
 # Added by Antigravity
 export PATH="/Users/tyler/.antigravity/antigravity/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"

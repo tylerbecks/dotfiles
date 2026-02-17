@@ -1,4 +1,13 @@
 {
+  "[dockercompose]": {
+    "editor.autoIndent": "advanced",
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
   "[lua]": {
     "editor.defaultFormatter": "sumneko.lua"
   },
@@ -7,33 +16,56 @@
     "editor.insertSpaces": true,
     "editor.tabSize": 4
   },
+  "accessibility.signalOptions.volume": 0,
+  "accessibility.signals.terminalBell": {
+    "announcement": "off",
+    "sound": "off"
+  },
   "breadcrumbs.filePath": "on",
   "breadcrumbs.symbolPath": "off",
+  "claudeCode.preferredLocation": "panel",
+  "cursor.cpp.disabledLanguages": ["markdown", "plaintext", "scminput"],
+  "debug.javascript.defaultRuntimeExecutable": {
+    "pwa-node": "/Users/tylerbecks/.local/share/mise/shims/node"
+  },
+  "diffEditor.ignoreTrimWhitespace": false,
   "diffEditor.renderSideBySide": false,
+  "editor.accessibilitySupport": "on",
+  "editor.bracketPairColorization.enabled": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
   "editor.columnSelection": false,
   "editor.cursorBlinking": "phase",
   "editor.cursorSmoothCaretAnimation": "on",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.find.cursorMoveOnType": true,
   "editor.fontFamily": "Berkeley Mono Variable",
   "editor.fontLigatures": true,
   "editor.fontSize": 15,
+  "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
+  "editor.guides.bracketPairs": "active",
+  "editor.guides.highlightActiveIndentation": true,
+  "editor.guides.indentation": true,
+  "editor.inlayHints.enabled": "offUnlessPressed",
   "editor.inlineSuggest.enabled": true,
   "editor.minimap.enabled": false,
   "editor.minimap.maxColumn": 200,
   "editor.minimap.renderCharacters": false,
   "editor.minimap.showSlider": "always",
-  "editor.multiCursorModifier": "ctrlCmd",
+  "editor.multiCursorLimit": 50000,
+  "editor.multiCursorModifier": "alt",
   "editor.occurrencesHighlight": "multiFile",
   "editor.quickSuggestions": {
     "strings": "on"
   },
   "editor.renderWhitespace": "selection",
   "editor.scrollBeyondLastLine": false,
+  "editor.smartSelect.selectSubwords": true,
   "editor.snippetSuggestions": "top",
+  "editor.stickyScroll.enabled": true,
+  "editor.stickyScroll.maxLineCount": 3,
   "editor.tabCompletion": "on",
   "editor.tabSize": 2,
   "editor.tokenColorCustomizations": {
@@ -51,6 +83,10 @@
   "eslint.codeAction.showDocumentation": {
     "enable": true
   },
+  "eslint.codeActionsOnSave.mode": "problems",
+  "eslint.ignoreUntitled": true,
+  "explorer.autoReveal": true,
+  "explorer.compactFolders": false,
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
   "explorer.confirmPasteNative": false,
@@ -59,11 +95,22 @@
     "*.css": "tailwindcss"
   },
   "files.autoSave": "onFocusChange",
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
   "git.mergeEditor": true,
+  "git.openRepositoryInParentFolders": "always",
   "gitlens.codeLens.enabled": false,
+  "gitlens.launchpad.indicator.enabled": false,
   "gitlens.statusBar.alignment": "left",
   "gitlens.views.formats.commits.description": "${author, }${agoOrDate} ${changesShort}",
   "gitlens.views.formats.commits.label": "${message}",
+  "javascript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "javascript.inlayHints.parameterNames.enabled": "all",
+  "javascript.suggest.completeFunctionCalls": true,
   "javascript.updateImportsOnFileMove.enabled": "always",
   "js/ts.implicitProjectConfig.experimentalDecorators": true,
   "material-icon-theme.activeIconPack": "react_redux",
@@ -71,7 +118,6 @@
   "material-icon-theme.hidesExplorerArrows": false,
   "prettier.printWidth": 120,
   "prettier.singleQuote": true,
-  "python.languageServer": "Pylance",
   "redhat.telemetry.enabled": false,
   "search.exclude": {
     "**/bower_components": true,
@@ -79,18 +125,48 @@
     "**/node_modules": true
   },
   "search.followSymlinks": false,
+  "search.seedWithNearestWord": true,
+  "search.showLineNumbers": true,
+  "search.smartCase": true,
   "search.useGlobalIgnoreFiles": true,
   "security.workspace.trust.untrustedFiles": "open",
-  "tailwindCSS.experimental.classRegex": [["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]],
   "tailwindCSS.classFunctions": ["cva", "cx"],
-  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "tailwindCSS.experimental.classRegex": [["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]],
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.cursorStyle": "line",
+  "terminal.integrated.defaultProfile.osx": "zsh",
   "terminal.integrated.enablePersistentSessions": false,
   "terminal.integrated.fontFamily": "MesloLGS Nerd Font",
   "terminal.integrated.fontSize": 13,
   "terminal.integrated.inheritEnv": false,
   "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.smoothScrolling": true,
   "terminal.integrated.stickyScroll.enabled": true,
+  "typescript.experimental.useTsgo": true,
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "typescript.inlayHints.parameterNames.enabled": "all",
+  "typescript.suggest.completeFunctionCalls": true,
   "typescript.updateImportsOnFileMove.enabled": "always",
+  "versionlens.npm.dependencyProperties": [
+    "version",
+    "packageManager",
+    "dependencies",
+    "devDependencies",
+    "peerDependencies",
+    "optionalDependencies",
+    "overrides",
+    "overrides.*",
+    "jspm.dependencies",
+    "jspm.devDependencies",
+    "jspm.peerDependencies",
+    "jspm.optionalDependencies",
+    "pnpm.overrides",
+    "pnpm.overrides.*",
+    "catalog",
+    "catalogs.*",
+    "workspaces.catalog",
+    "workspaces.catalogs.*"
+  ],
   "window.commandCenter": true,
   "window.title": "${dirty}${rootName}${separator}${activeEditorMedium}",
   "workbench.colorCustomizations": {
@@ -112,9 +188,16 @@
     }
   },
   "workbench.colorTheme": "Night Owl",
+  "workbench.editor.customLabels.patterns": {
+    "**/index.ts": "${dirname}/index.ts",
+    "**/index.tsx": "${dirname}/index.tsx"
+  },
   "workbench.editor.enablePreviewFromQuickOpen": false,
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.historyBasedLanguageDetection": true,
+  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.value": 10,
+  "workbench.editor.revealIfOpen": true,
   "workbench.iconTheme": "material-icon-theme",
   "workbench.layoutControl.type": "menu",
   "workbench.list.defaultFindMode": "filter",
@@ -122,50 +205,5 @@
   "workbench.startupEditor": "newUntitledFile",
   "yaml.schemas": {
     "file:///home/coder/.vscode-server/extensions/atlassian.atlascode-2.10.12/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
-  },
-  "editor.multiCursorLimit": 50000,
-  "cursor.cpp.disabledLanguages": ["markdown", "plaintext", "scminput"],
-  "terminal.integrated.defaultProfile.osx": "zsh",
-  "editor.formatOnSave": true,
-  "git.autofetch": true,
-  "diffEditor.ignoreTrimWhitespace": false,
-  "gitlens.launchpad.indicator.enabled": false,
-  "mise.binPath": "/opt/homebrew/bin/mise",
-  "[dockercompose]": {
-    "editor.insertSpaces": true,
-    "editor.tabSize": 2,
-    "editor.autoIndent": "advanced",
-    "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-  "[github-actions-workflow]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-  "debug.javascript.defaultRuntimeExecutable": {
-    "pwa-node": "/Users/tylerbecks/.local/share/mise/shims/node"
-  },
-  "python.defaultInterpreterPath": "/Users/tylerbecks/.local/share/mise/installs/python/3.13.7/bin/python",
-  "eslint.codeActionsOnSave.mode": "problems",
-  "eslint.ignoreUntitled": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "versionlens.npm.dependencyProperties": [
-    "version",
-    "packageManager",
-    "dependencies",
-    "devDependencies",
-    "peerDependencies",
-    "optionalDependencies",
-    "overrides",
-    "overrides.*",
-    "jspm.dependencies",
-    "jspm.devDependencies",
-    "jspm.peerDependencies",
-    "jspm.optionalDependencies",
-    "pnpm.overrides",
-    "pnpm.overrides.*",
-    "catalog",
-    "catalogs.*",
-    "workspaces.catalog",
-    "workspaces.catalogs.*"
-  ],
-  "claudeCode.preferredLocation": "panel"
+  }
 }

@@ -1,5 +1,8 @@
 // Place your key bindings in this file to overwrite the defaults
 [
+  // ─────────────────────────────────────────────────────────────
+  // Editor
+  // ─────────────────────────────────────────────────────────────
   {
     "key": "cmd+'",
     "command": "workbench.action.splitEditor"
@@ -23,50 +26,19 @@
     "command": "-editor.action.accessibleViewNext",
     "when": "accessibleViewIsShown"
   },
-  {
-    "key": "cmd+k",
-    "command": "-aipopup.action.modal.generate",
-    "when": "editorFocus && !composerBarIsVisible"
-  },
-  {
-    "key": "shift+cmd+k",
-    "command": "-aipopup.action.modal.generate",
-    "when": "editorFocus && !composerBarIsVisible"
-  },
-  {
-    "key": "ctrl+shift+alt+cmd+l",
-    "command": "aichat.insertselectionintochat"
-  },
-  {
-    "key": "shift+cmd+l",
-    "command": "-aichat.insertselectionintochat"
-  },
-  {
-    "key": "ctrl+alt+cmd+l",
-    "command": "aichat.newchataction"
-  },
-  {
-    "key": "cmd+l",
-    "command": "-aichat.newchataction"
-  },
+
+  // ─────────────────────────────────────────────────────────────
+  // Terminal
+  // ─────────────────────────────────────────────────────────────
   {
     "key": "cmd+k",
     "command": "-cursorai.action.generateInTerminal",
     "when": "terminalFocus && terminalHasBeenCreated || terminalFocus && terminalProcessSupported"
   },
   {
-    "key": "cmd+i",
-    "command": "composerMode.agent"
-  },
-  {
-    "key": "shift+cmd+k",
-    "command": "workbench.action.terminal.clear",
-    "when": "terminalFocus && terminalHasBeenCreated && !accessibilityModeEnabled || terminalFocus && terminalProcessSupported && !accessibilityModeEnabled || accessibilityModeEnabled && accessibleViewIsShown && terminalHasBeenCreated && accessibleViewCurrentProviderId == 'terminal' || accessibilityModeEnabled && accessibleViewIsShown && terminalProcessSupported && accessibleViewCurrentProviderId == 'terminal'"
-  },
-  {
     "key": "cmd+k",
-    "command": "-workbench.action.terminal.clear",
-    "when": "terminalFocus && terminalHasBeenCreated && !accessibilityModeEnabled || terminalFocus && terminalProcessSupported && !accessibilityModeEnabled || accessibilityModeEnabled && accessibleViewIsShown && terminalHasBeenCreated && accessibleViewCurrentProviderId == 'terminal' || accessibilityModeEnabled && accessibleViewIsShown && terminalProcessSupported && accessibleViewCurrentProviderId == 'terminal'"
+    "command": "workbench.action.terminal.clear",
+    "when": "terminalFocus"
   },
   {
     "key": "shift+enter",
@@ -75,6 +47,24 @@
       "text": "\\\r\n"
     },
     "when": "terminalFocus"
+  },
+
+  // ─────────────────────────────────────────────────────────────
+  // Cursor AI - Disabled defaults
+  // ─────────────────────────────────────────────────────────────
+  {
+    "key": "cmd+k",
+    "command": "-aipopup.action.modal.generate",
+    "when": "editorFocus && !composerBarIsVisible"
+  },
+  {
+    "key": "shift+cmd+k",
+    "command": "-aipopup.action.modal.generate",
+    "when": "editorFocus && !composerBarIsVisible"
+  },
+  {
+    "key": "cmd+l",
+    "command": "-aichat.newchataction"
   },
   {
     "key": "cmd+escape",
@@ -85,6 +75,34 @@
     "command": "-workbench.action.backgroundComposer.escapeToClose",
     "when": "backgroundComposerEnabled && isInBackgroundComposerWindow"
   },
+  // {
+  //   "key": "shift+cmd+l",
+  //   "command": "-aichat.insertselectionintochat"
+  // },
+  // {
+  //   "key": "shift+cmd+l",
+  //   "command": "-composer.newAgentChat"
+  // },
+
+  // ─────────────────────────────────────────────────────────────
+  // Cursor AI - Remapped
+  // ─────────────────────────────────────────────────────────────
+  {
+    "key": "cmd+i",
+    "command": "composerMode.agent"
+  },
+  {
+    "key": "ctrl+alt+cmd+l",
+    "command": "aichat.newchataction"
+  },
+  {
+    "key": "ctrl+shift+alt+cmd+l",
+    "command": "aichat.insertselectionintochat"
+  },
+
+  // ─────────────────────────────────────────────────────────────
+  // Claude Code
+  // ─────────────────────────────────────────────────────────────
   {
     "key": "alt+cmd+k",
     "command": "-bookmarks.toggle",
@@ -96,13 +114,13 @@
     "when": "inKeybindings && inKeybindingsSearch"
   },
   {
-    "key": "ctrl+shift+alt+cmd+k",
-    "command": "claude-code.insertAtMentioned",
+    "key": "alt+cmd+k",
+    "command": "-claude-code.insertAtMentioned",
     "when": "editorTextFocus"
   },
   {
-    "key": "alt+cmd+k",
-    "command": "-claude-code.insertAtMentioned",
+    "key": "ctrl+shift+alt+cmd+k",
+    "command": "claude-code.insertAtMentioned",
     "when": "editorTextFocus"
   },
   {
@@ -112,9 +130,5 @@
   {
     "key": "ctrl+shift+alt+cmd+n",
     "command": "claude-code.rejectProposedDiff"
-  },
-  {
-    "key": "shift+cmd+l",
-    "command": "-composer.newAgentChat"
   }
 ]

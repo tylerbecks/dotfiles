@@ -161,7 +161,7 @@ config.keys = {
   {
     key = 'Enter',
     mods = 'OPT',
-    action = act.SendString '\x1b\x0d',  -- ESC + CR
+    action = act.SendString '\x1b\x0d', -- ESC + CR
   },
 
   -- Pane navigation with Hyperkey + Arrow
@@ -243,20 +243,20 @@ config.keys = {
       window:perform_action(act.MoveToNewTab { workspace = 'new_screen' }, pane)
     end),
   },
-  -- Cmd + K: Clear the scrollback buffer and leave the viewport contents
+  -- Cmd + K: Clear scrollback and viewport, then redraw prompt (like iTerm2)
   {
-    key = 'K',
+    key = 'k',
     mods = 'CMD',
-    action = act.ClearScrollback 'ScrollbackOnly',
-  },
-  -- Clears the scrollback and viewport, then CTRL-L redraws the shell prompt
-  {
-    key = 'K',
-    mods = 'CMD|SHIFT',
     action = act.Multiple {
       act.ClearScrollback 'ScrollbackAndViewport',
       act.SendKey { key = 'L', mods = 'CTRL' },
     },
+  },
+  -- Cmd + Shift + K: Clear only the scrollback buffer, leave viewport contents
+  {
+    key = 'K',
+    mods = 'CMD|SHIFT',
+    action = act.ClearScrollback 'ScrollbackOnly',
   },
   -- Override the default keybinding for the command palette (command window)
   {
