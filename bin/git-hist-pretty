@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Wrapper used by `git hist` / `git rhist` to render commit dates as a hybrid:
+# relative for the last N days, absolute (e.g. "Mar 19, 2026") for older.
+
+set -euo pipefail
+
+SEP=$'\x1f'
+
+run() {
+  if [ -t 1 ]; then
+    LESS="${LESS:-FRX}" "${PAGER:-less}"
+  else
+    cat
+  fi
+}
+
+git log --color=always \
+  --pretty=format:"%Cred%h%Creset -%C(auto)%d%Creset %s ${SEP}%cr${SEP}%cs${SEP} %C(bold blue)<%an>%Creset" \
+  --abbrev-commit \
+  "$@" \
+| awk -v SEP=$'\x1f' '
+  BEGIN {
+    _m[1]="Jan"; _m[2]="Feb"; _m[3]="Mar"; _m[4]="Apr"
+    _m[5]="May"; _m[6]="Jun"; _m[7]="Jul"; _m[8]="Aug"
+    _m[9]="Sep"; _m[10]="Oct"; _m[11]="Nov"; _m[12]="Dec"
+  }
+  {
+    n = split($0, p, SEP)
+    if (n < 4) { print; next }
+    rel = p[2]; iso = p[3]
+    if (rel ~ /(second|minute|hour|day)s? ago/) {
+      label = "(" rel ")"
+    } else {
+      split(iso, d, "-")
+      label = "(" _m[d[2]+0] " " (d[3]+0) ", " d[1] ")"
+    }
+    print p[1] "\033[32m" label "\033[0m" p[4]
+  }
+' \
+| run
