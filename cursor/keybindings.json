@@ -130,5 +130,10 @@
   {
     "key": "ctrl+shift+alt+cmd+n",
     "command": "claude-code.rejectProposedDiff"
+  },
+  {
+    "key": "alt+cmd+s",
+    "command": "workbench.action.toggleUnifiedSidebarFromKeyboard",
+    "when": "cursor.agentIdeUnification.enabled == true && !isAuxiliaryWindowFocusedContext"
   }
 ]

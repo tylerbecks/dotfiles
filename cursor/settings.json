@@ -3,37 +3,37 @@
     "editor.autoIndent": "advanced",
     "editor.defaultFormatter": "redhat.vscode-yaml",
     "editor.insertSpaces": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "[github-actions-workflow]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml"
+    "editor.defaultFormatter": "redhat.vscode-yaml",
   },
   "[lua]": {
-    "editor.defaultFormatter": "sumneko.lua"
+    "editor.defaultFormatter": "sumneko.lua",
   },
   "[python]": {
     "editor.formatOnType": true,
     "editor.insertSpaces": true,
-    "editor.tabSize": 4
+    "editor.tabSize": 4,
   },
   "accessibility.signalOptions.volume": 0,
   "accessibility.signals.terminalBell": {
     "announcement": "off",
-    "sound": "off"
+    "sound": "off",
   },
   "breadcrumbs.filePath": "on",
   "breadcrumbs.symbolPath": "off",
   "claudeCode.preferredLocation": "panel",
   "cursor.cpp.disabledLanguages": ["markdown", "plaintext", "scminput"],
   "debug.javascript.defaultRuntimeExecutable": {
-    "pwa-node": "/Users/tylerbecks/.local/share/mise/shims/node"
+    "pwa-node": "/Users/tylerbecks/.local/share/mise/shims/node",
   },
   "diffEditor.ignoreTrimWhitespace": false,
   "diffEditor.renderSideBySide": false,
   "editor.accessibilitySupport": "on",
   "editor.bracketPairColorization.enabled": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.eslint": "explicit",
   },
   "editor.columnSelection": false,
   "editor.cursorBlinking": "phase",
@@ -48,7 +48,6 @@
   "editor.guides.bracketPairs": "active",
   "editor.guides.highlightActiveIndentation": true,
   "editor.guides.indentation": true,
-  "editor.inlayHints.enabled": "offUnlessPressed",
   "editor.inlineSuggest.enabled": true,
   "editor.minimap.enabled": false,
   "editor.minimap.maxColumn": 200,
@@ -58,7 +57,7 @@
   "editor.multiCursorModifier": "alt",
   "editor.occurrencesHighlight": "multiFile",
   "editor.quickSuggestions": {
-    "strings": "on"
+    "strings": "on",
   },
   "editor.renderWhitespace": "selection",
   "editor.scrollBeyondLastLine": false,
@@ -73,15 +72,15 @@
       {
         "scope": ["entity.name.function"],
         "settings": {
-          "fontStyle": "bold"
-        }
-      }
-    ]
+          "fontStyle": "bold",
+        },
+      },
+    ],
   },
   "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?",
   "emmet.triggerExpansionOnTab": true,
   "eslint.codeAction.showDocumentation": {
-    "enable": true
+    "enable": true,
   },
   "eslint.codeActionsOnSave.mode": "problems",
   "eslint.ignoreUntitled": true,
@@ -92,7 +91,7 @@
   "explorer.confirmPasteNative": false,
   "explorer.sortOrder": "filesFirst",
   "files.associations": {
-    "*.css": "tailwindcss"
+    "*.css": "tailwindcss",
   },
   "files.autoSave": "onFocusChange",
   "files.insertFinalNewline": true,
@@ -122,7 +121,7 @@
   "search.exclude": {
     "**/bower_components": true,
     "**/dist": true,
-    "**/node_modules": true
+    "**/node_modules": true,
   },
   "search.followSymlinks": false,
   "search.seedWithNearestWord": true,
@@ -165,7 +164,7 @@
     "catalog",
     "catalogs.*",
     "workspaces.catalog",
-    "workspaces.catalogs.*"
+    "workspaces.catalogs.*",
   ],
   "window.commandCenter": true,
   "window.title": "${dirty}${rootName}${separator}${activeEditorMedium}",
@@ -176,7 +175,7 @@
       "editorGroup.border": "#102a44",
       "sideBar.background": "#001122",
       "sideBar.border": "#102a44",
-      "sideBar.foreground": "#8BADC1"
+      "sideBar.foreground": "#8BADC1",
     },
     "[Night Owl]": {
       "activityBar.background": "#000C1D",
@@ -184,13 +183,13 @@
       "editorGroup.border": "#102a44",
       "sideBar.background": "#001122",
       "sideBar.border": "#102a44",
-      "sideBar.foreground": "#8BADC1"
-    }
+      "sideBar.foreground": "#8BADC1",
+    },
   },
   "workbench.colorTheme": "Night Owl",
   "workbench.editor.customLabels.patterns": {
     "**/index.ts": "${dirname}/index.ts",
-    "**/index.tsx": "${dirname}/index.tsx"
+    "**/index.tsx": "${dirname}/index.tsx",
   },
   "workbench.editor.enablePreviewFromQuickOpen": false,
   "workbench.editor.highlightModifiedTabs": true,
@@ -198,12 +197,18 @@
   "workbench.editor.limit.enabled": true,
   "workbench.editor.limit.value": 10,
   "workbench.editor.revealIfOpen": true,
-  "workbench.iconTheme": "material-icon-theme",
+  "workbench.iconTheme": "charmed-icons",
   "workbench.layoutControl.type": "menu",
   "workbench.list.defaultFindMode": "filter",
   "workbench.list.typeNavigationMode": "trigger",
   "workbench.startupEditor": "newUntitledFile",
   "yaml.schemas": {
-    "file:///home/coder/.vscode-server/extensions/atlassian.atlascode-2.10.12/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
-  }
+    "file:///home/coder/.vscode-server/extensions/atlassian.atlascode-2.10.12/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml",
+  },
+  "RadonIDE.deviceSettings.location": {
+    "latitude": 37.78825,
+    "longitude": -122.4324,
+    "isDisabled": true,
+  },
+  "workbench.settings.applyToAllProfiles": ["editor.inlayHints.enabled"],
 }
