@@ -4,6 +4,12 @@
   // Editor
   // ─────────────────────────────────────────────────────────────
   {
+    // A Cursor core binding swallows cmd+up; this user binding wins and restores "go to top of file"
+    "key": "cmd+up",
+    "command": "cursorTop",
+    "when": "textInputFocus"
+  },
+  {
     "key": "cmd+'",
     "command": "workbench.action.splitEditor"
   },

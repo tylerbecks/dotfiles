@@ -287,13 +287,6 @@ config.keys = {
     end),
   },
 
-  -- Quick clear search with Escape (when not in search mode)
-  {
-    key = 'Escape',
-    mods = 'NONE',
-    action = act.CopyMode 'ClearPattern',
-  },
-
   -- Search for selected text
   {
     key = 'f',

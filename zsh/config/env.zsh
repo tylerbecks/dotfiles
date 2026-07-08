@@ -1,6 +1,11 @@
 # Homebrew (must be early so subsequent configs can find brew-installed tools)
 export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH
 
+# Locale
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+
 # Dotfiles location
 export DOTFILES="$HOME/dotfiles"
 

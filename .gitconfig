@@ -26,7 +26,23 @@
 	a = add --all
 	oops = commit --amend --no-edit
 	enforce = push --force-with-lease
-	cleanup = "!git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D"
+	# Delete local branches whose upstream is gone, removing their worktrees first.
+	# Dirty worktrees are skipped; `git cleanup -f` force-removes them.
+	cleanup = "!f() { \
+		force=; [ \"$1\" = \"-f\" ] && force=--force; \
+		git worktree prune; \
+		main_wt=$(git worktree list --porcelain | head -1 | sed 's/^worktree //'); \
+		git for-each-ref --format='%(refname:short)|%(upstream:track)|%(worktreepath)' refs/heads | \
+		while IFS='|' read -r branch track wt; do \
+			[ \"$track\" = \"[gone]\" ] || continue; \
+			if [ -n \"$wt\" ]; then \
+				if [ \"$wt\" = \"$main_wt\" ]; then echo \"skipping $branch: checked out in main worktree\"; continue; fi; \
+				git worktree remove $force \"$wt\" || { echo \"skipping $branch: worktree not removable (git cleanup -f to force)\"; continue; }; \
+				rmdir \"$(dirname \"$wt\")\" 2>/dev/null; \
+			fi; \
+			git branch -D \"$branch\"; \
+		done; \
+	}; f"
 [push]
 	default = simple
 	autoSetupRemote = true
@@ -97,3 +113,9 @@
 [commit]
 	gpgSign = false
 	verbose = true
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
