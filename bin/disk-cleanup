@@ -1,0 +1,101 @@
+#!/bin/zsh
+# disk-cleanup.sh v3 — report & clean the known disk hot spots
+#
+# Dotfiles install:
+#   mv disk-cleanup.sh ~/dotfiles/bin/disk-cleanup && chmod +x ~/dotfiles/bin/disk-cleanup
+#   (or wherever your dotfiles put executables — anything on $PATH)
+#
+# Usage:
+#   disk-cleanup               # report: size of every hot spot + agent-worktree census
+#   disk-cleanup --clean       # WEEKLY tier: build artifacts, app caches, stale sims
+#                              #   -> zero data loss; only cost is one cold build
+#   disk-cleanup --clean-deep  # MONTHLY tier: --clean PLUS package-manager caches
+#                              #   -> gradle/npm/bun re-download deps on next install;
+#                              #      agent worktree installs are slow until re-warmed
+#
+# Machine-specific bits are env-overridable for portability:
+GOBI="${GOBI_DIR:-$HOME/Code/gobi}"
+
+if [[ ! -d "$GOBI" ]]; then echo "ERROR: repo not found at $GOBI (set GOBI_DIR to override)"; exit 1; fi
+if [[ -t 1 ]]; then BOLD=$(tput bold); DIM=$(tput dim); RESET=$(tput sgr0); else BOLD=""; DIM=""; RESET=""; fi
+
+free_space() { df -h /System/Volumes/Data | tail -1 | awk '{printf "%s free of %s\n", $4, $2}'; }
+
+report() {
+  echo "${BOLD}== Free space ==${RESET}"
+  free_space; echo
+
+  echo "${BOLD}== Hot spots (fast fillers first) ==${RESET}"
+  du -sh \
+    "$GOBI/apps/mobile/ios/build" \
+    "$GOBI/apps/server/.next" \
+    "$GOBI/apps/mobile/android/app/build" \
+    ~/Library/Developer/Xcode/DerivedData \
+    ~/Library/Developer/Xcode/iOS\ DeviceSupport \
+    ~/Library/Caches \
+    ~/.codex/worktrees \
+    ~/.codex/archived_sessions \
+    ~/.bun \
+    ~/.npm \
+    ~/.gradle \
+    ~/.android \
+    2>/dev/null | sort -rh
+
+  echo "\n${BOLD}== Agent worktrees (each ~5 GB; the recurring disk killers) ==${RESET}"
+  echo "${DIM}Codex worktrees:${RESET}"
+  du -sh ~/.codex/worktrees/*/ 2>/dev/null || echo "  none"
+  echo "${DIM}Claude Code worktrees:${RESET}"
+  du -sh "$GOBI/.claude/worktrees"/*/ 2>/dev/null || echo "  none"
+  echo "${DIM}All registered worktrees (active tasks appear here too):${RESET}"
+  git -C "$GOBI" worktree list 2>/dev/null
+
+  echo "\n${BOLD}== Anything new in ~/Code? ==${RESET}"
+  du -sh ~/Code/* 2>/dev/null | sort -rh
+
+  cat <<'EOF'
+
+To remove a FINISHED task's worktree (never delete one with uncommitted work):
+  git -C <worktree-path> status --porcelain      # empty output = clean
+  git -C ~/Code/gobi worktree remove --force <worktree-path>
+  git -C ~/Code/gobi worktree prune
+To prune Codex session history, use Codex itself (NOT rm):
+  codex delete <session-id>       # deleting a parent cascades to its subagents
+
+--clean = weekly tier (build artifacts; safe, one cold build)
+--clean-deep = monthly tier (also wipes gradle/npm/bun caches; deps re-download)
+EOF
+}
+
+clean_weekly() {
+  echo "${BOLD}Weekly tier — build artifacts & app caches (regenerable, no downloads needed)...${RESET}"
+  rm -rf "$GOBI/apps/mobile/ios/build"          && echo "  ✓ ios/build"
+  rm -rf "$GOBI/apps/server/.next"              && echo "  ✓ server/.next"
+  rm -rf "$GOBI/apps/mobile/android/app/build"  && echo "  ✓ android app/build"
+  rm -rf ~/Library/Developer/Xcode/DerivedData  && echo "  ✓ Xcode DerivedData"
+  rm -rf ~/Library/Caches/* 2>/dev/null;           echo "  ✓ ~/Library/Caches (in-use items skipped)"
+  xcrun simctl delete unavailable >/dev/null 2>&1 && echo "  ✓ unavailable iOS simulators"
+  echo "${DIM}  note: next iOS/Android/server builds will be cold (full) builds${RESET}"
+}
+
+clean_deep() {
+  clean_weekly
+  echo "\n${BOLD}Monthly tier — package-manager caches (deps re-download on next install)...${RESET}"
+  npm cache clean --force >/dev/null 2>&1       && echo "  ✓ npm cache"
+  bun pm cache rm >/dev/null 2>&1               && echo "  ✓ bun cache (agent worktree installs slow until re-warmed)"
+  rm -rf ~/.gradle/caches                       && echo "  ✓ gradle caches (next Android build re-resolves everything)"
+}
+
+post_clean() {
+  echo "\n${BOLD}Left for manual review${RESET} (can hold real work — see report mode):"
+  echo "  - agent worktrees in ~/.codex/worktrees and $GOBI/.claude/worktrees"
+  echo "  - Codex session history (use 'codex delete <id>', never rm)"
+  echo "  - Android AVDs/system images, old iOS simulator runtimes"
+  echo "\nDone. New free space:"
+  echo "  $(free_space)"
+}
+
+case "$1" in
+  --clean)      clean_weekly; post_clean ;;
+  --clean-deep) clean_deep;   post_clean ;;
+  *)            report ;;
+esac
