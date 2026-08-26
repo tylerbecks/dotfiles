@@ -53,3 +53,5 @@ from `~/.config/gobi/snowflake.env` via `~/.zshenv`. `snowflake_conn_params()` i
     printf 'export SNOWFLAKE_PASSWORD=%q\n' "$(gcloud secrets versions access latest --secret SNOWFLAKE_PASSWORD --project pure-spirit-452502-i6)"
   } > ~/.config/gobi/snowflake.env
   ```
+
+@RTK.md
