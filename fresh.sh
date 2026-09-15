@@ -171,25 +171,30 @@ fi
 
 header "Zsh Plugins"
 
-step "Installing fzf-tab..."
-git clone https://github.com/Aloxaf/fzf-tab "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/fzf-tab" &> /dev/null || true
+# zsh-syntax-highlighting and zsh-autosuggestions ship with oh-my-zsh, so only
+# the plugins it lacks are cloned. Use $HOME, not ~: tilde does not expand
+# inside quotes, which would clone into a literal "~" dir under the cwd.
+OMZ_PLUGINS="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins"
+mkdir -p "$OMZ_PLUGINS"
 
-step "Installing zsh-syntax-highlighting..."
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting" &> /dev/null || true
+install_omz_plugin() {
+    local name="$1" url="$2"
+    step "Installing ${name}..."
+    if [ -d "${OMZ_PLUGINS}/${name}" ]; then
+        success "${name} already installed"
+    elif git clone "$url" "${OMZ_PLUGINS}/${name}" &> /dev/null; then
+        success "${name} installed"
+    else
+        warning "Failed to clone ${name} from ${url}"
+    fi
+}
 
-step "Installing zsh-autosuggestions..."
-git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" &> /dev/null || true
+install_omz_plugin fzf-tab https://github.com/Aloxaf/fzf-tab
+install_omz_plugin zsh-autopair https://github.com/hlissner/zsh-autopair
+install_omz_plugin you-should-use https://github.com/MichaelAquilina/zsh-you-should-use.git
 
 step "Installing fzf-git.sh..."
 git clone https://github.com/junegunn/fzf-git.sh.git "$HOME/fzf-git.sh" &> /dev/null || true
-
-step "Installing zsh-autopair..."
-git clone https://github.com/hlissner/zsh-autopair "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autopair" &> /dev/null || true
-
-step "Installing you-should-use..."
-git clone https://github.com/MichaelAquilina/zsh-you-should-use.git "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/you-should-use" &> /dev/null || true
-
-success "Zsh plugins installed"
 
 ###############################################################################
 # macOS Preferences
