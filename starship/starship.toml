@@ -9,6 +9,7 @@ command_timeout = 5000
 
 # Use custom format
 format = """
+$hostname\
 $directory\
 $git_branch\
 $git_state\
@@ -20,6 +21,13 @@ $character
 right_format = """
 $cmd_duration
 """
+
+# Show which machine this shell is on, but only over SSH: a remote session otherwise looks exactly
+# like a local one.
+[hostname]
+ssh_only = true
+format = '[$hostname]($style) '
+style = 'bold green'
 
 # Disable the package module to avoid looking for a package.json file
 [package]
