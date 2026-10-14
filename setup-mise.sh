@@ -19,48 +19,31 @@ else
 fi
 
 ###############################################################################
-# Language Runtimes
+# Global Config
 ###############################################################################
 
-header "Language Runtimes"
+header "Global Config"
 
-step "Installing Node.js LTS..."
-if mise use --global node@lts &> /dev/null; then
-    NODE_VERSION=$(mise current node 2>/dev/null | awk '{print $2}')
-    success "Node.js ${NODE_VERSION} installed"
+step "Linking mise config..."
+mkdir -p "${HOME}/.config/mise"
+ln -sf "${SCRIPT_DIR}/config/mise/config.toml" "${HOME}/.config/mise/config.toml"
+success "mise config linked"
+
+###############################################################################
+# Tools
+###############################################################################
+
+header "Tools"
+
+# Installs everything in config/mise/config.toml: language runtimes and
+# global npm CLIs. mise keeps them up to date afterwards (tool_update.global_auto).
+step "Installing tools..."
+if mise install --yes; then
+    success "Tools installed"
 else
-    error "Failed to install Node.js"
+    error "Failed to install tools"
     exit 1
 fi
-
-step "Installing Python 3..."
-if mise use --global python@3 &> /dev/null; then
-    PYTHON_VERSION=$(mise current python 2>/dev/null | awk '{print $2}')
-    success "Python ${PYTHON_VERSION} installed"
-else
-    error "Failed to install Python"
-    exit 1
-fi
-
-###############################################################################
-# Global npm Packages
-###############################################################################
-
-header "Global npm Packages"
-
-step "Installing @anthropic-ai/claude-code..."
-npm install -g @anthropic-ai/claude-code &> /dev/null
-
-step "Installing better-commits..."
-npm install -g better-commits &> /dev/null
-
-step "Installing tldr..."
-npm install -g tldr &> /dev/null
-
-step "Installing rimraf..."
-npm install -g rimraf &> /dev/null
-
-success "Global npm packages installed"
 
 ###############################################################################
 # Summary

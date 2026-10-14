@@ -1,0 +1,16 @@
+# Global mise config, symlinked to ~/.config/mise/config.toml by fresh.sh
+
+[settings]
+# Upgrade every tool below in the background (within its version request)
+# at most once a day. Opt a tool out with `auto_update = false`.
+tool_update.global_auto = true
+
+[tools]
+node = "24"      # bump majors on purpose: mise upgrade --bump node
+python = "3.14"  # bump minors on purpose: mise upgrade --bump python
+
+# Global CLIs installed with npm. Managed here instead of `npm i -g` so they
+# survive Node upgrades (npm globals live inside a single Node install).
+"npm:@openai/codex" = "latest"
+"npm:@colbymchenry/codegraph" = "latest"
+"npm:@sazabi/cli" = "latest"

@@ -99,15 +99,6 @@ else
         [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
         ERRORS+=("npm update")
     fi
-
-    step "Updating global npm packages..."
-    if npm update -g 2>"$TMPFILE" >/dev/null; then
-        success "Global npm packages updated"
-    else
-        error "Some npm packages failed to update"
-        [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
-        ERRORS+=("npm global update")
-    fi
 fi
 
 ###############################################################################
