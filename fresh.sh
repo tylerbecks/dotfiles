@@ -214,7 +214,47 @@ if is_personal; then
     info "Please complete the authentication flow:"
     gh auth login
 else
-    skipped "GitHub login on a work machine (run gh auth login if you need it)"
+    # Work laptops reach personal GitHub with an SSH key that can only push and
+    # pull, instead of an account-wide gh token. Match (not a Host block) keeps
+    # it from clashing with the work-managed GitHub org access.
+    step "Setting up personal GitHub SSH access..."
+    GITHUB_KEY="${HOME}/.ssh/github_personal"
+    mkdir -p -m 700 "${HOME}/.ssh"
+    [ -f "$GITHUB_KEY" ] || ssh-keygen -q -t ed25519 -N "" -C "work laptop" -f "$GITHUB_KEY"
+    if ! grep -qF "IdentityFile ~/.ssh/github_personal" "${HOME}/.ssh/config" 2> /dev/null; then
+        (umask 077 && cat >> "${HOME}/.ssh/config" << 'EOF'
+
+# Personal GitHub (non-work repos)
+Match host "github.com" user git
+  IdentityFile ~/.ssh/github_personal
+  IdentitiesOnly yes
+  AddKeysToAgent yes
+  UseKeychain yes
+EOF
+        )
+    fi
+
+    # Pin GitHub's published host key so the first connection doesn't prompt
+    GITHUB_HOST_KEY="github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl"
+    grep -qxF "$GITHUB_HOST_KEY" "${HOME}/.ssh/known_hosts" 2> /dev/null \
+        || echo "$GITHUB_HOST_KEY" >> "${HOME}/.ssh/known_hosts"
+
+    github_ssh_works() {
+        ssh -T -o BatchMode=yes -o ConnectTimeout=10 git@github.com 2>&1 | grep -q "successfully authenticated"
+    }
+    if ! github_ssh_works; then
+        pbcopy < "${GITHUB_KEY}.pub"
+        info "Public key copied to the clipboard. Paste it into the GitHub page that just opened."
+        open "https://github.com/settings/ssh/new"
+        read -r -p "  Press Enter once the key is added on GitHub..."
+    fi
+    if github_ssh_works; then
+        # New machines clone this public repo over HTTPS; pushing needs SSH
+        git -C "$DOTFILES" remote set-url origin git@github.com:tylerbecks/dotfiles.git
+        success "Personal GitHub SSH access works"
+    else
+        warning "GitHub SSH test failed; add ${GITHUB_KEY}.pub at github.com/settings/keys and re-run"
+    fi
 fi
 
 ###############################################################################
