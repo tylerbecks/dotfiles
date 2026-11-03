@@ -76,19 +76,23 @@ defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
 ###############################################################################
 
-# Trackpad: enable tap to click for this user and for the login screen
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+# Trackpad settings, written for both the built-in trackpad and a Bluetooth
+# Magic Trackpad (each reads its own domain)
+for trackpad in com.apple.AppleMultitouchTrackpad com.apple.driver.AppleBluetoothMultitouch.trackpad; do
+    # Tap to click
+    defaults write "$trackpad" Clicking -bool true
+    # Two-finger tap to right-click
+    defaults write "$trackpad" TrackpadRightClick -bool true
+    # Smart zoom (double-tap with two fingers)
+    defaults write "$trackpad" TrackpadTwoFingerDoubleTapGesture -bool true
+    # Three-finger swipes between apps and spaces
+    defaults write "$trackpad" TrackpadThreeFingerHorizSwipeGesture -int 2
+    defaults write "$trackpad" TrackpadThreeFingerVertSwipeGesture -int 2
+done
+# Tap to click for this user and at the login screen
 defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
-
-# Trackpad: enable two-finger tap to right-click
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadTwoFingerDoubleTapGesture -bool true
 defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true
-
-# Trackpad: enable multi-finger gestures
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerHorizSwipeGesture -int 2
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerVertSwipeGesture -int 2
 
 # Pointer speed for mouse and trackpad, two notches under the max (System
 # Settings goes 0–3, with 2.5 and 3 as the top notches). Logi Options+ applies
@@ -308,6 +312,10 @@ defaults write com.apple.dock expose-animation-duration -float 0.1
 # Don’t group windows by application in Mission Control
 # (i.e. use the old Exposé behavior instead)
 # defaults write com.apple.dock expose-group-by-app -bool false
+
+# Don’t hide all windows when clicking the desktop wallpaper (only in Stage
+# Manager); a trackpad gesture already reveals the desktop
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
 
 # Don’t automatically rearrange Spaces based on most recent use
 defaults write com.apple.dock mru-spaces -bool false
