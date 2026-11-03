@@ -36,6 +36,24 @@ else
 fi
 
 ###############################################################################
+# Unused Apps
+###############################################################################
+
+header "Unused Apps"
+
+# Apple's preinstalled apps I don't use. Removing them also stops refresh.sh's
+# `mas upgrade` from downloading their updates; all are free in the App Store.
+for unused in "/Applications/GarageBand.app" "/Library/Application Support/GarageBand" \
+    "/Library/Audio/Apple Loops" "/Applications/iMovie.app" "/Applications/Keynote.app" \
+    "/Applications/Numbers.app" "/Applications/Pages.app"; do
+    if [ -e "$unused" ]; then
+        step "Removing ${unused}..."
+        sudo rm -rf "$unused"
+    fi
+done
+success "Unused apps removed"
+
+###############################################################################
 # Development Environment
 ###############################################################################
 
@@ -326,7 +344,8 @@ list_item "Some changes require a logout/restart to take effect"
 list_item "Use WezTerm instead of Terminal from now on"
 list_item "Enable Location Services for System Services so Night Shift's sunset schedule works"
 if is_work; then
-    list_item "In VS Code, run \"Shell Command: Install 'code' command in PATH\" (git and \$EDITOR use it)"
+    list_item "In VS Code, run \"Shell Command: Install 'code' command in PATH\" (git and \$EDITOR use it)."
+    list_item "  If it installs under another name, link it: ln -s \"\$(command -v <name>)\" ~/.local/bin/code"
 fi
 
 echo ""
