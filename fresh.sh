@@ -53,25 +53,6 @@ else
 fi
 
 ###############################################################################
-# Dock Configuration
-###############################################################################
-
-header "Dock Configuration"
-
-step "Setting Dock apps..."
-defaults write com.apple.dock persistent-apps -array
-for app in "Things3" "Spotify" "1Password" "Slack" "zoom.us" "WezTerm"; do
-    app_path="/Applications/${app}.app"
-    if [ ! -d "$app_path" ]; then
-        warning "${app} is not installed, leaving it out of the Dock"
-        continue
-    fi
-    defaults write com.apple.dock persistent-apps -array-add \
-        "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>${app_path}</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
-done
-success "Dock configured (applies when .macos restarts the Dock)"
-
-###############################################################################
 # Shell Configuration
 ###############################################################################
 
@@ -288,7 +269,13 @@ install_omz_plugin zsh-autopair https://github.com/hlissner/zsh-autopair
 install_omz_plugin you-should-use https://github.com/MichaelAquilina/zsh-you-should-use.git
 
 step "Installing fzf-git.sh..."
-git clone https://github.com/junegunn/fzf-git.sh.git "$HOME/fzf-git.sh" &> /dev/null || true
+if [ -d "$HOME/fzf-git.sh" ]; then
+    success "fzf-git.sh already installed"
+elif git clone https://github.com/junegunn/fzf-git.sh.git "$HOME/fzf-git.sh" &> /dev/null; then
+    success "fzf-git.sh installed"
+else
+    warning "Failed to clone fzf-git.sh"
+fi
 
 ###############################################################################
 # macOS Preferences
@@ -305,6 +292,28 @@ else
 fi
 
 ###############################################################################
+# Dock Configuration
+###############################################################################
+
+header "Dock Configuration"
+
+# Runs last and restarts the Dock right away: a running Dock saves its own app
+# list whenever apps open, which would overwrite this.
+step "Setting Dock apps..."
+defaults write com.apple.dock persistent-apps -array
+for app in "Things3" "Spotify" "1Password" "Slack" "zoom.us" "WezTerm"; do
+    app_path="/Applications/${app}.app"
+    if [ ! -d "$app_path" ]; then
+        warning "${app} is not installed, leaving it out of the Dock"
+        continue
+    fi
+    defaults write com.apple.dock persistent-apps -array-add \
+        "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>${app_path}</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
+done
+killall Dock
+success "Dock configured"
+
+###############################################################################
 # Summary
 ###############################################################################
 
@@ -312,9 +321,8 @@ summary "Fresh setup complete!"
 
 echo ""
 warning "Manual steps required:"
-list_item "Grant Terminal Full Disk Access in System Settings > Privacy & Security"
 list_item "Some changes require a logout/restart to take effect"
-list_item "Open WezTerm and set it as your default terminal"
+list_item "Use WezTerm instead of Terminal from now on"
 list_item "Enable Location Services for System Services so Night Shift's sunset schedule works"
 if is_work; then
     list_item "In VS Code, run \"Shell Command: Install 'code' command in PATH\" (git and \$EDITOR use it)"

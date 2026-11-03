@@ -46,10 +46,6 @@ if is_personal; then
     defaults write com.apple.LaunchServices LSQuarantine -bool false
 fi
 
-# Remove duplicates in the “Open With” menu (also see `lscleanup` alias)
-/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user
-
-
 # Display ASCII control characters using caret notation in standard text views
 # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`
 defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
@@ -94,8 +90,14 @@ defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryCli
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerHorizSwipeGesture -int 2
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerVertSwipeGesture -int 2
 
-# Disable “natural” (Lion-style) scrolling
-defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
+# Pointer speed for mouse and trackpad, two notches under the max (System
+# Settings goes 0–3, with 2.5 and 3 as the top notches). Logi Options+ applies
+# its own speed to Logitech mice.
+defaults write NSGlobalDomain com.apple.mouse.scaling -float 2
+defaults write NSGlobalDomain com.apple.trackpad.scaling -float 2
+
+# Keep “natural” scrolling (the macOS default)
+defaults write NSGlobalDomain com.apple.swipescrolldirection -bool true
 
 # Increase sound quality for Bluetooth headphones/headsets
 defaults write com.apple.BluetoothAudioAgent "Apple Bitpool Min (editable)" -int 40
@@ -107,9 +109,10 @@ defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 # Disable press-and-hold for keys in favor of key repeat
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
-# Set a blazingly fast keyboard repeat rate
-# defaults write NSGlobalDomain KeyRepeat -int 2
-# defaults write NSGlobalDomain InitialKeyRepeat -int 25
+# Fast key repeat (holding arrows or backspace): the fastest rate and shortest
+# delay the System Settings sliders allow. Lower is faster for both.
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
 # Show language menu in the top right corner of the boot screen
 if is_personal; then
@@ -286,6 +289,10 @@ defaults write com.apple.finder FXInfoPanesExpanded -dict \
 # I don't use the grid view, but this is nice if I ever do
 defaults write com.apple.dock mouse-over-hilite-stack -bool true
 
+# Magnify Dock icons on hover
+defaults write com.apple.dock magnification -bool true
+defaults write com.apple.dock largesize -int 90
+
 # Minimize windows into their application’s icon
 defaults write com.apple.dock minimize-to-application -bool true
 
@@ -447,6 +454,9 @@ defaults write com.google.Chrome PMPrintingExpandedStateForPrint2 -bool true
 # Kill affected applications                                                  #
 ###############################################################################
 
+# Terminal is left running: setup usually runs inside it, and its settings
+# apply the next time it opens.
+
 for app in "Activity Monitor" \
 	"Calendar" \
 	"cfprefsd" \
@@ -457,8 +467,7 @@ for app in "Activity Monitor" \
 	"Mail" \
 	"Messages" \
 	"Photos" \
-	"SystemUIServer" \
-	"Terminal"; do
+	"SystemUIServer"; do
 	killall "${app}" &> /dev/null
 done
 echo "Done. Note that some of these changes require a logout/restart to take effect."

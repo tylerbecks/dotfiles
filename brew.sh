@@ -25,8 +25,11 @@ else
     success "Xcode Command Line Tools already installed"
 fi
 
-# Accept Xcode license if not already accepted
-if ! sudo xcodebuild -license check &> /dev/null; then
+# Accept Xcode license if not already accepted. xcodebuild only exists with the
+# full Xcode app; the Command Line Tools alone need no license.
+if ! xcodebuild -version &> /dev/null; then
+    skipped "Xcode license (only Command Line Tools installed)"
+elif ! sudo xcodebuild -license check &> /dev/null; then
     step "Accepting Xcode license..."
     if sudo xcodebuild -license accept 2>/dev/null; then
         success "Xcode license accepted"
