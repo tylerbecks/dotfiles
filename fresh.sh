@@ -106,6 +106,9 @@ fi
 if is_personal && ! git config --global user.email &> /dev/null; then
     git config --global user.email "tylerdbecks@gmail.com"
 fi
+# This repo is public and personal, so it always commits with the personal
+# email, even on machines whose global email is a work address.
+git -C "$DOTFILES" config user.email "tylerdbecks@gmail.com"
 mkdir -p "${HOME}/.config/git"
 ln -sf "${DOTFILES}/config/git/ignore" "${HOME}/.config/git/ignore"
 ln -sf "${DOTFILES}/.better-commits.json" "${HOME}/.better-commits.json"
