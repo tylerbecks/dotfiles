@@ -7,26 +7,28 @@ A collection of configuration files for setting up a new macOS machine.
 Run the setup script to install all dependencies and configurations:
 
 ```bash
-source fresh.sh
+bash ~/dotfiles/fresh.sh
 ```
+
+The script detects work laptops and skips personal-only apps and settings
+there. Override the detection with `--work` or `--personal`.
 
 ## Directory Structure
 
 - `brew.sh`: Homebrew package installation
 - `fresh.sh`: Main installation script
 - `refresh.sh`: Script to update packages
-- `setup.zsh`: Additional setup after core installation
+- `setup-mise.sh`: Language runtimes and global CLIs via mise
 - `.macos`: macOS system preferences
+- `lib/`: Shared helpers for the setup scripts (logging, work/personal detection)
 - `zsh/`: Modular ZSH configuration
   - `aliases/`: Command aliases organized by category
   - `config/`: ZSH configuration modules (history, path, plugins, etc.)
   - `functions/`: Custom ZSH functions
-  - `plugins/`: Plugin configurations
-  - `themes/`: Theme configurations
 - `wezterm/`: Terminal configuration
 - `config/`: Various application configurations
-- `.claude/`: Claude AI configuration settings
-- `cursor/`: Cursor IDE settings, keybindings, and snippets
+- `claude/`: Global Claude Code instructions (imported from `~/.claude/CLAUDE.md`)
+- `vscode/`: VS Code settings, keybindings, and snippets
 - `btop/`: System monitoring configuration with Night Owl theme
 - `starship/`: Shell prompt configuration
 
@@ -42,8 +44,7 @@ The ZSH configuration is organized into modules:
 
 ## Manual Setup Steps
 
-1. Install [Logi Options+](https://www.logitech.com/en-us/software/logi-options-plus.html#customization-app-download)
-2. Install [Things Helper](https://culturedcode.com/things/mac/help/things-sandboxing-helper-things3/)
-3. Download [Dank Mono](https://app.gumroad.com/d/3e20027692193b28190488bbd8cf0f1f)
+1. Download [Dank Mono](https://app.gumroad.com/d/3e20027692193b28190488bbd8cf0f1f)
+   (paid, so it can't live in this public repo)
    - Open each of the `*.otf` files
-4. Open and configure Rectangle
+2. Sign in to Raycast to sync its settings

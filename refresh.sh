@@ -15,12 +15,6 @@ trap 'rm -f "$TMPFILE"' EXIT
 trap 'echo ""; warning "Interrupted by user"; exit 130' INT TERM
 
 ###############################################################################
-# System Update
-###############################################################################
-
-header "System Update"
-
-###############################################################################
 # Homebrew
 ###############################################################################
 
@@ -102,33 +96,6 @@ else
 fi
 
 ###############################################################################
-# pnpm
-###############################################################################
-
-header "pnpm"
-
-if ! command -v pnpm &>/dev/null; then
-    skipped "pnpm (not installed)"
-elif brew list pnpm &>/dev/null 2>&1; then
-    skipped "pnpm self-update (managed by Homebrew, updated above)"
-else
-    step "Updating pnpm..."
-    PNPM_CURRENT=$(pnpm -v 2>/dev/null)
-    if pnpm self-update 2>"$TMPFILE" >/dev/null; then
-        PNPM_NEW=$(pnpm -v 2>/dev/null)
-        if [ "$PNPM_CURRENT" != "$PNPM_NEW" ]; then
-            success "pnpm updated: $PNPM_CURRENT → $PNPM_NEW"
-        else
-            success "pnpm already up to date ($PNPM_CURRENT)"
-        fi
-    else
-        error "Failed to update pnpm"
-        [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
-        ERRORS+=("pnpm self-update")
-    fi
-fi
-
-###############################################################################
 # GitHub CLI Extensions
 ###############################################################################
 
@@ -180,6 +147,38 @@ else
 fi
 
 ###############################################################################
+# Zsh
+###############################################################################
+
+header "Zsh"
+
+ZSH_DIR="${ZSH:-$HOME/.oh-my-zsh}"
+if [ ! -d "$ZSH_DIR" ]; then
+    skipped "oh-my-zsh (not installed)"
+else
+    step "Updating oh-my-zsh..."
+    if ZSH="$ZSH_DIR" zsh "$ZSH_DIR/tools/upgrade.sh" 2>"$TMPFILE" >/dev/null; then
+        success "oh-my-zsh updated"
+    else
+        error "Failed to update oh-my-zsh"
+        [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
+        ERRORS+=("oh-my-zsh upgrade")
+    fi
+
+    # Plugins cloned by fresh.sh, plus fzf-git.sh
+    step "Updating zsh plugins..."
+    for repo in "${ZSH_CUSTOM:-$ZSH_DIR/custom}"/plugins/*/ "$HOME/fzf-git.sh/"; do
+        [ -d "${repo}.git" ] || continue
+        if ! git -C "$repo" pull --ff-only --quiet 2>"$TMPFILE"; then
+            error "Failed to update $(basename "$repo")"
+            [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
+            ERRORS+=("$(basename "$repo") pull")
+        fi
+    done
+    success "zsh plugins updated"
+fi
+
+###############################################################################
 # Cleanup
 ###############################################################################
 
@@ -215,7 +214,7 @@ info "Current versions:"
 list_item "Homebrew: $(brew --version | head -n1)"
 command -v node &>/dev/null && list_item "Node.js: $(node -v)"
 command -v npm &>/dev/null && list_item "npm: $(npm -v)"
-command -v pnpm &>/dev/null && list_item "pnpm: $(pnpm -v)"
+command -v bun &>/dev/null && list_item "bun: $(bun -v)"
 command -v mise &>/dev/null && list_item "mise: $(mise --version)"
 info "Completed in ${ELAPSED}s"
 

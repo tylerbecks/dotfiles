@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -e
-set -u
-set -o pipefail
-
-exec mpv --really-quiet --no-video "$HOME/dotfiles/config/sfx/$1.ogg" &

@@ -3,6 +3,7 @@
 # Source logging utilities
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/logger.sh"
+source "${SCRIPT_DIR}/lib/profile.sh"
 
 DOTFILES=$HOME/dotfiles
 
@@ -18,6 +19,8 @@ cat << "EOF"
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 EOF
 echo -e "${NC}"
+
+info "Setting up a ${BOLD}${DOTFILES_PROFILE}${NC} machine (override with --work or --personal)"
 
 ###############################################################################
 # Homebrew & System Tools
@@ -55,12 +58,18 @@ fi
 
 header "Dock Configuration"
 
-step "Clearing default Dock icons..."
-if defaults write com.apple.dock persistent-apps -array; then
-    success "Dock cleared"
-else
-    warning "Failed to clear Dock (non-critical)"
-fi
+step "Setting Dock apps..."
+defaults write com.apple.dock persistent-apps -array
+for app in "Things3" "Spotify" "1Password" "Slack" "zoom.us" "WezTerm"; do
+    app_path="/Applications/${app}.app"
+    if [ ! -d "$app_path" ]; then
+        warning "${app} is not installed, leaving it out of the Dock"
+        continue
+    fi
+    defaults write com.apple.dock persistent-apps -array-add \
+        "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>${app_path}</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
+done
+success "Dock configured (applies when .macos restarts the Dock)"
 
 ###############################################################################
 # Shell Configuration
@@ -87,10 +96,20 @@ rm -rf "$HOME/.zshrc"
 ln -sf "${DOTFILES}/zsh/.zshrc" "${HOME}/.zshrc"
 success "Shell config linked"
 
-# Symlink git configuration
-step "Symlinking .gitconfig..."
-ln -sf "${DOTFILES}/.gitconfig" "${HOME}/.gitconfig"
-success "Git config linked"
+# ~/.gitconfig stays a real per-machine file (work laptops ship one with corp
+# settings) that includes the shared config from this repo.
+step "Configuring git..."
+[ -L "${HOME}/.gitconfig" ] && rm "${HOME}/.gitconfig"
+if ! git config --global --get-all include.path | grep -qxF "${DOTFILES}/.gitconfig"; then
+    git config --global --add include.path "${DOTFILES}/.gitconfig"
+fi
+if is_personal && ! git config --global user.email &> /dev/null; then
+    git config --global user.email "tylerdbecks@gmail.com"
+fi
+mkdir -p "${HOME}/.config/git"
+ln -sf "${DOTFILES}/config/git/ignore" "${HOME}/.config/git/ignore"
+ln -sf "${DOTFILES}/.better-commits.json" "${HOME}/.better-commits.json"
+success "Git configured"
 
 ###############################################################################
 # Application Configuration
@@ -106,11 +125,6 @@ mkdir -p "${HOME}/.config/bat/themes"
 mkdir -p "${HOME}/.config/wezterm"
 mkdir -p "${HOME}/.claude"
 success "Directories created"
-
-# Starship config
-step "Configuring Starship prompt..."
-cp "${DOTFILES}/starship/starship.toml" "${HOME}/.config/starship.toml"
-success "Starship configured"
 
 # btop config
 step "Configuring btop..."
@@ -133,20 +147,58 @@ ln -sf "${DOTFILES}/wezterm/appearance.lua" "${HOME}/.config/wezterm/appearance.
 ln -sf "${DOTFILES}/wezterm/wezterm.lua" "${HOME}/.config/wezterm/wezterm.lua"
 success "WezTerm configured"
 
-# Claude config
+# Claude config. ~/.claude/CLAUDE.md stays a real per-machine file that imports
+# the shared one, so tools that append to it (rtk, work tooling) don't write
+# into this repo.
 step "Configuring Claude Code..."
-ln -sf "${DOTFILES}/.claude/CLAUDE.md" "${HOME}/.claude/CLAUDE.md"
+CLAUDE_IMPORT="@~/dotfiles/claude/CLAUDE.md"
+[ -L "${HOME}/.claude/CLAUDE.md" ] && rm "${HOME}/.claude/CLAUDE.md"
+if ! grep -qxF "$CLAUDE_IMPORT" "${HOME}/.claude/CLAUDE.md" 2> /dev/null; then
+    echo "$CLAUDE_IMPORT" >> "${HOME}/.claude/CLAUDE.md"
+fi
 success "Claude Code configured"
 
-# Cursor config
-step "Configuring Cursor..."
-mkdir -p "${HOME}/Library/Application Support/Cursor/User"
-ln -sf "${DOTFILES}/cursor/settings.json" "${HOME}/Library/Application Support/Cursor/User/settings.json"
-ln -sf "${DOTFILES}/cursor/keybindings.json" "${HOME}/Library/Application Support/Cursor/User/keybindings.json"
-if [ -d "${DOTFILES}/cursor/snippets" ] && [ "$(ls -A ${DOTFILES}/cursor/snippets)" ]; then
-    ln -sf "${DOTFILES}/cursor/snippets" "${HOME}/Library/Application Support/Cursor/User/snippets"
+# rtk compresses command output before it reaches Claude, via a hook it adds
+# to ~/.claude/settings.json. init asks about telemetry (default no).
+if is_personal; then
+    step "Installing rtk..."
+    if brew install rtk &> /dev/null && rtk init --global; then
+        success "rtk installed (restart Claude Code to pick up the hook)"
+    else
+        warning "rtk setup failed (run rtk init --global manually)"
+    fi
 fi
-success "Cursor configured"
+
+# VS Code config. Work laptops use a managed VS Code build whose settings
+# carry corp defaults (proxy etc.), so they are left alone there.
+if is_personal; then
+    step "Configuring VS Code..."
+    VSCODE_USER="${HOME}/Library/Application Support/Code/User"
+    mkdir -p "$VSCODE_USER"
+    ln -sf "${DOTFILES}/vscode/settings.json" "${VSCODE_USER}/settings.json"
+    ln -sf "${DOTFILES}/vscode/keybindings.json" "${VSCODE_USER}/keybindings.json"
+    if [ -d "${DOTFILES}/vscode/snippets" ] && [ "$(ls -A "${DOTFILES}/vscode/snippets")" ]; then
+        ln -sf "${DOTFILES}/vscode/snippets" "${VSCODE_USER}/snippets"
+    fi
+    success "VS Code configured"
+fi
+
+# Things Helper enables Quick Entry with Autofill. It only has to be launched
+# once, and its download URL is versioned, so read it from the help page.
+if [ -d "/Applications/Things3.app" ]; then
+    step "Installing Things Helper..."
+    THINGS_HELPER_DIR=$(mktemp -d)
+    THINGS_HELPER_URL=$(curl -fsSL https://culturedcode.com/things/mac/help/things-sandboxing-helper-things3/ \
+        | grep -oE 'https://[^"]*ThingsHelper\.zip' | head -1)
+    if [ -n "$THINGS_HELPER_URL" ] \
+        && curl -fsSL "$THINGS_HELPER_URL" -o "${THINGS_HELPER_DIR}/ThingsHelper.zip" \
+        && unzip -q "${THINGS_HELPER_DIR}/ThingsHelper.zip" -d "$THINGS_HELPER_DIR" \
+        && open "${THINGS_HELPER_DIR}"/*.app; then
+        success "Things Helper launched"
+    else
+        warning "Things Helper install failed; get it from culturedcode.com/things/mac/help/things-sandboxing-helper-things3"
+    fi
+fi
 
 ###############################################################################
 # GitHub CLI
@@ -154,15 +206,12 @@ success "Cursor configured"
 
 header "GitHub CLI"
 
-step "Authenticating with GitHub..."
-info "Please complete the authentication flow:"
-gh auth login
-
-step "Installing GitHub Copilot CLI..."
-if gh extension install github/gh-copilot &> /dev/null; then
-    success "GitHub Copilot CLI installed"
+if is_personal; then
+    step "Authenticating with GitHub..."
+    info "Please complete the authentication flow:"
+    gh auth login
 else
-    warning "GitHub Copilot CLI installation failed (may already be installed)"
+    skipped "GitHub login on a work machine (run gh auth login if you need it)"
 fi
 
 ###############################################################################
@@ -171,9 +220,9 @@ fi
 
 header "Zsh Plugins"
 
-# zsh-syntax-highlighting and zsh-autosuggestions ship with oh-my-zsh, so only
-# the plugins it lacks are cloned. Use $HOME, not ~: tilde does not expand
-# inside quotes, which would clone into a literal "~" dir under the cwd.
+# All plugins live in oh-my-zsh's custom dir and load from the plugins list in
+# zsh/.zshrc; refresh.sh keeps them updated. Use $HOME, not ~: tilde does not
+# expand inside quotes, which would clone into a literal "~" dir under the cwd.
 OMZ_PLUGINS="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins"
 mkdir -p "$OMZ_PLUGINS"
 
@@ -190,6 +239,8 @@ install_omz_plugin() {
 }
 
 install_omz_plugin fzf-tab https://github.com/Aloxaf/fzf-tab
+install_omz_plugin zsh-autosuggestions https://github.com/zsh-users/zsh-autosuggestions
+install_omz_plugin zsh-syntax-highlighting https://github.com/zsh-users/zsh-syntax-highlighting
 install_omz_plugin zsh-autopair https://github.com/hlissner/zsh-autopair
 install_omz_plugin you-should-use https://github.com/MichaelAquilina/zsh-you-should-use.git
 
@@ -221,11 +272,15 @@ warning "Manual steps required:"
 list_item "Grant Terminal Full Disk Access in System Settings > Privacy & Security"
 list_item "Some changes require a logout/restart to take effect"
 list_item "Open WezTerm and set it as your default terminal"
+list_item "Enable Location Services for System Services so Night Shift's sunset schedule works"
+if is_work; then
+    list_item "In VS Code, run \"Shell Command: Install 'code' command in PATH\" (git and \$EDITOR use it)"
+fi
 
 echo ""
 info "Next steps:"
 list_item "Restart your Mac to apply all changes"
-list_item "Sign in to applications (1Password, Dropbox, etc.)"
+list_item "Sign in to applications (1Password, Raycast, etc.)"
 list_item "Configure any app-specific preferences"
 
 echo ""

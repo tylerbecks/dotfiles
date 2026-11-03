@@ -224,12 +224,13 @@ config.keys = {
     mods = hyper_key,
     action = act.SplitHorizontal { domain = 'CurrentPaneDomain' },
   },
-  -- Cmd + ,: Open the config file in VSCode
+  -- Cmd + ,: Open the config file in VSCode. Goes through an interactive zsh
+  -- so `code` resolves from PATH wherever it is installed.
   {
     key = ',',
     mods = 'CMD',
     action = act.SpawnCommandInNewWindow {
-      args = { '/usr/local/bin/code', os.getenv('HOME') .. '/.config/wezterm/wezterm.lua' }
+      args = { '/bin/zsh', '-ic', 'code ~/.config/wezterm/wezterm.lua' }
     },
   },
   -- Cmd + Enter: Toggle fullscreen and move to a new screen

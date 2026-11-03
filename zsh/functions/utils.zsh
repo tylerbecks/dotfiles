@@ -40,11 +40,6 @@ function extract() {
   fi
 }
 
-# Create a new directory and move into it
-function mkcd() {
-  mkdir -p "$1" && cd "$1"
-}
-
 # Find all files containing a pattern
 function findtext() {
   rg --color=always "$1" | less -RX
@@ -58,15 +53,4 @@ function c() {
 # Generate a new SSH key
 function genssh() {
   ssh-keygen -t ed25519 -C "$1"
-}
-
-# Play sound effect based on last command's exit status
-function boop() {
-  local last="$?"
-  if [[ "$last" == '0' ]]; then
-    sfx good
-  else
-    sfx bad
-  fi
-  $(exit "$last")
 }

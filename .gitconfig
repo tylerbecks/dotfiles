@@ -1,6 +1,7 @@
+# Shared settings, included from each machine's own ~/.gitconfig (set up by
+# fresh.sh). Machine-specific values like user.email live there instead.
 [user]
 	name = Tyler Becks
-	email = tylerdbecks@gmail.com
 [column]
 	ui = auto
 [branch]
@@ -79,7 +80,6 @@
 [core]
 	pager = delta
 	editor = code --wait
-	excludesfile = ~/.gitignore
 	fsmonitor = true
 	untrackedCache = true
 	whitespace = blank-at-eol,space-before-tab,-indent-with-non-tab,-tab-in-indent,blank-at-eof
@@ -108,10 +108,7 @@
 	cmd = difft "$LOCAL" "$REMOTE"
 [mergetool]
   prompt = false
-[gpg]
-	format = ssh
 [commit]
-	gpgSign = false
 	verbose = true
 [credential "https://github.com"]
 	helper = 

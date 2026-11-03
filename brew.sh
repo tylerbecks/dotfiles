@@ -3,6 +3,7 @@
 # Source logging utilities
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/logger.sh"
+source "${SCRIPT_DIR}/lib/profile.sh"
 
 # Track package counts
 FORMULAE_COUNT=0
@@ -94,8 +95,8 @@ brew install gnu-sed &> /dev/null && ((FORMULAE_COUNT++))
 step "Installing modern Bash..."
 brew install bash bash-completion2 &> /dev/null && ((FORMULAE_COUNT+=2))
 
-step "Installing grep and PHP..."
-brew install grep php &> /dev/null && ((FORMULAE_COUNT+=2))
+step "Installing GNU grep..."
+brew install grep &> /dev/null && ((FORMULAE_COUNT++))
 
 success "Core utilities installed"
 
@@ -105,8 +106,8 @@ success "Core utilities installed"
 
 header "Development Tools"
 
-step "Installing version managers and package managers..."
-brew install mise pnpm &> /dev/null && ((FORMULAE_COUNT+=2))
+step "Installing mise..."
+brew install mise &> /dev/null && ((FORMULAE_COUNT++))
 
 step "Installing Git and GitHub CLI..."
 brew install gh &> /dev/null && ((FORMULAE_COUNT++))
@@ -131,11 +132,8 @@ brew install bat eza &> /dev/null && ((FORMULAE_COUNT+=2))
 step "Installing system monitoring..."
 brew install btop &> /dev/null && ((FORMULAE_COUNT++))
 
-step "Installing media player..."
-brew install mpv &> /dev/null && ((FORMULAE_COUNT++))
-
-step "Installing backup tool..."
-brew install mackup &> /dev/null && ((FORMULAE_COUNT++))
+step "Installing Night Shift CLI..."
+brew install smudge/smudge/nightlight &> /dev/null && ((FORMULAE_COUNT++))
 
 success "CLI tools installed"
 
@@ -145,18 +143,12 @@ success "CLI tools installed"
 
 header "Shell Enhancements"
 
-step "Installing zsh plugins..."
-brew install zsh-syntax-highlighting zsh-autopair &> /dev/null && ((FORMULAE_COUNT+=2))
-
+# zsh plugins are cloned into oh-my-zsh by fresh.sh, and fzf's key bindings
+# are loaded by `fzf --zsh` in zsh/config/plugins.zsh.
 step "Installing Starship prompt..."
 brew install starship &> /dev/null && ((FORMULAE_COUNT++))
 
-step "Configuring fzf key bindings..."
-if yes | $(brew --prefix)/opt/fzf/install &> /dev/null; then
-    success "Shell enhancements installed"
-else
-    warning "fzf key bindings may need manual installation"
-fi
+success "Shell enhancements installed"
 
 ###############################################################################
 # Applications
@@ -164,27 +156,53 @@ fi
 
 header "Applications"
 
-step "Installing productivity apps..."
-brew install --cask cleanshot raycast rectangle &> /dev/null && ((CASK_COUNT+=3))
+# Installs a cask unless its app is already in /Applications. Work laptops
+# ship some of these preinstalled, and `brew install` fails on top of them.
+install_cask() {
+    local cask="$1" app="$2"
+    if [ -d "/Applications/${app}.app" ]; then
+        success "${app} already installed"
+    elif brew install --cask "$cask" &> /dev/null; then
+        ((CASK_COUNT++))
+    else
+        warning "Failed to install ${cask}"
+    fi
+}
 
-step "Installing browsers and utilities..."
-brew install --cask arc flux &> /dev/null && ((CASK_COUNT+=2))
+step "Installing productivity apps..."
+install_cask cleanshot "CleanShot X"
+install_cask raycast "Raycast"
+install_cask logi-options+ "logioptionsplus"
+
+step "Installing browser..."
+install_cask thebrowsercompany-dia "Dia"
 
 step "Installing terminal..."
-brew install --cask wezterm &> /dev/null && ((CASK_COUNT++))
+install_cask wezterm "WezTerm"
 
 step "Installing 1Password..."
-brew install --cask 1password &> /dev/null && ((CASK_COUNT++))
+install_cask 1password "1Password"
 brew install 1password-cli &> /dev/null && ((FORMULAE_COUNT++))
 
-step "Installing cloud storage..."
-brew install --cask dropbox raindropio &> /dev/null && ((CASK_COUNT+=2))
-
 step "Installing communication apps..."
-brew install --cask slack whatsapp zoom &> /dev/null && ((CASK_COUNT+=3))
+install_cask slack "Slack"
+install_cask zoom "zoom.us"
 
 step "Installing entertainment..."
-brew install --cask spotify &> /dev/null && ((CASK_COUNT++))
+install_cask spotify "Spotify"
+
+if is_personal; then
+    step "Installing editor..."
+    install_cask visual-studio-code "Visual Studio Code"
+
+    step "Installing Claude..."
+    install_cask claude "Claude"
+    brew install --cask claude-code &> /dev/null && ((CASK_COUNT++))
+
+    step "Installing personal apps..."
+    install_cask dropbox "Dropbox"
+    install_cask whatsapp "WhatsApp"
+fi
 
 success "Applications installed"
 

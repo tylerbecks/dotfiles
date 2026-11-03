@@ -1,0 +1,13 @@
+# Global gitignore, symlinked to ~/.config/git/ignore by fresh.sh
+
+# macOS
+.DS_Store
+._*
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+
+# Editor swap and backup files
+*.swp
+*~

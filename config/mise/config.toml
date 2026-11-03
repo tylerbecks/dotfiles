@@ -8,9 +8,9 @@ tool_update.global_auto = true
 [tools]
 node = "24"      # bump majors on purpose: mise upgrade --bump node
 python = "3.14"  # bump minors on purpose: mise upgrade --bump python
+bun = "latest"
 
 # Global CLIs installed with npm. Managed here instead of `npm i -g` so they
 # survive Node upgrades (npm globals live inside a single Node install).
-"npm:@openai/codex" = "latest"
 "npm:@colbymchenry/codegraph" = "latest"
-"npm:@sazabi/cli" = "latest"
+"npm:better-commits" = "latest"  # backs the `git c` alias

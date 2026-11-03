@@ -1,95 +1,144 @@
 #!/bin/zsh
-# disk-cleanup.sh v3 — report & clean the known disk hot spots
-#
-# Dotfiles install:
-#   mv disk-cleanup.sh ~/dotfiles/bin/disk-cleanup && chmod +x ~/dotfiles/bin/disk-cleanup
-#   (or wherever your dotfiles put executables — anything on $PATH)
+# disk-cleanup — report & clean the usual disk hot spots on any Mac
 #
 # Usage:
-#   disk-cleanup               # report: size of every hot spot + agent-worktree census
+#   disk-cleanup               # report: sizes of caches, project build output, worktrees
 #   disk-cleanup --clean       # WEEKLY tier: build artifacts, app caches, stale sims
 #                              #   -> zero data loss; only cost is one cold build
 #   disk-cleanup --clean-deep  # MONTHLY tier: --clean PLUS package-manager caches
-#                              #   -> gradle/npm/bun re-download deps on next install;
-#                              #      agent worktree installs are slow until re-warmed
+#                              #   -> deps re-download on next install
 #
-# Machine-specific bits are env-overridable for portability:
-GOBI="${GOBI_DIR:-$HOME/Code/gobi}"
+# Projects are scanned under $CODE_DIR (default ~/Code). Tools that aren't
+# installed and paths that don't exist are skipped.
+CODE_DIR="${CODE_DIR:-$HOME/Code}"
 
-if [[ ! -d "$GOBI" ]]; then echo "ERROR: repo not found at $GOBI (set GOBI_DIR to override)"; exit 1; fi
 if [[ -t 1 ]]; then BOLD=$(tput bold); DIM=$(tput dim); RESET=$(tput sgr0); else BOLD=""; DIM=""; RESET=""; fi
 
 free_space() { df -h /System/Volumes/Data | tail -1 | awk '{printf "%s free of %s\n", $4, $2}'; }
+
+# Regenerable build output inside projects. node_modules and .git are pruned
+# so the scan never descends into them.
+find_artifacts() {
+  [[ -d "$CODE_DIR" ]] || return
+  find "$CODE_DIR" -type d \( -name node_modules -o -name .git \) -prune -o -type d \
+    \( -name .next -o -name .turbo -o -name .parcel-cache \
+       -o -path '*/ios/build' -o -path '*/android/build' -o -path '*/android/app/build' \) \
+    -print -prune 2>/dev/null
+}
+
+# Runs a cleanup command only if its tool is installed
+try_clean() {
+  local tool=$1 label=$2; shift 2
+  command -v "$tool" >/dev/null || return 0
+  "$@" </dev/null >/dev/null 2>&1 && echo "  ✓ $label"
+}
 
 report() {
   echo "${BOLD}== Free space ==${RESET}"
   free_space; echo
 
-  echo "${BOLD}== Hot spots (fast fillers first) ==${RESET}"
+  echo "${BOLD}== Caches and tool data ==${RESET}"
   du -sh \
-    "$GOBI/apps/mobile/ios/build" \
-    "$GOBI/apps/server/.next" \
-    "$GOBI/apps/mobile/android/app/build" \
     ~/Library/Developer/Xcode/DerivedData \
     ~/Library/Developer/Xcode/iOS\ DeviceSupport \
+    ~/Library/Developer/CoreSimulator \
+    ~/Library/Containers/com.docker.docker \
     ~/Library/Caches \
-    ~/.codex/worktrees \
-    ~/.codex/archived_sessions \
-    ~/.bun \
+    ~/.Trash \
+    ~/.cache \
     ~/.npm \
+    ~/.bun/install/cache \
     ~/.gradle \
     ~/.android \
+    ~/.cocoapods \
+    ~/.local/share/mise/installs \
+    ~/.codex \
     2>/dev/null | sort -rh
 
-  echo "\n${BOLD}== Agent worktrees (each ~5 GB; the recurring disk killers) ==${RESET}"
-  echo "${DIM}Codex worktrees:${RESET}"
-  du -sh ~/.codex/worktrees/*/ 2>/dev/null || echo "  none"
-  echo "${DIM}Claude Code worktrees:${RESET}"
-  du -sh "$GOBI/.claude/worktrees"/*/ 2>/dev/null || echo "  none"
-  echo "${DIM}All registered worktrees (active tasks appear here too):${RESET}"
-  git -C "$GOBI" worktree list 2>/dev/null
+  if [[ ! -d "$CODE_DIR" ]]; then
+    echo "\n${DIM}No projects scanned: $CODE_DIR not found (set CODE_DIR to override)${RESET}"
+  else
+    echo "\n${BOLD}== Build output in $CODE_DIR (removed by --clean) ==${RESET}"
+    local artifacts=("${(@f)$(find_artifacts)}")
+    if [[ -n "${artifacts[1]}" ]]; then
+      du -sh "${artifacts[@]}" 2>/dev/null | sort -rh | head -20
+    else
+      echo "  none"
+    fi
 
-  echo "\n${BOLD}== Anything new in ~/Code? ==${RESET}"
-  du -sh ~/Code/* 2>/dev/null | sort -rh
+    echo "\n${BOLD}== node_modules in $CODE_DIR (not auto-cleaned) ==${RESET}"
+    local modules=("${(@f)$(find "$CODE_DIR" -type d -name .git -prune -o -type d -name node_modules -print -prune 2>/dev/null)}")
+    if [[ -n "${modules[1]}" ]]; then
+      echo "  ${#modules} folders, $(du -sch "${modules[@]}" 2>/dev/null | tail -1 | cut -f1) total"
+    else
+      echo "  none"
+    fi
+
+    echo "\n${BOLD}== Projects by size ==${RESET}"
+    du -sh "$CODE_DIR"/*(N) 2>/dev/null | sort -rh | head -15
+  fi
+
+  echo "\n${BOLD}== Agent worktrees (each can be several GB) ==${RESET}"
+  local found=0 dir repo list
+  for dir in ~/.codex/worktrees(N/) "$CODE_DIR"/*/.claude/worktrees(N/); do
+    du -sh "$dir"/*(N/) 2>/dev/null && found=1
+  done
+  (( found )) || echo "  none"
+  echo "${DIM}Repos with extra git worktrees (active tasks appear here too):${RESET}"
+  for repo in "$CODE_DIR"/*/.git(N/); do
+    list=$(git -C "${repo:h}" worktree list 2>/dev/null)
+    if (( ${#${(f)list}} > 1 )); then
+      echo "  ${repo:h:t}:"
+      echo "$list" | sed 's/^/    /'
+    fi
+  done
 
   cat <<'EOF'
 
 To remove a FINISHED task's worktree (never delete one with uncommitted work):
   git -C <worktree-path> status --porcelain      # empty output = clean
-  git -C ~/Code/gobi worktree remove --force <worktree-path>
-  git -C ~/Code/gobi worktree prune
-To prune Codex session history, use Codex itself (NOT rm):
-  codex delete <session-id>       # deleting a parent cascades to its subagents
+  git -C <repo> worktree remove <worktree-path>
+  git -C <repo> worktree prune
 
---clean = weekly tier (build artifacts; safe, one cold build)
---clean-deep = monthly tier (also wipes gradle/npm/bun caches; deps re-download)
+--clean = weekly tier (build artifacts and app caches; safe, one cold build)
+--clean-deep = monthly tier (also clears package-manager caches; deps re-download)
 EOF
 }
 
 clean_weekly() {
   echo "${BOLD}Weekly tier — build artifacts & app caches (regenerable, no downloads needed)...${RESET}"
-  rm -rf "$GOBI/apps/mobile/ios/build"          && echo "  ✓ ios/build"
-  rm -rf "$GOBI/apps/server/.next"              && echo "  ✓ server/.next"
-  rm -rf "$GOBI/apps/mobile/android/app/build"  && echo "  ✓ android app/build"
+  local count=0 dir
+  for dir in "${(@f)$(find_artifacts)}"; do
+    [[ -n "$dir" ]] && rm -rf "$dir" && (( count++ ))
+  done
+  echo "  ✓ $count project build folders in $CODE_DIR"
   rm -rf ~/Library/Developer/Xcode/DerivedData  && echo "  ✓ Xcode DerivedData"
   rm -rf ~/Library/Caches/* 2>/dev/null;           echo "  ✓ ~/Library/Caches (in-use items skipped)"
   xcrun simctl delete unavailable >/dev/null 2>&1 && echo "  ✓ unavailable iOS simulators"
-  echo "${DIM}  note: next iOS/Android/server builds will be cold (full) builds${RESET}"
+  try_clean brew "old Homebrew versions" brew cleanup
+  echo "${DIM}  note: next project builds will be cold (full) builds${RESET}"
 }
 
 clean_deep() {
   clean_weekly
   echo "\n${BOLD}Monthly tier — package-manager caches (deps re-download on next install)...${RESET}"
-  npm cache clean --force >/dev/null 2>&1       && echo "  ✓ npm cache"
-  bun pm cache rm >/dev/null 2>&1               && echo "  ✓ bun cache (agent worktree installs slow until re-warmed)"
-  rm -rf ~/.gradle/caches                       && echo "  ✓ gradle caches (next Android build re-resolves everything)"
+  try_clean npm "npm cache" npm cache clean --force
+  try_clean bun "bun cache" bun pm cache rm
+  try_clean yarn "yarn cache" yarn cache clean
+  try_clean pnpm "pnpm store" pnpm store prune
+  try_clean uv "uv cache" uv cache clean
+  try_clean python3 "pip cache" python3 -m pip cache purge
+  try_clean pod "CocoaPods cache" pod cache clean --all
+  try_clean brew "Homebrew download cache" brew cleanup --prune=all -s
+  try_clean mise "unused mise tool versions" mise prune --tools
+  [[ -d ~/.gradle/caches ]] && rm -rf ~/.gradle/caches && echo "  ✓ gradle caches"
 }
 
 post_clean() {
   echo "\n${BOLD}Left for manual review${RESET} (can hold real work — see report mode):"
-  echo "  - agent worktrees in ~/.codex/worktrees and $GOBI/.claude/worktrees"
-  echo "  - Codex session history (use 'codex delete <id>', never rm)"
-  echo "  - Android AVDs/system images, old iOS simulator runtimes"
+  echo "  - agent worktrees and extra git worktrees"
+  echo "  - node_modules folders (reinstall per project after deleting)"
+  echo "  - ~/.Trash, Docker images, Android emulators, old iOS simulator runtimes"
   echo "\nDone. New free space:"
   echo "  $(free_space)"
 }

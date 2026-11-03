@@ -4,12 +4,6 @@
   // Editor
   // ─────────────────────────────────────────────────────────────
   {
-    // A Cursor core binding swallows cmd+up; this user binding wins and restores "go to top of file"
-    "key": "cmd+up",
-    "command": "cursorTop",
-    "when": "textInputFocus"
-  },
-  {
     "key": "cmd+'",
     "command": "workbench.action.splitEditor"
   },
@@ -38,11 +32,6 @@
   // ─────────────────────────────────────────────────────────────
   {
     "key": "cmd+k",
-    "command": "-cursorai.action.generateInTerminal",
-    "when": "terminalFocus && terminalHasBeenCreated || terminalFocus && terminalProcessSupported"
-  },
-  {
-    "key": "cmd+k",
     "command": "workbench.action.terminal.clear",
     "when": "terminalFocus"
   },
@@ -53,57 +42,6 @@
       "text": "\\\r\n"
     },
     "when": "terminalFocus"
-  },
-
-  // ─────────────────────────────────────────────────────────────
-  // Cursor AI - Disabled defaults
-  // ─────────────────────────────────────────────────────────────
-  {
-    "key": "cmd+k",
-    "command": "-aipopup.action.modal.generate",
-    "when": "editorFocus && !composerBarIsVisible"
-  },
-  {
-    "key": "shift+cmd+k",
-    "command": "-aipopup.action.modal.generate",
-    "when": "editorFocus && !composerBarIsVisible"
-  },
-  {
-    "key": "cmd+l",
-    "command": "-aichat.newchataction"
-  },
-  {
-    "key": "cmd+escape",
-    "command": "-workbench.action.chat.cancel"
-  },
-  {
-    "key": "cmd+escape",
-    "command": "-workbench.action.backgroundComposer.escapeToClose",
-    "when": "backgroundComposerEnabled && isInBackgroundComposerWindow"
-  },
-  // {
-  //   "key": "shift+cmd+l",
-  //   "command": "-aichat.insertselectionintochat"
-  // },
-  // {
-  //   "key": "shift+cmd+l",
-  //   "command": "-composer.newAgentChat"
-  // },
-
-  // ─────────────────────────────────────────────────────────────
-  // Cursor AI - Remapped
-  // ─────────────────────────────────────────────────────────────
-  {
-    "key": "cmd+i",
-    "command": "composerMode.agent"
-  },
-  {
-    "key": "ctrl+alt+cmd+l",
-    "command": "aichat.newchataction"
-  },
-  {
-    "key": "ctrl+shift+alt+cmd+l",
-    "command": "aichat.insertselectionintochat"
   },
 
   // ─────────────────────────────────────────────────────────────
@@ -136,10 +74,5 @@
   {
     "key": "ctrl+shift+alt+cmd+n",
     "command": "claude-code.rejectProposedDiff"
-  },
-  {
-    "key": "alt+cmd+s",
-    "command": "workbench.action.toggleUnifiedSidebarFromKeyboard",
-    "when": "cursor.agentIdeUnification.enabled == true && !isAuxiliaryWindowFocusedContext"
   }
 ]

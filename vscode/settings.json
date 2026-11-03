@@ -24,10 +24,6 @@
   "breadcrumbs.filePath": "on",
   "breadcrumbs.symbolPath": "off",
   "claudeCode.preferredLocation": "panel",
-  "cursor.cpp.disabledLanguages": ["markdown", "plaintext", "scminput"],
-  "debug.javascript.defaultRuntimeExecutable": {
-    "pwa-node": "/Users/tylerbecks/.local/share/mise/shims/node",
-  },
   "diffEditor.ignoreTrimWhitespace": false,
   "diffEditor.renderSideBySide": false,
   "editor.accessibilitySupport": "on",
@@ -201,16 +197,12 @@
   "workbench.panel.defaultLocation": "right",
   "workbench.panel.opensMaximized": "never",
   "workbench.startupEditor": "newUntitledFile",
-  "yaml.schemas": {
-    "file:///home/coder/.vscode-server/extensions/atlassian.atlascode-2.10.12/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml",
-  },
   "workbench.settings.applyToAllProfiles": ["editor.inlayHints.enabled"],
   "window.autoDetectColorScheme": false,
   "security.promptForLocalFileProtocolHandling": false,
   "codesnap.transparentBackground": true,
   "codesnap.target": "window",
   "codesnap.containerPadding": "1em",
-  "cursor.composer.shouldChimeAfterChatFinishes": true,
   "yaml.disableSchemaDetection": [
     "**/.github/workflows/*.yml",
     "**/.github/workflows/*.yaml",
