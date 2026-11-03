@@ -47,4 +47,6 @@ The ZSH configuration is organized into modules:
 1. Download [Dank Mono](https://app.gumroad.com/d/3e20027692193b28190488bbd8cf0f1f)
    (paid, so it can't live in this public repo)
    - Open each of the `*.otf` files
-2. Sign in to Raycast to sync its settings
+2. Set up Raycast: Settings → Keyboard → Hyper Key → Caps Lock, with
+   Include Shift on (Raycast window management uses Hyper + Arrow). Raycast
+   settings only sync between Macs with Raycast Pro.

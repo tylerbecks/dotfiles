@@ -137,7 +137,7 @@ end)
 local function move_pane(key, direction)
   return {
     key = key,
-    mods = hyper_key,
+    mods = 'CMD|OPT',
     action = act.ActivatePaneDirection(direction),
   }
 end
@@ -146,7 +146,7 @@ end
 local function resize_pane(key, direction)
   return {
     key = key,
-    mods = hyper_key .. '|SHIFT',
+    mods = 'CMD|CTRL',
     action = act.AdjustPaneSize { direction, 1 },
   }
 end
@@ -164,13 +164,14 @@ config.keys = {
     action = act.SendString '\x1b\x0d', -- ESC + CR
   },
 
-  -- Pane navigation with Hyperkey + Arrow
+  -- Pane navigation with Cmd + Option + Arrow (iTerm2 style; Hyperkey + Arrow
+  -- belongs to Raycast window management)
   move_pane('DownArrow', 'Down'),
   move_pane('UpArrow', 'Up'),
   move_pane('LeftArrow', 'Left'),
   move_pane('RightArrow', 'Right'),
 
-  -- Pane resizing with Hyperkey + Shift + Arrow
+  -- Pane resizing with Cmd + Ctrl + Arrow
   resize_pane('DownArrow', 'Down'),
   resize_pane('UpArrow', 'Up'),
   resize_pane('LeftArrow', 'Left'),
