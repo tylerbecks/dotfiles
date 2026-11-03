@@ -142,11 +142,12 @@ if ! grep -qxF "$CLAUDE_IMPORT" "${HOME}/.claude/CLAUDE.md" 2> /dev/null; then
 fi
 success "Claude Code configured"
 
-# rtk compresses command output before it reaches Claude, via a hook it adds
-# to ~/.claude/settings.json. init asks about telemetry (default no).
+# rtk (installed from the Brewfile) compresses command output before it
+# reaches Claude, via a hook it adds to ~/.claude/settings.json. init asks
+# about telemetry (default no).
 if is_personal; then
-    step "Installing rtk..."
-    if brew install rtk &> /dev/null && rtk init --global; then
+    step "Setting up rtk..."
+    if command -v rtk &> /dev/null && rtk init --global; then
         success "rtk installed (restart Claude Code to pick up the hook)"
     else
         warning "rtk setup failed (run rtk init --global manually)"

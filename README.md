@@ -15,7 +15,8 @@ there. Override the detection with `--work` or `--personal`.
 
 ## Directory Structure
 
-- `brew.sh`: Homebrew package installation
+- `Brewfile`: Homebrew packages and apps, split into work and personal
+- `brew.sh`: Installs Homebrew and everything in the `Brewfile`
 - `fresh.sh`: Main installation script
 - `refresh.sh`: Script to update packages
 - `setup-mise.sh`: Language runtimes and global CLIs via mise

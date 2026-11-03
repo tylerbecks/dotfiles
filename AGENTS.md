@@ -3,6 +3,7 @@
 Setup scripts and config for my Macs, both personal and Meta work laptops.
 
 - `fresh.sh` sets up a new machine (`bash ~/dotfiles/fresh.sh`, never `source`); it calls `brew.sh`, `setup-mise.sh` and `.macos`. `refresh.sh` updates everything.
+- Apps and CLI tools go in `Brewfile` (personal-only ones inside `unless work`); language runtimes and npm CLIs go in `config/mise/config.toml`.
 - `lib/profile.sh` decides work vs personal (`/var/facebook` exists on work laptops, `--work`/`--personal` override). Anything new must decide which machines it belongs on; gate it with `is_work`/`is_personal`.
 - Machine-specific settings stay in local files that include the shared ones (`~/.gitconfig` includes `.gitconfig`, `~/.claude/CLAUDE.md` imports `claude/CLAUDE.md`). Don't symlink over those files.
 - `zsh/.zshrc` loads `zsh/config/*.zsh`, then `functions/` and `aliases/`.

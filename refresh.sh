@@ -3,6 +3,7 @@
 # Source logging utilities
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/logger.sh"
+source "${SCRIPT_DIR}/lib/profile.sh"
 
 ###############################################################################
 # Setup
@@ -43,6 +44,20 @@ if [ "$OUTDATED" -gt 0 ]; then
     fi
 else
     success "All packages are up to date"
+fi
+
+# Drift between the Brewfile and what's installed
+step "Comparing installed packages with the Brewfile..."
+export HOMEBREW_DOTFILES_PROFILE="$DOTFILES_PROFILE"
+if brew bundle check --file="${SCRIPT_DIR}/Brewfile" &> /dev/null; then
+    success "Everything in the Brewfile is installed"
+else
+    warning "Some Brewfile entries are missing; run brew.sh to install them"
+fi
+EXTRA=$(brew bundle cleanup --file="${SCRIPT_DIR}/Brewfile" 2> /dev/null | grep -v '^Run `brew bundle cleanup')
+if [ -n "$EXTRA" ]; then
+    info "Installed with Homebrew but not in the Brewfile (add them, or brew uninstall):"
+    echo "$EXTRA" | sed 's/^/    /'
 fi
 
 ###############################################################################

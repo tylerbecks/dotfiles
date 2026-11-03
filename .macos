@@ -50,6 +50,9 @@ fi
 # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`
 defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
 
+# Ctrl+Cmd+drag moves a window from anywhere inside it, not just the title bar
+defaults write NSGlobalDomain NSWindowShouldDragOnGesture -bool true
+
 # Disable automatic termination of inactive apps
 defaults write NSGlobalDomain NSDisableAutomaticTermination -bool true
 
@@ -117,6 +120,12 @@ defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 # delay the System Settings sliders allow. Lower is faster for both.
 defaults write NSGlobalDomain KeyRepeat -int 2
 defaults write NSGlobalDomain InitialKeyRepeat -int 15
+
+# Touch ID for sudo. sudo_local survives macOS updates, unlike editing
+# /etc/pam.d/sudo; Apple ships a template with the line commented out.
+if [ ! -f /etc/pam.d/sudo_local ] && [ -f /etc/pam.d/sudo_local.template ]; then
+    sed 's/^#auth/auth/' /etc/pam.d/sudo_local.template | sudo tee /etc/pam.d/sudo_local > /dev/null
+fi
 
 # Show language menu in the top right corner of the boot screen
 if is_personal; then
@@ -204,6 +213,9 @@ defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
 defaults write com.apple.finder ShowHardDrivesOnDesktop -bool true
 defaults write com.apple.finder ShowMountedServersOnDesktop -bool true
 defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
+
+# Show the ~/Library folder
+chflags nohidden ~/Library
 
 # Finder: show hidden files by default
 #defaults write com.apple.finder AppleShowAllFiles -bool true

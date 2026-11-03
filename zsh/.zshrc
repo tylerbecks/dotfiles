@@ -31,3 +31,8 @@ done
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 export PATH="$HOME/.local/bin:$PATH"
+
+# zoxide (`z <part of a path>` jumps to frequent dirs); its docs want it last
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init zsh)"
+fi
