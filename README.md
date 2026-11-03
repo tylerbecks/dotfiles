@@ -51,3 +51,6 @@ The ZSH configuration is organized into modules:
 2. Set up Raycast: Settings → Keyboard → Hyper Key → Caps Lock, with
    Include Shift on (Raycast window management uses Hyper + Arrow). Raycast
    settings only sync between Macs with Raycast Pro.
+3. If setup printed "Couldn't enable Control+scroll zoom", turn on System
+   Settings → Accessibility → Zoom → "Use scroll gesture with modifier keys to
+   zoom" with Control as the modifier.

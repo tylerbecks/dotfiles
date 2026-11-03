@@ -103,6 +103,13 @@ defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryCli
 defaults write NSGlobalDomain com.apple.mouse.scaling -float 2
 defaults write NSGlobalDomain com.apple.trackpad.scaling -float 2
 
+# Zoom into any part of the screen with Control + scroll. macOS only lets
+# scripts write accessibility settings when the terminal has Full Disk Access.
+if ! { defaults write com.apple.universalaccess closeViewScrollWheelToggle -bool true &&
+    defaults write com.apple.universalaccess HIDScrollZoomModifierMask -int 262144; } 2> /dev/null; then
+    echo "Couldn't enable Control+scroll zoom; turn it on in System Settings > Accessibility > Zoom"
+fi
+
 # Keep “natural” scrolling (the macOS default)
 defaults write NSGlobalDomain com.apple.swipescrolldirection -bool true
 
