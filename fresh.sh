@@ -270,38 +270,8 @@ fi
 
 header "Zsh Plugins"
 
-# All plugins live in oh-my-zsh's custom dir and load from the plugins list in
-# zsh/.zshrc; refresh.sh keeps them updated. Use $HOME, not ~: tilde does not
-# expand inside quotes, which would clone into a literal "~" dir under the cwd.
-OMZ_PLUGINS="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins"
-mkdir -p "$OMZ_PLUGINS"
-
-install_omz_plugin() {
-    local name="$1" url="$2"
-    step "Installing ${name}..."
-    if [ -d "${OMZ_PLUGINS}/${name}" ]; then
-        success "${name} already installed"
-    elif git clone "$url" "${OMZ_PLUGINS}/${name}" &> /dev/null; then
-        success "${name} installed"
-    else
-        warning "Failed to clone ${name} from ${url}"
-    fi
-}
-
-install_omz_plugin fzf-tab https://github.com/Aloxaf/fzf-tab
-install_omz_plugin zsh-autosuggestions https://github.com/zsh-users/zsh-autosuggestions
-install_omz_plugin zsh-syntax-highlighting https://github.com/zsh-users/zsh-syntax-highlighting
-install_omz_plugin zsh-autopair https://github.com/hlissner/zsh-autopair
-install_omz_plugin you-should-use https://github.com/MichaelAquilina/zsh-you-should-use.git
-
-step "Installing fzf-git.sh..."
-if [ -d "$HOME/fzf-git.sh" ]; then
-    success "fzf-git.sh already installed"
-elif git clone https://github.com/junegunn/fzf-git.sh.git "$HOME/fzf-git.sh" &> /dev/null; then
-    success "fzf-git.sh installed"
-else
-    warning "Failed to clone fzf-git.sh"
-fi
+source "${DOTFILES}/lib/zsh-plugins.sh"
+install_zsh_plugins
 
 ###############################################################################
 # macOS Preferences

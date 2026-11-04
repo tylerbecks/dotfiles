@@ -1,0 +1,15 @@
+# Linux overrides, included after ../../.gitconfig by linux.sh.
+
+# Fall back to plain paging on boxes where delta isn't packaged
+[core]
+	pager = command -v delta > /dev/null && exec delta || exec less -FRX
+[interactive]
+	diffFilter = command -v delta > /dev/null && exec delta --color-only || exec cat
+
+# gh lives on PATH rather than under Homebrew
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential

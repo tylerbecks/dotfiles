@@ -45,4 +45,4 @@ _fzf_comprun() {
 
 # Enable shortcuts for fzf with git
 # CTRL-G + H: Show git history
-source ~/fzf-git.sh/fzf-git.sh
+[[ -f ~/fzf-git.sh/fzf-git.sh ]] && source ~/fzf-git.sh/fzf-git.sh

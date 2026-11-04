@@ -8,8 +8,8 @@ source "$HOME/dotfiles/zsh/config/prompt.zsh"
 # last: it wraps the widgets the other plugins create.
 plugins=(fzf-tab zsh-autosuggestions you-should-use zsh-autopair zsh-syntax-highlighting)
 
-# Load Oh-My-Zsh
-source $ZSH/oh-my-zsh.sh
+# Load Oh-My-Zsh (skipped until linux.sh has cloned it on a new box)
+[[ -f $ZSH/oh-my-zsh.sh ]] && source $ZSH/oh-my-zsh.sh
 
 # Load remaining configs (env.zsh and prompt.zsh are already loaded)
 for config_file ($HOME/dotfiles/zsh/config/*.zsh); do
@@ -29,8 +29,6 @@ done
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-
-export PATH="$HOME/.local/bin:$PATH"
 
 # zoxide (`z <part of a path>` jumps to frequent dirs); its docs want it last
 if command -v zoxide &> /dev/null; then

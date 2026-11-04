@@ -3,6 +3,9 @@ export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH
 # Homebrew completions; must be on fpath before oh-my-zsh runs compinit
 fpath=(/opt/homebrew/share/zsh/site-functions $fpath)
 
+# User-installed binaries (early so the prompt and plugins below can find them)
+export PATH="$HOME/.local/bin:$PATH"
+
 # Locale
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
