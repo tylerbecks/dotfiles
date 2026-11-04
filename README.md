@@ -29,7 +29,7 @@ there. Override the detection with `--work` or `--personal`.
 - `wezterm/`: Terminal configuration
 - `config/`: Various application configurations
 - `claude/`: Global Claude Code instructions (imported from `~/.claude/CLAUDE.md`)
-- `vscode/`: VS Code settings, keybindings, and snippets
+- `vscode/`: VS Code and Cursor settings, keybindings, and snippets (linked into whichever is installed)
 - `btop/`: System monitoring configuration with Night Owl theme
 - `starship/`: Shell prompt configuration
 

@@ -172,18 +172,25 @@ if is_personal; then
     fi
 fi
 
-# VS Code config. Work laptops use a managed VS Code build whose settings
-# carry corp defaults (proxy etc.), so they are left alone there.
-if is_personal; then
-    step "Configuring VS Code..."
-    VSCODE_USER="${HOME}/Library/Application Support/Code/User"
-    mkdir -p "$VSCODE_USER"
-    ln -sf "${DOTFILES}/vscode/settings.json" "${VSCODE_USER}/settings.json"
-    ln -sf "${DOTFILES}/vscode/keybindings.json" "${VSCODE_USER}/keybindings.json"
+# Editor config: VS Code and Cursor share vscode/, linked into whichever
+# editors are installed. Work laptops use a managed VS Code build whose
+# settings carry corp defaults (proxy etc.), so VS Code is left alone there.
+link_editor_config() {
+    local name="$1" user_dir="$2"
+    step "Configuring ${name}..."
+    mkdir -p "$user_dir"
+    ln -sf "${DOTFILES}/vscode/settings.json" "${user_dir}/settings.json"
+    ln -sf "${DOTFILES}/vscode/keybindings.json" "${user_dir}/keybindings.json"
     if [ -d "${DOTFILES}/vscode/snippets" ] && [ "$(ls -A "${DOTFILES}/vscode/snippets")" ]; then
-        ln -sf "${DOTFILES}/vscode/snippets" "${VSCODE_USER}/snippets"
+        ln -sfn "${DOTFILES}/vscode/snippets" "${user_dir}/snippets"
     fi
-    success "VS Code configured"
+    success "${name} configured"
+}
+if is_personal && [ -d "/Applications/Visual Studio Code.app" ]; then
+    link_editor_config "VS Code" "${HOME}/Library/Application Support/Code/User"
+fi
+if [ -d "/Applications/Cursor.app" ]; then
+    link_editor_config "Cursor" "${HOME}/Library/Application Support/Cursor/User"
 fi
 
 # Things Helper enables Quick Entry with Autofill. It only has to be launched
