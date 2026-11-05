@@ -25,7 +25,8 @@ box's own `~/.zshrc`, `~/.bashrc` or `~/.gitconfig` (it appends include lines),
 and switches interactive bash terminals to zsh. It needs network access to
 clone oh-my-zsh, the zsh plugins and Starship; re-run it if those steps warn.
 CLI tools (fzf, fd, eza, bat, zoxide, difftastic, delta, btop) come from the
-box's package manager; the script lists any that are missing.
+box's package manager; the script lists any that are missing. For Node, put
+[fnm](https://github.com/Schniz/fnm) in `~/.local/bin`; zsh loads it when present.
 
 ## Directory Structure
 
