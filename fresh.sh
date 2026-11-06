@@ -158,6 +158,18 @@ CLAUDE_IMPORT="@~/dotfiles/claude/CLAUDE.md"
 if ! grep -qxF "$CLAUDE_IMPORT" "${HOME}/.claude/CLAUDE.md" 2> /dev/null; then
     echo "$CLAUDE_IMPORT" >> "${HOME}/.claude/CLAUDE.md"
 fi
+# settings.json is per-machine too (rtk and work tooling add hooks to it), so
+# merge only the statusLine key into it.
+if command -v jq &> /dev/null; then
+    CLAUDE_SETTINGS="${HOME}/.claude/settings.json"
+    [ -s "$CLAUDE_SETTINGS" ] || echo '{}' > "$CLAUDE_SETTINGS"
+    CLAUDE_SETTINGS_TMP=$(mktemp)
+    jq '.statusLine = {"type": "command", "command": "bash ~/dotfiles/claude/statusline.sh"}' \
+        "$CLAUDE_SETTINGS" > "$CLAUDE_SETTINGS_TMP" && cat "$CLAUDE_SETTINGS_TMP" > "$CLAUDE_SETTINGS"
+    rm -f "$CLAUDE_SETTINGS_TMP"
+else
+    warning "jq not found; skipped the Claude Code status line"
+fi
 success "Claude Code configured"
 
 # rtk (installed from the Brewfile) compresses command output before it

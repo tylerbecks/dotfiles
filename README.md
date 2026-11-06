@@ -44,7 +44,7 @@ box's package manager; the script lists any that are missing. For Node, put
   - `functions/`: Custom ZSH functions
 - `wezterm/`: Terminal configuration
 - `config/`: Various application configurations
-- `claude/`: Global Claude Code instructions (imported from `~/.claude/CLAUDE.md`)
+- `claude/`: Global Claude Code instructions (imported from `~/.claude/CLAUDE.md`) and the status line script (merged into `~/.claude/settings.json` by the setup scripts)
 - `vscode/`: VS Code and Cursor settings, keybindings, and snippets (linked into whichever is installed)
 - `btop/`: System monitoring configuration with Night Owl theme
 - `starship/`: Shell prompt configuration
