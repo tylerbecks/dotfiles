@@ -37,14 +37,15 @@ box's package manager; the script lists any that are missing. For Node, put
 - `refresh.sh`: Script to update packages
 - `setup-mise.sh`: Language runtimes and global CLIs via mise
 - `.macos`: macOS system preferences
-- `lib/`: Shared helpers for the setup scripts (logging, work/personal detection, zsh plugins)
+- `bin/`: Personal scripts on the `PATH`, including `wt` (see [Worktree slots](#worktree-slots-for-parallel-agents))
+- `lib/`: Shared helpers for the setup scripts (logging, work/personal detection, zsh plugins, Claude Code settings merge)
 - `zsh/`: Modular ZSH configuration
   - `aliases/`: Command aliases organized by category
   - `config/`: ZSH configuration modules (history, path, plugins, etc.)
   - `functions/`: Custom ZSH functions
 - `wezterm/`: Terminal configuration
 - `config/`: Various application configurations
-- `claude/`: Global Claude Code instructions (imported from `~/.claude/CLAUDE.md`) and the status line script (merged into `~/.claude/settings.json` by the setup scripts)
+- `claude/`: Global Claude Code instructions (imported from `~/.claude/CLAUDE.md`) the status line script and the worktree-slot hook (both merged into `~/.claude/settings.json` by the setup scripts)
 - `vscode/`: VS Code and Cursor settings, keybindings, and snippets (linked into whichever is installed)
 - `btop/`: System monitoring configuration with Night Owl theme
 - `starship/`: Shell prompt configuration
@@ -58,6 +59,29 @@ The ZSH configuration is organized into modules:
 - `fzf.zsh`: Fuzzy finder configuration
 - `plugins.zsh`: Oh-My-ZSH plugins
 - `misc.zsh`: Other settings and tools
+
+## Worktree slots for parallel agents
+
+`bin/wt` keeps a fixed pool of linked worktrees ("slots") per repo so several
+agent sessions can work at once without sharing a checkout or filling the disk.
+A session claims a slot, works there and releases it. Warm slots keep their
+build output so the next session builds incrementally; burst slots, created only
+when every warm slot is busy, are deleted on release. Works with git and
+Sapling (`sl worktree`), including EdenFS checkouts.
+
+It does nothing until a machine has `~/.config/wt/config`, which stays local
+(never in this repo):
+
+```bash
+WT_IDLE_HOURS=72                      # release a claim after this long idle
+wt_repo ~/Code/app warm=3 max=8 base=origin/main
+```
+
+`wt help` lists the options and the hook functions the config can define for
+per-repo setup (installing dependencies in a new slot, extra cleanup). The
+Claude Code hook (`claude/wt-hook.sh`) tells each session how to claim a slot,
+keeps its claim alive while it's active, and runs `wt gc` at most once a day.
+`wt status` shows every slot.
 
 ## Manual Setup Steps
 

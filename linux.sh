@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/logger.sh"
 source "${SCRIPT_DIR}/lib/profile.sh"
 source "${SCRIPT_DIR}/lib/zsh-plugins.sh"
+source "${SCRIPT_DIR}/lib/claude-settings.sh"
 
 DOTFILES=$HOME/dotfiles
 
@@ -160,17 +161,8 @@ CLAUDE_IMPORT="@~/dotfiles/claude/CLAUDE.md"
 if ! grep -qxF "$CLAUDE_IMPORT" "${HOME}/.claude/CLAUDE.md" 2> /dev/null; then
     echo "$CLAUDE_IMPORT" >> "${HOME}/.claude/CLAUDE.md"
 fi
-# Same status line merge as fresh.sh
-if command -v jq &> /dev/null; then
-    CLAUDE_SETTINGS="${HOME}/.claude/settings.json"
-    [ -s "$CLAUDE_SETTINGS" ] || echo '{}' > "$CLAUDE_SETTINGS"
-    CLAUDE_SETTINGS_TMP=$(mktemp)
-    jq '.statusLine = {"type": "command", "command": "bash ~/dotfiles/claude/statusline.sh"}' \
-        "$CLAUDE_SETTINGS" > "$CLAUDE_SETTINGS_TMP" && cat "$CLAUDE_SETTINGS_TMP" > "$CLAUDE_SETTINGS"
-    rm -f "$CLAUDE_SETTINGS_TMP"
-else
-    warning "jq not found; skipped the Claude Code status line"
-fi
+# Same status line and hook merge as fresh.sh
+merge_claude_settings
 success "Claude Code configured"
 
 ###############################################################################
