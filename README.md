@@ -74,6 +74,7 @@ It does nothing until a machine has `~/.config/wt/config`, which stays local
 
 ```bash
 WT_IDLE_HOURS=72                      # release a claim after this long idle
+WT_ROOT=~/.local/share/wt/worktrees   # where slots live (this is the default)
 wt_repo ~/Code/app warm=3 max=8 base=origin/main
 ```
 

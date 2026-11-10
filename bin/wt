@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # wt — a fixed pool of reusable worktrees ("slots") for parallel agent sessions
 #
-# Each configured repo gets numbered slots next to it: linked worktrees that a
+# Each configured repo gets numbered slots under WT_ROOT: linked worktrees that a
 # session claims, works in, and releases. Warm slots are kept with their build
 # output so the next session builds incrementally; burst slots (above the warm
 # count, up to the max) are deleted on release, so disk stays bounded.
@@ -19,7 +19,7 @@
 # Config: ~/.config/wt/config (bash, machine-local, never in this repo). Without
 # it every command is a no-op, so this is safe on any machine:
 #   wt_repo ~/code/app warm=2 max=4 [base=origin/main] [name=app] [root=DIR]
-#   WT_ROOT=~/worktrees          # where slots live unless root= says otherwise
+#   WT_ROOT=~/.local/share/wt/worktrees  # where slots live unless root= says otherwise
 #   WT_IDLE_HOURS=72             # a lease with no activity this long is released
 # Optional functions in the config run at these points, with the slot path as $1:
 #   wt_after_create, wt_after_claim, wt_after_release, wt_before_remove,
@@ -29,7 +29,7 @@
 
 WT_CONFIG="${WT_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/wt/config}"
 WT_STATE="${WT_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/wt}"
-WT_ROOT="$HOME/worktrees"
+WT_ROOT="${XDG_DATA_HOME:-$HOME/.local/share}/wt/worktrees"
 WT_IDLE_HOURS=72
 WT_GC_HOURS=24
 WT_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
@@ -144,7 +144,10 @@ create_slot() {
     vcs=$(vcs_of "$main")
     path=$(slot_path "$i" "$n")
     base=$(slot_base "$i" "$vcs")
-    mkdir -p "$(slot_root "$i")"
+    mkdir -p "$(slot_root "$i")" || {
+        note "can't create $(slot_root "$i"); point WT_ROOT (or root=) in $WT_CONFIG at a writable directory"
+        return 1
+    }
     note "creating $(slot_id "$i" "$n") at $path (first build there will be cold)..."
     if [ "$vcs" = git ]; then
         git -C "$main" worktree add -q --detach "$path" "$base" >&2 || return 1
