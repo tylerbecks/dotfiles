@@ -161,8 +161,9 @@ CLAUDE_IMPORT="@~/dotfiles/claude/CLAUDE.md"
 if ! grep -qxF "$CLAUDE_IMPORT" "${HOME}/.claude/CLAUDE.md" 2> /dev/null; then
     echo "$CLAUDE_IMPORT" >> "${HOME}/.claude/CLAUDE.md"
 fi
-# Same status line and hook merge as fresh.sh
+# Same status line, hook merge and skill/agent links as fresh.sh
 merge_claude_settings
+link_claude_config
 success "Claude Code configured"
 
 ###############################################################################
@@ -171,13 +172,18 @@ success "Claude Code configured"
 
 summary "Linux setup complete!"
 
-# Tools the zsh and git config expect; delta is optional (git falls back to less)
+# Tools the zsh, git and Claude config expect; delta is optional (git falls
+# back to less), gh is for the babysit skill
 MISSING=()
-for tool in zsh git fzf fd eza bat zoxide difft delta btop starship; do
+for tool in zsh git fzf fd eza bat zoxide difft delta btop starship gh; do
     command -v "$tool" &> /dev/null || MISSING+=("$tool")
 done
 if [ ${#MISSING[@]} -gt 0 ]; then
     warning "Install these with the box's package manager: ${MISSING[*]}"
+fi
+# bun usually isn't in the box's package manager, so it gets its own note
+if ! command -v bun &> /dev/null; then
+    warning "bun not found: the babysit skill's PR watcher needs it (without it, the skill polls with gh)"
 fi
 
 info "Next steps:"

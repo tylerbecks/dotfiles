@@ -162,6 +162,8 @@ fi
 # settings.json is per-machine too, so merge in only the status line and the
 # worktree-slot hook (no-op without ~/.config/wt/config; see bin/wt)
 merge_claude_settings
+# Personal skills and agents, linked one by one so machine-local ones stay put
+link_claude_config
 success "Claude Code configured"
 
 # rtk (installed from the Brewfile) compresses command output before it

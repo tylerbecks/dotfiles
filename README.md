@@ -24,8 +24,9 @@ This links the zsh, git, bat, btop and Claude config without replacing the
 box's own `~/.zshrc`, `~/.bashrc` or `~/.gitconfig` (it appends include lines),
 and switches interactive bash terminals to zsh. It needs network access to
 clone oh-my-zsh, the zsh plugins and Starship; re-run it if those steps warn.
-CLI tools (fzf, fd, eza, bat, zoxide, difftastic, delta, btop) come from the
-box's package manager; the script lists any that are missing. For Node, put
+CLI tools (fzf, fd, eza, bat, zoxide, difftastic, delta, btop, gh) come from the
+box's package manager; the script lists any that are missing, and notes when
+`bun` is missing (the babysit skill's PR watcher uses it). For Node, put
 [fnm](https://github.com/Schniz/fnm) in `~/.local/bin`; zsh loads it when present.
 
 ## Directory Structure
@@ -46,6 +47,8 @@ box's package manager; the script lists any that are missing. For Node, put
 - `wezterm/`: Terminal configuration
 - `config/`: Various application configurations
 - `claude/`: Global Claude Code instructions (imported from `~/.claude/CLAUDE.md`) the status line script and the worktree-slot hook (both merged into `~/.claude/settings.json` by the setup scripts)
+  - `skills/` and `agents/`: Personal Claude Code skills and subagents, each linked into `~/.claude/skills/` or `~/.claude/agents/` by the setup scripts. They follow a repo's own docs and conventions where it has them. Skills: `babysit` (shepherds a GitHub PR to merge; its watcher needs `bun`, installed by mise on Macs), `clean-code` (runs the `code-reviewer`, `test-reviewer` and `comment-reviewer` agents over a change), `writing-tests`, `test-audit`, `simplify` and `visual-parity`. The `test-runner` agent runs the tests a change affects.
+  - `guard.sh`: Hook that stops Claude from running recursive force deletes, force pushes and hard resets, or editing `.env` files and `.git/` (merged into `~/.claude/settings.json`; tests in `guard.test.sh`)
 - `vscode/`: VS Code and Cursor settings, keybindings, and snippets (linked into whichever is installed)
 - `btop/`: System monitoring configuration with Night Owl theme
 - `starship/`: Shell prompt configuration
