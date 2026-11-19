@@ -31,6 +31,10 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # Set sidebar icon size to medium
 defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
 
+# Show scroll bars only while scrolling, even with a mouse connected (the
+# default shows them all the time whenever a mouse is attached)
+defaults write NSGlobalDomain AppleShowScrollBars -string "WhenScrolling"
+
 # Expand save panel by default
 defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
 defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
