@@ -6,6 +6,11 @@
 # worktree-slot hook (claude/wt-hook.sh) and the guard hook (claude/guard.sh),
 # each replaced rather than duplicated on re-runs.
 #
+# Everything here, and the skills and agents link_claude_config adds, belongs
+# on every machine (personal, work and Linux boxes), so neither function checks
+# is_work/is_personal. The guard hook sits alongside any PreToolUse hooks work
+# tooling adds; a deny from either one wins.
+#
 # Usage: source lib/claude-settings.sh, then merge_claude_settings
 
 merge_claude_settings() {

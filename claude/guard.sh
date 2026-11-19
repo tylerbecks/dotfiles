@@ -32,15 +32,18 @@ main() {
 }
 
 # Short flags are matched as bundles (-rf, -fv, -fu), so extra letters don't
-# slip past. Labels line up with the regexes by index.
+# slip past. A command name may follow a path (/bin/rm), a backslash (\rm) or a
+# subshell opener, not just a separator. Labels line up with the regexes by
+# index.
+START='(^|[;&|[:space:]()`/\\])'
 COMMAND_REGEXES=(
-    '(^|[;&|[:space:]])rm[[:space:]]+-[[:alnum:]]*([rR][[:alnum:]]*[fF]|[fF][[:alnum:]]*[rR])'
-    '(^|[;&|[:space:]])rm[[:space:]]+([^;&|]*[[:space:]])?(-[[:alnum:]]*[rR][[:alnum:]]*|--recursive)([[:space:]][^;&|]*)*[[:space:]](-[[:alnum:]]*[fF][[:alnum:]]*|--force)([[:space:]]|$)'
-    '(^|[;&|[:space:]])rm[[:space:]]+([^;&|]*[[:space:]])?(-[[:alnum:]]*[fF][[:alnum:]]*|--force)([[:space:]][^;&|]*)*[[:space:]](-[[:alnum:]]*[rR][[:alnum:]]*|--recursive)([[:space:]]|$)'
-    '(^|[;&|[:space:]])git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]](-[[:alnum:]]*f[[:alnum:]]*|--force)([[:space:]]|$)'
-    '(^|[;&|[:space:]])git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]]--mirror([[:space:]]|$)'
-    '(^|[;&|[:space:]])git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]][+][^[:space:]]'
-    '(^|[;&|[:space:]])git[[:space:]]+([^;&|]*[[:space:]])?reset([[:space:]][^;&|]*)*[[:space:]]--hard([[:space:]]|$)'
+    "${START}"'rm[[:space:]]+-[[:alnum:]]*([rR][[:alnum:]]*[fF]|[fF][[:alnum:]]*[rR])'
+    "${START}"'rm[[:space:]]+([^;&|]*[[:space:]])?(-[[:alnum:]]*[rR][[:alnum:]]*|--recursive)([[:space:]][^;&|]*)*[[:space:]](-[[:alnum:]]*[fF][[:alnum:]]*|--force)([[:space:]]|$)'
+    "${START}"'rm[[:space:]]+([^;&|]*[[:space:]])?(-[[:alnum:]]*[fF][[:alnum:]]*|--force)([[:space:]][^;&|]*)*[[:space:]](-[[:alnum:]]*[rR][[:alnum:]]*|--recursive)([[:space:]]|$)'
+    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]](-[[:alnum:]]*f[[:alnum:]]*|--force)([[:space:]]|$)'
+    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]]--mirror([[:space:]]|$)'
+    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]][+][^[:space:]]'
+    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?reset([[:space:]][^;&|]*)*[[:space:]]--hard([[:space:]]|$)'
 )
 COMMAND_LABELS=(
     "rm -rf"
@@ -52,10 +55,29 @@ COMMAND_LABELS=(
     "git reset --hard"
 )
 
+# Quoted strings are checked as commands of their own and replaced by a
+# placeholder in the outer command, so `git commit -m 'fix push -f'` passes
+# while `bash -c "rm -rf x"` is still caught. Newlines separate commands, so a
+# flag on the next line can't complete a match.
 command_reason() {
-    local command="$1" index
+    local rest="${1//$'\n'/;}" quoted segment
+    local segments=()
+    while [[ "$rest" =~ (\"[^\"]*\"|\'[^\']*\') ]]; do
+        quoted="${BASH_REMATCH[1]}"
+        segments+=("${quoted:1:${#quoted}-2}")
+        rest="${rest/"$quoted"/Q}"
+    done
+    segments+=("$rest")
+    for segment in "${segments[@]}"; do
+        segment_reason "$segment" && return 0
+    done
+    return 1
+}
+
+segment_reason() {
+    local index
     for index in "${!COMMAND_REGEXES[@]}"; do
-        if [[ "$command" =~ ${COMMAND_REGEXES[$index]} ]]; then
+        if [[ "$1" =~ ${COMMAND_REGEXES[$index]} ]]; then
             echo "${COMMAND_LABELS[$index]}"
             return 0
         fi
