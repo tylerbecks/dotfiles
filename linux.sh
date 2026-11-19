@@ -35,14 +35,21 @@ info "Setting up a ${BOLD}${DOTFILES_PROFILE}${NC} machine (override with --work
 
 header "Shell Configuration"
 
-# Clone instead of running the oh-my-zsh installer, which replaces ~/.zshrc
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
+# Clone instead of running the oh-my-zsh installer, which replaces ~/.zshrc.
+# Check for oh-my-zsh.sh, not the directory: install_zsh_plugins creates
+# ~/.oh-my-zsh/custom even when this clone fails, which would otherwise look
+# installed on the next run. Plugins already in custom/ are carried over.
+if [ ! -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
     step "Installing oh-my-zsh..."
-    if git clone --depth 1 https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh" &> /dev/null; then
+    OMZ_TMP="$(mktemp -d)"
+    if git clone --depth 1 https://github.com/ohmyzsh/ohmyzsh.git "$OMZ_TMP/ohmyzsh" &> /dev/null &&
+        { [ ! -d "$HOME/.oh-my-zsh/custom" ] || cp -R "$HOME/.oh-my-zsh/custom/." "$OMZ_TMP/ohmyzsh/custom/"; } &&
+        rm -rf "$HOME/.oh-my-zsh" && mv "$OMZ_TMP/ohmyzsh" "$HOME/.oh-my-zsh"; then
         success "oh-my-zsh installed"
     else
         warning "Failed to clone oh-my-zsh (re-run with network access)"
     fi
+    rm -rf "$OMZ_TMP"
 else
     success "oh-my-zsh already installed"
 fi
