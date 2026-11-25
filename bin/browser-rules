@@ -28,6 +28,11 @@ need_stylebot() {
         echo "Error: the stylebot CLI is missing. It's in config/mise/config.toml; run 'mise install', then 'stylebot install'." >&2
         exit 1
     fi
+    # Check the connection once, so a missing setting gives one error instead of one per file.
+    if ! stylebot styles < /dev/null > /dev/null; then
+        echo "Error: can't reach Stylebot. Open Chrome, turn on \"Allow command line access\" in Stylebot's options, and run 'stylebot install' once." >&2
+        exit 1
+    fi
 }
 
 # browser/stylebot/github.com.css -> github.com

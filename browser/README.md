@@ -28,6 +28,13 @@ the rules live here.
      share styles between Macs, Google Drive sync.
    - Run `stylebot install` once (the CLI comes from mise), then
      `browser-rules push`.
+   - **Dia:** `stylebot install` only registers with the browsers it knows
+     (Chrome, Arc and others), not Dia. Link Chrome's registration into Dia's
+     folder, then reload Stylebot in Dia:
+     ```bash
+     ln -sfn ~/Library/Application\ Support/Google/Chrome/NativeMessagingHosts/dev.stylebot.cli.json \
+       ~/Library/Application\ Support/Dia/User\ Data/NativeMessagingHosts/dev.stylebot.cli.json
+     ```
 
 ## Day to day
 
