@@ -14,3 +14,4 @@ bun = "latest"
 # survive Node upgrades (npm globals live inside a single Node install).
 "npm:@colbymchenry/codegraph" = "latest"
 "npm:better-commits" = "latest"  # backs the `git c` alias
+"npm:@stylebot/cli" = "latest"   # backs bin/browser-rules

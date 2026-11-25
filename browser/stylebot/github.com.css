@@ -1,0 +1,7 @@
+/* Use the full window width instead of GitHub's fixed max width.
+   Newer React-rendered pages may not use these classes. Last checked 2026-11-25. */
+.container-xl,
+.container-lg,
+.application-main .container-xl {
+  max-width: none !important;
+}

@@ -1,0 +1,11 @@
+/* Larger, easier-to-read text with comments capped at a comfortable line length.
+   HN's markup has been stable for years. Last checked 2026-11-25. */
+.titleline,
+.commtext {
+  font-size: 15px !important;
+  line-height: 1.5;
+}
+
+.comment {
+  max-width: 75ch;
+}

@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+# Keeps the browser rules in ~/dotfiles/browser in sync with the browser.
+# See browser/README.md for the one-time setup.
+set -e
+set -u
+set -o pipefail
+
+BROWSER_DIR="${DOTFILES:-$HOME/dotfiles}/browser"
+STYLES_DIR="${BROWSER_DIR}/stylebot"
+FILTER_LIST="${BROWSER_DIR}/ubol/personal.txt"
+FILTER_LIST_URL="https://raw.githubusercontent.com/tylerbecks/dotfiles/main/browser/ubol/personal.txt"
+YT_NEUTER_URL="https://raw.githubusercontent.com/mchangrh/yt-neuter/main/yt-neuter.txt"
+
+usage() {
+    cat <<EOF
+Usage: browser-rules <command>
+
+  diff   Show what push would change in Stylebot
+  push   Copy browser/stylebot/*.css into Stylebot (file name = site)
+  pull   Copy each site's CSS from Stylebot back into its file
+  lint   Check browser/ubol/personal.txt for rules uBOL would drop
+  urls   Print the filter list URLs to add in uBOL
+EOF
+}
+
+need_stylebot() {
+    if ! command -v stylebot >/dev/null 2>&1; then
+        echo "Error: the stylebot CLI is missing. It's in config/mise/config.toml; run 'mise install', then 'stylebot install'." >&2
+        exit 1
+    fi
+}
+
+# browser/stylebot/github.com.css -> github.com
+site_for() {
+    basename "$1" .css
+}
+
+load_style_files() {
+    shopt -s nullglob
+    STYLE_FILES=("${STYLES_DIR}"/*.css)
+    if [ ${#STYLE_FILES[@]} -eq 0 ]; then
+        echo "No .css files in ${STYLES_DIR}" >&2
+        exit 1
+    fi
+}
+
+# The CLI can read CSS from stdin, so give it /dev/null rather than the terminal.
+sb() {
+    stylebot "$@" < /dev/null
+}
+
+cmd_diff() {
+    need_stylebot
+    load_style_files
+    local file
+    for file in "${STYLE_FILES[@]}"; do
+        echo "== $(site_for "$file")"
+        sb css diff "$(site_for "$file")" --file "$file" || echo "(diff failed for $(site_for "$file"))"
+    done
+}
+
+cmd_push() {
+    need_stylebot
+    load_style_files
+    local file
+    for file in "${STYLE_FILES[@]}"; do
+        # Stylebot deletes a style when it's given empty CSS, so never push an empty file.
+        if ! grep -q '[^[:space:]]' "$file"; then
+            echo "Skipping empty $(basename "$file")"
+            continue
+        fi
+        sb css set "$(site_for "$file")" --file "$file"
+    done
+}
+
+cmd_pull() {
+    need_stylebot
+    load_style_files
+    local file
+    for file in "${STYLE_FILES[@]}"; do
+        if sb css get "$(site_for "$file")" > "${file}.tmp"; then
+            mv "${file}.tmp" "$file"
+            echo "Pulled $(site_for "$file")"
+        else
+            rm -f "${file}.tmp"
+            echo "Couldn't pull $(site_for "$file"); left the file as it was" >&2
+        fi
+    done
+    echo
+    echo "All styles in Stylebot (add a file for any you want to keep in the repo):"
+    sb styles
+}
+
+cmd_lint() {
+    # uBOL silently drops cosmetic rules without a hostname (##, #?#, #@#, #$#).
+    local generic
+    generic=$(grep -nE '^#[@?$]?#' "$FILTER_LIST" || true)
+    if [ -n "$generic" ]; then
+        echo "These rules have no hostname, so uBOL will drop them:" >&2
+        echo "$generic" >&2
+        exit 1
+    fi
+    echo "OK: every rule in $(basename "$FILTER_LIST") names a site"
+}
+
+cmd_urls() {
+    echo "In uBOL: Dashboard > Filter lists > Add filter list, then paste each URL."
+    echo "  Personal: ${FILTER_LIST_URL}"
+    echo "  YouTube:  ${YT_NEUTER_URL}"
+}
+
+case "${1:-}" in
+    diff) cmd_diff ;;
+    push) cmd_push ;;
+    pull) cmd_pull ;;
+    lint) cmd_lint ;;
+    urls) cmd_urls ;;
+    -h|--help|help|"") usage ;;
+    *) usage >&2; exit 2 ;;
+esac

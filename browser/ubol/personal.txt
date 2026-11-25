@@ -1,0 +1,26 @@
+! Title: Tyler's personal filters
+! Description: Site-specific cosmetic fixes for uBlock Origin Lite. uBOL drops rules without a hostname, so every rule starts with one.
+! Expires: 1 day
+! Homepage: https://github.com/tylerbecks/dotfiles/tree/main/browser
+!
+! uBOL subscribes to this file by its raw GitHub URL (see browser/README.md).
+! This repo is public: never put intranet, client or other private hostnames here.
+! Selectors break when sites change their markup; each block says when it was last checked.
+
+! ===== Amazon: sponsored search results (checked 2026-11-25 against a saved results page) =====
+amazon.com##.s-main-slot .AdHolder
+amazon.com##.s-main-slot > .s-result-item:has(.puis-sponsored-label-text, .s-widget-sponsored-label-text, .sponsored-brand-label-info-desktop, .sb-desktop)
+amazon.com##.s-left-ads-item
+
+! ===== Amazon: sponsored carousels on product pages (community selectors, not yet checked) =====
+amazon.com##[id^="sp_detail"]
+amazon.com##.a-carousel-container:has(.sp_desktop_sponsored_label)
+
+! ===== Reddit: promoted posts (community selector, not yet checked) =====
+reddit.com##shreddit-ad-post
+reddit.com##shreddit-comments-page-ad
+
+! ===== Soft walls: template =====
+! When an article is in the page but covered or scroll-locked, copy these for that site:
+! example.com##html, body:style(overflow: auto !important; position: static !important)
+! example.com##.paywall-overlay
