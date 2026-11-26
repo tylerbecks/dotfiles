@@ -52,6 +52,54 @@ link_claude_config() {
     link_entries "${repo}/claude/agents" "${HOME}/.claude/agents"
 }
 
+# Checks what merge_claude_settings and link_claude_config set up, without
+# changing anything. Returns 1 if something is missing.
+# Usage: source lib/claude-settings.sh, then check_claude_config
+check_claude_config() {
+    local settings="${HOME}/.claude/settings.json" repo status=0 entry name
+    repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+    if ! command -v jq &> /dev/null; then
+        warning "jq not found; skipped checking ~/.claude/settings.json"
+    elif [ ! -s "$settings" ]; then
+        error "~/.claude/settings.json is missing"
+        status=1
+    else
+        if ! jq -e '.statusLine.command == "bash ~/dotfiles/claude/statusline.sh"' "$settings" &> /dev/null; then
+            error "The status line isn't set in ~/.claude/settings.json"
+            status=1
+        fi
+        local event command
+        for event in "SessionStart:bash ~/dotfiles/claude/wt-hook.sh" \
+            "UserPromptSubmit:bash ~/dotfiles/claude/wt-hook.sh" \
+            "PreToolUse:bash ~/dotfiles/claude/guard.sh"; do
+            command="${event#*:}"
+            event="${event%%:*}"
+            if ! jq -e --arg event "$event" --arg command "$command" \
+                'any(.hooks[$event][]?.hooks[]?; .command == $command)' "$settings" &> /dev/null; then
+                error "The ${event} hook (${command}) is missing from ~/.claude/settings.json"
+                status=1
+            fi
+        done
+        [ "$status" -eq 0 ] && success "Status line and hooks are in ~/.claude/settings.json"
+    fi
+
+    local missing=0
+    for entry in "${repo}/claude/skills"/* "${repo}/claude/agents"/*; do
+        [ -e "$entry" ] || continue
+        name="$(basename "$(dirname "$entry")")/$(basename "$entry")"
+        if [ "$(readlink "${HOME}/.claude/${name}")" != "$entry" ]; then
+            error "~/.claude/${name} isn't linked to this repo"
+            missing=1
+        fi
+    done
+    if [ "$missing" -eq 0 ]; then
+        success "Skills and agents are linked into ~/.claude"
+    else
+        status=1
+    fi
+    return "$status"
+}
+
 link_entries() {
     local source_dir="$1" target_dir="$2" entry name
     mkdir -p "$target_dir"

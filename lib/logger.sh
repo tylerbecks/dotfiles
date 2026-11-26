@@ -3,6 +3,8 @@
 # Professional logging utilities for dotfiles setup scripts
 # Source this file to get clean, colored output for CLI operations
 
+# Sourcing scripts use some of these and not others
+# shellcheck disable=SC2034
 # Only use colors if stdout is a terminal
 if [[ -t 1 ]]; then
     BOLD='\033[1m'

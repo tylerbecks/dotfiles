@@ -14,6 +14,12 @@ bash ~/dotfiles/fresh.sh
 The script detects work laptops and skips personal-only apps and settings
 there. Override the detection with `--work` or `--personal`.
 
+Later, `bash ~/dotfiles/refresh.sh` updates packages and re-links config, so
+config added to the repo since a machine was set up reaches it too.
+`bash ~/dotfiles/doctor.sh` checks a machine against the repo without changing
+anything (config links, Claude Code hooks, zsh plugins, tools, Brewfile); the
+setup scripts run it at the end.
+
 ### Linux dev boxes
 
 ```bash
@@ -35,12 +41,14 @@ box's package manager; the script lists any that are missing, and notes when
 - `brew.sh`: Installs Homebrew and everything in the `Brewfile`
 - `fresh.sh`: Main installation script
 - `linux.sh`: Config-only setup for Linux dev boxes
-- `refresh.sh`: Script to update packages
+- `refresh.sh`: Updates packages and re-applies the config files
+- `doctor.sh`: Read-only check that a machine matches the repo
 - `setup-mise.sh`: Language runtimes and global CLIs via mise
 - `.macos`: macOS system preferences
 - `bin/`: Personal scripts on the `PATH`, including `wt` (see [Worktree slots](#worktree-slots-for-parallel-agents)) and `browser-rules`
 - `browser/`: Chrome rules: a uBlock Origin Lite filter list and per-site Stylebot CSS, synced with `browser-rules` (setup in [browser/README.md](browser/README.md))
-- `lib/`: Shared helpers for the setup scripts (logging, work/personal detection, zsh plugins, Claude Code settings merge)
+- `lib/`: Shared helpers for the setup scripts (logging, work/personal detection, zsh plugins, Claude Code settings merge). `lib/config-files.sh` lists every config file the repo puts in `~` (see [Adding a config file](#adding-a-config-file))
+- `.github/workflows/ci.yml`: On every push, runs shellcheck, the zsh syntax check and the tests, and runs `linux.sh` twice and then `doctor.sh` on a clean Ubuntu box
 - `zsh/`: Modular ZSH configuration
   - `aliases/`: Command aliases organized by category
   - `config/`: ZSH configuration modules (history, path, plugins, etc.)
@@ -63,6 +71,15 @@ The ZSH configuration is organized into modules:
 - `fzf.zsh`: Fuzzy finder configuration
 - `plugins.zsh`: Oh-My-ZSH plugins
 - `misc.zsh`: Other settings and tools
+
+## Adding a config file
+
+Add a row to `CONFIG_FILES` in `lib/config-files.sh`; the setup scripts,
+`refresh.sh` and `doctor.sh` all read that list. Each row says how the file gets
+into `~` (`link`, `copy` for files an app rewrites itself, `line` to add an
+include line to a file that stays the machine's own, or `git-include`) and which
+machines want it (`all`, `mac`, `linux`, `vscode`, `cursor`). A real file in the
+way of a link is moved aside to `<name>.pre-dotfiles`, not deleted.
 
 ## Worktree slots for parallel agents
 
