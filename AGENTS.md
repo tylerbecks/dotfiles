@@ -15,6 +15,6 @@ Setup scripts and config for my Macs, both personal and Meta work laptops, plus 
 ## Rules
 
 - **This repo is public.** Never commit secrets or Meta-internal details (internal hostnames, credential paths, internal tool names). Those belong in the machine's local files.
-- Commits use my personal email; the repo's git config already sets it.
+- Commits use my personal email; the repo's git config already sets it. The setup scripts set that only in a clone whose origin is tylerbecks/dotfiles, and never set the global email, so forks and friends' machines commit as their owners. Personal settings like commit signing are opt-in scripts (`setup-git-signing.sh`) that write to the machine's own files.
 - Don't run `fresh.sh`, `brew.sh` or `.macos` to test: they use sudo, change system settings and quit apps. Check syntax with `bash -n` / `zsh -n` and `shellcheck -x -S warning` (CI runs both, plus the tests and `linux.sh` on Ubuntu; see `.github/workflows/ci.yml`). Test file changes against a throwaway `HOME` with `~/dotfiles` linked to your checkout (`T=$(mktemp -d); ln -s "$PWD" "$T/dotfiles"; HOME=$T ...`): the config scripts refuse to run from any copy that isn't `~/dotfiles`.
 - If `git push` fails with "Operation not permitted", the agent sandbox is blocking SSH; ask me to run `! git -C ~/dotfiles push`.
