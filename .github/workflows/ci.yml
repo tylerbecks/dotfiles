@@ -16,7 +16,7 @@ jobs:
   lint:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck zsh
       - name: shellcheck
         run: |
@@ -33,7 +33,7 @@ jobs:
   mac:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Scripts parse under /bin/bash (3.2)
         run: for f in *.sh .macos lib/*.sh claude/*.sh; do /bin/bash -n "$f"; done
       - name: guard hook tests (BSD grep and sed)
@@ -42,7 +42,7 @@ jobs:
   linux-setup:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       # What a dev box usually has from its package manager
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq zsh fzf eza zoxide git-delta btop jq
       # The runner image leaves /usr/share/zsh world-writable, which a normal
