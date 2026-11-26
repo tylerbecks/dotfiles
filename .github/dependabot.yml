@@ -8,4 +8,4 @@ updates:
     schedule:
       interval: monthly
     commit-message:
-      prefix: "🧹 chore"
+      prefix: "chore"
