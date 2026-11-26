@@ -48,7 +48,7 @@ box's package manager; the script lists any that are missing, and notes when
 - `bin/`: Personal scripts on the `PATH`, including `wt` (see [Worktree slots](#worktree-slots-for-parallel-agents)) and `browser-rules`
 - `browser/`: Chrome rules: a uBlock Origin Lite filter list and per-site Stylebot CSS, synced with `browser-rules` (setup in [browser/README.md](browser/README.md))
 - `lib/`: Shared helpers for the setup scripts (logging, work/personal detection, zsh plugins, Claude Code settings merge). `lib/config-files.sh` lists every config file the repo puts in `~` (see [Adding a config file](#adding-a-config-file))
-- `.github/workflows/ci.yml`: On every push, runs shellcheck, the zsh syntax check and the tests, and runs `linux.sh` twice and then `doctor.sh` on a clean Ubuntu box
+- `.github/workflows/ci.yml`: On every push, runs shellcheck, the zsh syntax check and the tests, and runs `linux.sh` twice and then `doctor.sh` on a clean Ubuntu box. `.github/dependabot.yml` opens a monthly PR when the actions it uses have new versions
 - `zsh/`: Modular ZSH configuration
   - `aliases/`: Command aliases organized by category
   - `config/`: ZSH configuration modules (history, path, plugins, etc.)
