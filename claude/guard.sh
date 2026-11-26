@@ -55,9 +55,10 @@ COMMAND_REGEXES=(
     # Any git subcommand: commit, push, merge, rebase and am all take it
     "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?--no-verify([[:space:]=]|$)'
     # -n is --no-verify only for commit (push -n is a dry run). A bundle is
-    # commit's flagless short options, then optionally one that takes an
-    # argument (-anm "msg"), so -uno (untracked-files=no) passes.
-    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?commit([[:space:]][^;&|]*)*[[:space:]]-[aeqsvz]*n[aeqsvz]*[mFCct]?([[:space:]]|$)'
+    # commit's flagless short options, then optionally one that takes a value,
+    # given next (-anm "msg") or attached (-nmmsg, -nuall). An n after a
+    # value-taking option is part of the value, so -mnope and -uno pass.
+    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?commit([[:space:]][^;&|]*)*[[:space:]]-[aeqsvz]*n[aeqsvz]*([mFCctuS][^[:space:]]*)?([[:space:]]|$)'
 )
 COMMAND_LABELS=(
     "rm -rf"
