@@ -44,9 +44,10 @@ main() {
 # subshell opener, not just a separator. Labels line up with the regexes by
 # index.
 START='(^|[;&|[:space:]()`/\\])'
-# After a flag: whitespace, the end, or a shell separator (--no-verify; echo,
-# -f&& ..., (git push --force)), so a chained command can't hide the flag.
-END='([;&|()`[:space:]]|$)'
+# After a flag: whitespace, the end, a shell separator or a redirection
+# (--no-verify; echo, -f&& ..., (git push --force), -n>log), so a chained
+# command or redirected output can't hide the flag.
+END='([;&|()<>`[:space:]]|$)'
 COMMAND_REGEXES=(
     "${START}"'rm[[:space:]]+-[[:alnum:]]*([rR][[:alnum:]]*[fF]|[fF][[:alnum:]]*[rR])'
     "${START}"'rm[[:space:]]+([^;&|]*[[:space:]])?(-[[:alnum:]]*[rR][[:alnum:]]*|--recursive)([[:space:]][^;&|]*)*[[:space:]](-[[:alnum:]]*[fF][[:alnum:]]*|--force)'"${END}"
@@ -76,17 +77,24 @@ COMMAND_LABELS=(
     "git commit -n"
 )
 
-# Quoted strings are checked as commands of their own and replaced by a
-# placeholder in the outer command, so `git commit -m 'fix push -f'` passes
-# while `bash -c "rm -rf x"` is still caught. Newlines separate commands, so a
-# flag on the next line can't complete a match.
+# Quoted text with spaces or shell symbols in it is checked as a command of
+# its own and replaced by a placeholder in the outer command, so
+# `git commit -m 'fix push -f'` passes while `bash -c "rm -rf x"` is still
+# caught. Quoted text that is a single word is the same word to the shell, so
+# its quotes are dropped instead: "--no-verify", '-n' and "+main" stay flags.
+# Newlines separate commands, so a flag on the next line can't complete a match.
 command_reason() {
-    local rest="${1//$'\n'/;}" quoted segment
+    local rest="${1//$'\n'/;}" quoted inner segment
     local segments=()
     while [[ "$rest" =~ (\"[^\"]*\"|\'[^\']*\') ]]; do
         quoted="${BASH_REMATCH[1]}"
-        segments+=("${quoted:1:${#quoted}-2}")
-        rest="${rest/"$quoted"/Q}"
+        inner="${quoted:1:${#quoted}-2}"
+        if [[ "$inner" =~ ^[^[:space:]\;\&\|\(\)\<\>\`\"\']+$ ]]; then
+            rest="${rest/"$quoted"/$inner}"
+        else
+            segments+=("$inner")
+            rest="${rest/"$quoted"/Q}"
+        fi
     done
     segments+=("$rest")
     for segment in "${segments[@]}"; do

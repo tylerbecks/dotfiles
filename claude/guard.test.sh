@@ -64,6 +64,12 @@ deny_command 'git commit -n&& git push'
 deny_command 'git push -f; echo done'
 deny_command '(git push --force)'
 deny_command 'git reset --hard&&ls'
+deny_command 'git commit --allow-empty -m wip --no-verify>commit.log'
+deny_command 'git commit -m wip -n>commit.log'
+deny_command 'git commit --allow-empty -m wip "--no-verify"'
+deny_command "git commit -m wip '-n'"
+deny_command 'git commit -m wip --no-"verify"'
+deny_command 'git push origin "+main"'
 
 allow_command 'rm build/output.txt'
 allow_command 'rm -r build'
@@ -79,6 +85,8 @@ allow_command $'git push origin main\nls -f'
 allow_command 'git push -n origin main'
 allow_command 'git commit -uno -m "wip"'
 allow_command 'git commit -mnope'
+allow_command 'git commit -m "wip" && git push origin "feature"'
+allow_command 'git commit -m "skip with -n or --no-verify" > commit.log'
 allow_command 'git log -n 5'
 allow_command "git commit -m 'explain why --no-verify is blocked'"
 
