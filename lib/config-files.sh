@@ -249,9 +249,12 @@ setup_bat_theme() {
 
 # Everything fresh.sh, linux.sh and refresh.sh set up the same way: the config
 # files above, the git email, the bat theme, and Claude Code's settings,
-# skills and agents. Safe to run again. Returns 1 if a config file failed.
+# skills and agents. Safe to run again. Returns 1 if a config file failed, or
+# right away, changing nothing, when this copy of the repo isn't ~/dotfiles
+# (link_claude_config links to wherever this file lives).
 setup_shared_config() {
     local status=0
+    require_dotfiles_repo || return 1
     step "Linking config files..."
     if apply_config_files; then
         success "Config files in place"
