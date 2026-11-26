@@ -45,6 +45,9 @@ jobs:
       - uses: actions/checkout@v4
       # What a dev box usually has from its package manager
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq zsh fzf eza zoxide git-delta btop jq
+      # The runner image leaves /usr/share/zsh world-writable, which a normal
+      # box doesn't; oh-my-zsh then refuses to load completions from it
+      - run: sudo chmod -R go-w /usr/share/zsh
       # linux.sh, the zsh config and the Claude hooks all expect ~/dotfiles
       - run: ln -s "$GITHUB_WORKSPACE" "$HOME/dotfiles"
       - run: bash ~/dotfiles/linux.sh
