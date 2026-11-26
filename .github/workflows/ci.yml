@@ -20,7 +20,7 @@ jobs:
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck zsh
       - name: shellcheck
         run: |
-          shellcheck -x -S warning *.sh .macos lib/*.sh claude/*.sh \
+          shellcheck -x -S warning *.sh .macos lib/*.sh claude/*.sh claude/skills/*/scripts/*.sh \
             $(grep -l '^#!/usr/bin/env bash' bin/*)
       - name: zsh syntax
         run: zsh -n zsh/.zshrc zsh/*/*.zsh bin/disk-cleanup
