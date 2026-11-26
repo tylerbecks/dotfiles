@@ -1,0 +1,73 @@
+# Lint, tests, and a real linux.sh run on a clean Ubuntu box. fresh.sh can't
+# run here (sudo, system settings, App Store), so the Mac job only checks that
+# the scripts parse under macOS's bash 3.2 and runs the tests that use BSD tools.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck zsh
+      - name: shellcheck
+        run: |
+          shellcheck -x -S warning *.sh .macos lib/*.sh claude/*.sh \
+            $(grep -l '^#!/usr/bin/env bash' bin/*)
+      - name: zsh syntax
+        run: zsh -n zsh/.zshrc zsh/*/*.zsh bin/disk-cleanup
+      - uses: oven-sh/setup-bun@v2
+      - name: babysit watcher tests
+        run: bun test claude/skills/babysit
+      - name: guard hook tests
+        run: bash claude/guard.test.sh
+
+  mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scripts parse under /bin/bash (3.2)
+        run: for f in *.sh .macos lib/*.sh claude/*.sh; do /bin/bash -n "$f"; done
+      - name: guard hook tests (BSD grep and sed)
+        run: bash claude/guard.test.sh
+
+  linux-setup:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      # What a dev box usually has from its package manager
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq zsh fzf eza zoxide git-delta btop jq
+      # The runner image leaves /usr/share/zsh world-writable, which a normal
+      # box doesn't; oh-my-zsh then refuses to load completions from it
+      - run: sudo chmod -R go-w /usr/share/zsh
+      # linux.sh, the zsh config and the Claude hooks all expect ~/dotfiles
+      - run: ln -s "$GITHUB_WORKSPACE" "$HOME/dotfiles"
+      - run: bash ~/dotfiles/linux.sh
+      - name: linux.sh again (must be safe to re-run)
+        run: bash ~/dotfiles/linux.sh
+      - name: Nothing added twice
+        run: |
+          test "$(grep -cxF 'source "$HOME/dotfiles/zsh/.zshrc"' ~/.zshrc)" = 1
+          test "$(grep -cxF '@~/dotfiles/claude/CLAUDE.md' ~/.claude/CLAUDE.md)" = 1
+          test "$(git config --global --get-all include.path | sort | uniq -d)" = ""
+          test "$(grep -c 'exec zsh' ~/.bashrc)" = 1
+      - run: bash ~/dotfiles/doctor.sh
+      - name: zsh starts without errors
+        # In a terminal, as it's used: `script` gives zsh a pty, and the
+        # plugins' tput calls need a terminal type. Without a pty, fzf's
+        # packaged key bindings fail to restore the zle option. Any output
+        # (errors included, since a pty merges them) fails the step.
+        env:
+          TERM: xterm-256color
+        run: |
+          script -qec "zsh -i -c exit" /dev/null < /dev/null > zsh-output.txt
+          cat -v zsh-output.txt
+          test ! -s zsh-output.txt

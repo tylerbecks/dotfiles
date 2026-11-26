@@ -2,7 +2,7 @@
 
 # Source logging utilities
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${SCRIPT_DIR}/lib/logger.sh"
+source "${SCRIPT_DIR}/lib/config-files.sh"
 
 ###############################################################################
 # Mise Setup
@@ -25,9 +25,11 @@ fi
 header "Global Config"
 
 step "Linking mise config..."
-mkdir -p "${HOME}/.config/mise"
-ln -sf "${SCRIPT_DIR}/config/mise/config.toml" "${HOME}/.config/mise/config.toml"
-success "mise config linked"
+if apply_config_files .config/mise/config.toml; then
+    success "mise config linked"
+else
+    exit 1
+fi
 
 ###############################################################################
 # Tools

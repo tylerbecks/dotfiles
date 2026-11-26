@@ -1,0 +1,5 @@
+# Messages print paths as "~/..." on purpose; they're display text, not paths
+# the shell should expand.
+disable=SC2088
+# Scripts source lib/*.sh with paths built from $SCRIPT_DIR
+external-sources=true

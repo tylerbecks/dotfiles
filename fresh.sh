@@ -4,7 +4,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/logger.sh"
 source "${SCRIPT_DIR}/lib/profile.sh"
-source "${SCRIPT_DIR}/lib/claude-settings.sh"
+source "${SCRIPT_DIR}/lib/config-files.sh"
 
 DOTFILES=$HOME/dotfiles
 
@@ -90,81 +90,23 @@ else
     success "oh-my-zsh already installed"
 fi
 
-# Symlink zsh configuration
-step "Symlinking .zshrc..."
-rm -rf "$HOME/.zshrc"
-ln -sf "${DOTFILES}/zsh/.zshrc" "${HOME}/.zshrc"
-success "Shell config linked"
-
-# ~/.gitconfig stays a real per-machine file (work laptops ship one with corp
-# settings) that includes the shared config from this repo.
-step "Configuring git..."
-[ -L "${HOME}/.gitconfig" ] && rm "${HOME}/.gitconfig"
-if ! git config --global --get-all include.path | grep -qxF "${DOTFILES}/.gitconfig"; then
-    git config --global --add include.path "${DOTFILES}/.gitconfig"
-fi
-if is_personal && ! git config --global user.email &> /dev/null; then
-    git config --global user.email "tylerdbecks@gmail.com"
-fi
-# This repo is public and personal, so it always commits with the personal
-# email, even on machines whose global email is a work address.
-git -C "$DOTFILES" config user.email "tylerdbecks@gmail.com"
-mkdir -p "${HOME}/.config/git"
-ln -sf "${DOTFILES}/config/git/ignore" "${HOME}/.config/git/ignore"
-ln -sf "${DOTFILES}/.better-commits.json" "${HOME}/.better-commits.json"
-success "Git configured"
-
 ###############################################################################
-# Application Configuration
+# Config Files
 ###############################################################################
 
-header "Application Configuration"
+header "Config Files"
 
-# Create config directories
-step "Creating config directories..."
-mkdir -p "${HOME}/.config"
-mkdir -p "${HOME}/.config/btop/themes"
-mkdir -p "${HOME}/.config/bat/themes"
-mkdir -p "${HOME}/.config/wezterm"
-mkdir -p "${HOME}/.claude"
-success "Directories created"
+# zsh, git, bat, btop, WezTerm, mise, VS Code/Cursor and Claude Code, from the
+# CONFIG_FILES list in lib/config-files.sh (refresh.sh re-applies it).
+# ~/.gitconfig and ~/.claude/CLAUDE.md stay real per-machine files (work
+# laptops ship them with corp settings) that include the shared ones.
+setup_shared_config
 
-# btop config
-step "Configuring btop..."
-cp "${DOTFILES}/btop/btop.conf" "${HOME}/.config/btop/btop.conf"
-cp "${DOTFILES}/btop/night-owl.theme" "${HOME}/.config/btop/themes/night-owl.theme"
-success "btop configured"
+###############################################################################
+# App Helpers
+###############################################################################
 
-# bat config and theme
-step "Configuring bat..."
-ln -sf "${DOTFILES}/config/bat/config" "${HOME}/.config/bat/config"
-if [ ! -d "${HOME}/.config/bat/themes/night-owlish" ]; then
-    git clone https://github.com/batpigandme/night-owlish "${HOME}/.config/bat/themes/night-owlish" &> /dev/null
-fi
-bat cache --build &> /dev/null
-success "bat configured"
-
-# WezTerm config
-step "Configuring WezTerm..."
-ln -sf "${DOTFILES}/wezterm/appearance.lua" "${HOME}/.config/wezterm/appearance.lua"
-ln -sf "${DOTFILES}/wezterm/wezterm.lua" "${HOME}/.config/wezterm/wezterm.lua"
-success "WezTerm configured"
-
-# Claude config. ~/.claude/CLAUDE.md stays a real per-machine file that imports
-# the shared one, so tools that append to it (rtk, work tooling) don't write
-# into this repo.
-step "Configuring Claude Code..."
-CLAUDE_IMPORT="@~/dotfiles/claude/CLAUDE.md"
-[ -L "${HOME}/.claude/CLAUDE.md" ] && rm "${HOME}/.claude/CLAUDE.md"
-if ! grep -qxF "$CLAUDE_IMPORT" "${HOME}/.claude/CLAUDE.md" 2> /dev/null; then
-    echo "$CLAUDE_IMPORT" >> "${HOME}/.claude/CLAUDE.md"
-fi
-# settings.json is per-machine too, so merge in only the status line and the
-# worktree-slot hook (no-op without ~/.config/wt/config; see bin/wt)
-merge_claude_settings
-# Personal skills and agents, linked one by one so machine-local ones stay put
-link_claude_config
-success "Claude Code configured"
+header "App Helpers"
 
 # rtk (installed from the Brewfile) compresses command output before it
 # reaches Claude, via a hook it adds to ~/.claude/settings.json. init asks
@@ -176,27 +118,6 @@ if is_personal; then
     else
         warning "rtk setup failed (run rtk init --global manually)"
     fi
-fi
-
-# Editor config: VS Code and Cursor share vscode/, linked into whichever
-# editors are installed. Work laptops use a managed VS Code build whose
-# settings carry corp defaults (proxy etc.), so VS Code is left alone there.
-link_editor_config() {
-    local name="$1" user_dir="$2"
-    step "Configuring ${name}..."
-    mkdir -p "$user_dir"
-    ln -sf "${DOTFILES}/vscode/settings.json" "${user_dir}/settings.json"
-    ln -sf "${DOTFILES}/vscode/keybindings.json" "${user_dir}/keybindings.json"
-    if [ -d "${DOTFILES}/vscode/snippets" ] && [ "$(ls -A "${DOTFILES}/vscode/snippets")" ]; then
-        ln -sfn "${DOTFILES}/vscode/snippets" "${user_dir}/snippets"
-    fi
-    success "${name} configured"
-}
-if is_personal && [ -d "/Applications/Visual Studio Code.app" ]; then
-    link_editor_config "VS Code" "${HOME}/Library/Application Support/Code/User"
-fi
-if [ -d "/Applications/Cursor.app" ]; then
-    link_editor_config "Cursor" "${HOME}/Library/Application Support/Cursor/User"
 fi
 
 # Things Helper enables Quick Entry with Autofill. It only has to be launched
@@ -232,7 +153,7 @@ else
     # it from clashing with the work-managed GitHub org access.
     step "Setting up personal GitHub SSH access..."
     GITHUB_KEY="${HOME}/.ssh/github_personal"
-    mkdir -p -m 700 "${HOME}/.ssh"
+    mkdir -p "${HOME}/.ssh" && chmod 700 "${HOME}/.ssh"
     [ -f "$GITHUB_KEY" ] || ssh-keygen -q -t ed25519 -N "" -C "work laptop" -f "$GITHUB_KEY"
     if ! grep -qF "IdentityFile ~/.ssh/github_personal" "${HOME}/.ssh/config" 2> /dev/null; then
         (umask 077 && cat >> "${HOME}/.ssh/config" << 'EOF'
@@ -320,6 +241,9 @@ success "Dock configured"
 ###############################################################################
 
 summary "Fresh setup complete!"
+
+header "Health Check"
+bash "${DOTFILES}/doctor.sh"
 
 echo ""
 warning "Manual steps required:"

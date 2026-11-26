@@ -4,6 +4,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/logger.sh"
 source "${SCRIPT_DIR}/lib/profile.sh"
+source "${SCRIPT_DIR}/lib/config-files.sh"
 
 ###############################################################################
 # Setup
@@ -159,6 +160,18 @@ else
         [[ -s "$TMPFILE" ]] && sed 's/^/    /' "$TMPFILE" >&2
         ERRORS+=("mise upgrade")
     fi
+fi
+
+###############################################################################
+# Config Files
+###############################################################################
+
+header "Config Files"
+
+# Re-applies the CONFIG_FILES list, so config added to the repo since this
+# machine was set up gets linked here too. Leaves everything else alone.
+if ! setup_shared_config; then
+    ERRORS+=("config files")
 fi
 
 ###############################################################################

@@ -5,9 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/logger.sh"
 source "${SCRIPT_DIR}/lib/profile.sh"
 source "${SCRIPT_DIR}/lib/zsh-plugins.sh"
-source "${SCRIPT_DIR}/lib/claude-settings.sh"
-
-DOTFILES=$HOME/dotfiles
+source "${SCRIPT_DIR}/lib/config-files.sh"
 
 ###############################################################################
 # Linux Setup
@@ -53,15 +51,6 @@ if [ ! -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
 else
     success "oh-my-zsh already installed"
 fi
-
-# ~/.zshrc stays the box's own file and sources the shared config last, so the
-# site settings it ships with keep loading
-step "Linking .zshrc..."
-ZSHRC_SOURCE='source "$HOME/dotfiles/zsh/.zshrc"'
-if ! grep -qxF "$ZSHRC_SOURCE" "$HOME/.zshrc" 2> /dev/null; then
-    printf '\n# Shared config from ~/dotfiles\n%s\n' "$ZSHRC_SOURCE" >> "$HOME/.zshrc"
-fi
-success "Shell config linked"
 
 # Dev boxes often manage the login shell centrally, so hop from interactive
 # bash into zsh instead. Skipped for non-terminal shells and for VS Code
@@ -111,67 +100,16 @@ else
 fi
 
 ###############################################################################
-# Git
+# Config Files
 ###############################################################################
 
-header "Git"
+header "Config Files"
 
-# Same layering as fresh.sh: the box's ~/.gitconfig includes the shared config,
-# then the Linux overrides, which must come after it to win
-step "Configuring git..."
-[ -L "${HOME}/.gitconfig" ] && rm "${HOME}/.gitconfig"
-for include in "${DOTFILES}/.gitconfig" "${DOTFILES}/config/git/linux"; do
-    if ! git config --global --get-all include.path | grep -qxF "$include"; then
-        git config --global --add include.path "$include"
-    fi
-done
-if is_personal && ! git config --global user.email &> /dev/null; then
-    git config --global user.email "tylerdbecks@gmail.com"
-fi
-git -C "$DOTFILES" config user.email "tylerdbecks@gmail.com"
-mkdir -p "${HOME}/.config/git"
-ln -sf "${DOTFILES}/config/git/ignore" "${HOME}/.config/git/ignore"
-ln -sf "${DOTFILES}/.better-commits.json" "${HOME}/.better-commits.json"
-success "Git configured"
-if ! git config --global user.email &> /dev/null; then
-    warning "No global git email; set one with: git config --global user.email <email>"
-fi
-
-###############################################################################
-# Application Configuration
-###############################################################################
-
-header "Application Configuration"
-
-step "Configuring btop..."
-mkdir -p "${HOME}/.config/btop/themes"
-cp "${DOTFILES}/btop/btop.conf" "${HOME}/.config/btop/btop.conf"
-cp "${DOTFILES}/btop/night-owl.theme" "${HOME}/.config/btop/themes/night-owl.theme"
-success "btop configured"
-
-step "Configuring bat..."
-mkdir -p "${HOME}/.config/bat/themes"
-ln -sf "${DOTFILES}/config/bat/config" "${HOME}/.config/bat/config"
-if [ ! -d "${HOME}/.config/bat/themes/night-owlish" ]; then
-    git clone --depth 1 https://github.com/batpigandme/night-owlish "${HOME}/.config/bat/themes/night-owlish" &> /dev/null
-fi
-if command -v bat &> /dev/null; then
-    bat cache --build &> /dev/null
-fi
-success "bat configured"
-
-# Same import as fresh.sh: ~/.claude/CLAUDE.md stays a real per-machine file
-step "Configuring Claude Code..."
-mkdir -p "${HOME}/.claude"
-CLAUDE_IMPORT="@~/dotfiles/claude/CLAUDE.md"
-[ -L "${HOME}/.claude/CLAUDE.md" ] && rm "${HOME}/.claude/CLAUDE.md"
-if ! grep -qxF "$CLAUDE_IMPORT" "${HOME}/.claude/CLAUDE.md" 2> /dev/null; then
-    echo "$CLAUDE_IMPORT" >> "${HOME}/.claude/CLAUDE.md"
-fi
-# Same status line, hook merge and skill/agent links as fresh.sh
-merge_claude_settings
-link_claude_config
-success "Claude Code configured"
+# The same CONFIG_FILES list as fresh.sh (lib/config-files.sh). The box keeps
+# its own ~/.zshrc and ~/.gitconfig with their site settings: ~/.zshrc sources
+# the shared config last, and ~/.gitconfig includes the shared config, then
+# the Linux overrides in config/git/linux, which must come after it to win.
+setup_shared_config
 
 ###############################################################################
 # Summary
@@ -179,19 +117,9 @@ success "Claude Code configured"
 
 summary "Linux setup complete!"
 
-# Tools the zsh, git and Claude config expect; delta is optional (git falls
-# back to less), gh is for the babysit skill
-MISSING=()
-for tool in zsh git fzf fd eza bat zoxide difft delta btop starship gh; do
-    command -v "$tool" &> /dev/null || MISSING+=("$tool")
-done
-if [ ${#MISSING[@]} -gt 0 ]; then
-    warning "Install these with the box's package manager: ${MISSING[*]}"
-fi
-# bun usually isn't in the box's package manager, so it gets its own note
-if ! command -v bun &> /dev/null; then
-    warning "bun not found: the babysit skill's PR watcher needs it (without it, the skill polls with gh)"
-fi
+# Tools the config expects, and anything the steps above missed
+header "Health Check"
+bash "${SCRIPT_DIR}/doctor.sh"
 
 info "Next steps:"
 list_item "Open a new terminal (or run: exec zsh) to load the config"
