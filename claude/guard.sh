@@ -56,8 +56,11 @@ COMMAND_REGEXES=(
     "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]]--mirror'"${END}"
     "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]][+][^[:space:]]'
     "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?reset([[:space:]][^;&|]*)*[[:space:]]--hard'"${END}"
-    # Any git subcommand: commit, push, merge, rebase and am all take it
-    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?--no-verify'"${END}"
+    # Any git subcommand: commit, push, merge, rebase and am all take it. Git
+    # accepts any unambiguous prefix of a long option (--no-verif, --no-veri;
+    # shorter ones clash with --no-verbose on commit and push, not on am), so
+    # every prefix down to --no-v counts.
+    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?--no-v(e(r(i(fy?)?)?)?)?'"${END}"
     # -n is --no-verify only for commit (push -n is a dry run). A bundle is
     # commit's value-free short options (a e i o p q s v z, from git commit -h),
     # then optionally one that takes a value (F m c C t S U u),
@@ -86,9 +89,10 @@ COMMAND_LABELS=(
 # placeholder, so `git commit -m "--no-verify"` and `git log --grep "-n"` pass.
 # Newlines separate commands, so a flag on the next line can't complete a match.
 #
-# Git options whose value is the next word. -S is left out: its key must be
-# attached, so in `-S "--no-verify"` the quoted word is a flag.
-VALUE_OPTION='(=|(^|[[:space:]])(-m|--message|-F|--file|-C|-c|--reuse-message|--reedit-message|-t|--template|--author|--date|--grep|--format|--pretty|-G|-e)[[:space:]]+)$'
+# Git options whose value is the next word. -S is left out because its key
+# must be attached, and -e because it takes no value on commit (git grep -e
+# does, so `git grep -e "--no-verify"` is blocked; rare and harmless).
+VALUE_OPTION='(=|(^|[[:space:]])(-m|--message|-F|--file|-C|-c|--reuse-message|--reedit-message|-t|--template|--author|--date|--grep|--format|--pretty|-G)[[:space:]]+)$'
 
 command_reason() {
     local rest="${1//$'\n'/;}" quoted inner before segment

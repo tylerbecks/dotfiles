@@ -72,6 +72,10 @@ deny_command 'git commit -m wip --no-"verify"'
 deny_command 'git push origin "+main"'
 deny_command 'git commit -a "--no-verify" -m wip'
 deny_command 'git commit -S "--no-verify" -m wip'
+deny_command 'git commit --allow-empty -m wip -e "--no-verify"'
+deny_command 'git commit --allow-empty -m wip --no-verif'
+deny_command 'git push --no-veri origin feature'
+deny_command 'git am --no-v patch.mbox'
 
 allow_command 'rm build/output.txt'
 allow_command 'rm -r build'
@@ -92,6 +96,7 @@ allow_command 'git commit -m "skip with -n or --no-verify" > commit.log'
 allow_command 'git commit --allow-empty -m "--no-verify"'
 allow_command 'git commit --message="-n"'
 allow_command 'git log --grep "--no-verify"'
+allow_command 'git commit --no-verbose -m "wip"'
 allow_command 'git log -n 5'
 allow_command "git commit -m 'explain why --no-verify is blocked'"
 
