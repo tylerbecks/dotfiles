@@ -77,6 +77,9 @@ unless work
   app "whatsapp", "WhatsApp"
   # Needed by the iOS Simulator tools; work laptops install Xcode their own way
   mas "Xcode", id: 497799835
+  mas "Bear", id: 1091189122
+  mas "CleanMyMac", id: 1339170533
+  mas "Telegram", id: 747648890
 end
 
 mas "Things 3", id: 904280696
