@@ -1,4 +1,5 @@
-# Global gitignore, symlinked to ~/.config/git/ignore by fresh.sh
+# Global gitignore, linked to ~/.config/git/ignore (CONFIG_FILES in
+# lib/config-files.sh)
 
 # macOS
 .DS_Store
@@ -11,3 +12,7 @@
 # Editor swap and backup files
 *.swp
 *~
+
+# Claude Code's per-machine files, which stay out of every repo
+**/.claude/settings.local.json
+**/CLAUDE.local.md

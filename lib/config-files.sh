@@ -83,12 +83,17 @@ require_dotfiles_repo() {
     fi
 }
 
-# Removes ~/<target> when it's a symlink into this repo. Earlier versions of
-# the setup scripts linked files that are now the machine's own.
+# Whether a path is a symlink into this repo. Earlier versions of the setup
+# scripts linked ~/.gitconfig and ~/.claude/CLAUDE.md, which are now the
+# machine's own files.
+is_link_into_repo() {
+    [[ -L "$1" && "$(readlink "$1")" == "$DOTFILES_REPO"/* ]]
+}
+
+# Removes ~/<target> when it's a symlink into this repo (see is_link_into_repo)
 unlink_from_repo() {
-    local target="$1"
-    if [[ -L "$target" && "$(readlink "$target")" == "$DOTFILES_REPO"/* ]]; then
-        rm "$target"
+    if is_link_into_repo "$1"; then
+        rm "$1"
     fi
 }
 
@@ -182,7 +187,7 @@ check_config_files() {
                     error "~/${target} links to $(readlink "${HOME}/${target}"), not ~/dotfiles/${source}"
                     status=1
                 elif [[ -e "${HOME}/${target}" ]]; then
-                    error "~/${target} is a real file, not a link to ~/dotfiles/${source}"
+                    error "~/${target} is a real file, not a link to ~/dotfiles/${source} (the setup scripts move it aside to ~/${target}.pre-dotfiles)"
                     status=1
                 else
                     error "~/${target} is missing (should link to ~/dotfiles/${source})"
@@ -200,7 +205,10 @@ check_config_files() {
                 fi
                 ;;
             line)
-                if grep -qxF -- "$source" "${HOME}/${target}" 2> /dev/null; then
+                if is_link_into_repo "${HOME}/${target}"; then
+                    error "~/${target} links into ~/dotfiles (an older setup); the setup scripts make it a real file with the line: ${source}"
+                    status=1
+                elif grep -qxF -- "$source" "${HOME}/${target}" 2> /dev/null; then
                     ok=$((ok + 1))
                 else
                     error "~/${target} is missing the line: ${source}"
@@ -208,7 +216,10 @@ check_config_files() {
                 fi
                 ;;
             git-include)
-                if git config --global --get-all include.path 2> /dev/null | grep -qxF -- "${DOTFILES_REPO}/${source}"; then
+                if is_link_into_repo "${HOME}/.gitconfig"; then
+                    error "~/.gitconfig links into ~/dotfiles (an older setup); the setup scripts make it a real file that includes ~/dotfiles/${source}"
+                    status=1
+                elif git config --global --get-all include.path 2> /dev/null | grep -qxF -- "${DOTFILES_REPO}/${source}"; then
                     ok=$((ok + 1))
                 else
                     error "~/.gitconfig doesn't include ~/dotfiles/${source}"

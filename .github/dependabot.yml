@@ -1,0 +1,11 @@
+# Opens a PR when an action the workflows use (actions/checkout,
+# oven-sh/setup-bun) has a new version. Only GitHub Actions: the repo has no
+# other package manifests.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "chore"
