@@ -3,8 +3,9 @@
 # Merges this repo's Claude Code settings into ~/.claude/settings.json, used by
 # fresh.sh and linux.sh. settings.json is per-machine (rtk and work tooling add
 # hooks to it), so only these keys are touched: the status line, the
-# worktree-slot hook (claude/wt-hook.sh) and the guard hook (claude/guard.sh),
-# each replaced rather than duplicated on re-runs.
+# worktree-slot hook (claude/wt-hook.sh), the guard hook (claude/guard.sh) and
+# the CLAUDE_GIT_ENV variables in .env, each replaced rather than duplicated on
+# re-runs. Other .env variables stay.
 #
 # Everything here, and the skills and agents link_claude_config adds, belongs
 # on every machine (personal, work and Linux boxes), so neither function checks
@@ -12,6 +13,15 @@
 # tooling adds; a deny from either one wins.
 #
 # Usage: source lib/claude-settings.sh, then merge_claude_settings
+
+# Environment for the commands Claude runs, not for your own terminal. An
+# editor that waits (`code --wait`) never returns there, because nobody closes
+# the tab, so the git command hangs. `true` exits at once: git keeps the
+# message or to-do list it already has, or aborts a commit that has none.
+# Claude Code sets GIT_EDITOR=true itself, but .gitconfig's sequence.editor
+# beats that for `git rebase -i`, which hung until GIT_SEQUENCE_EDITOR was set.
+# GIT_EDITOR is repeated in case Claude Code stops setting it.
+CLAUDE_GIT_ENV='{"GIT_EDITOR": "true", "GIT_SEQUENCE_EDITOR": "true", "GIT_MERGE_AUTOEDIT": "no"}'
 
 merge_claude_settings() {
     if ! command -v jq &> /dev/null; then
@@ -22,13 +32,15 @@ merge_claude_settings() {
     [ -s "$settings" ] || echo '{}' > "$settings"
     tmp=$(mktemp)
     jq --arg wt "bash ~/dotfiles/claude/wt-hook.sh" \
-        --arg guard "bash ~/dotfiles/claude/guard.sh" '
+        --arg guard "bash ~/dotfiles/claude/guard.sh" \
+        --argjson git_env "$CLAUDE_GIT_ENV" '
         def with_hook($event; $command; $entry):
             .hooks[$event] = ((.hooks[$event] // [])
                 | map(select(any(.hooks[]?; .command == $command) | not))
                 + [$entry]);
         def wt_entry: {"hooks": [{"type": "command", "command": $wt}]};
         .statusLine = {"type": "command", "command": "bash ~/dotfiles/claude/statusline.sh"}
+        | .env = ((.env // {}) + $git_env)
         | with_hook("SessionStart"; $wt; wt_entry)
         | with_hook("UserPromptSubmit"; $wt; wt_entry)
         | with_hook("PreToolUse"; $guard; {
@@ -80,7 +92,12 @@ check_claude_config() {
                 status=1
             fi
         done
-        [ "$status" -eq 0 ] && success "Status line and hooks are in ~/.claude/settings.json"
+        if ! jq -e --argjson git_env "$CLAUDE_GIT_ENV" \
+            '(.env // {}) as $env | all($git_env | to_entries[]; $env[.key] == .value)' "$settings" &> /dev/null; then
+            error "The git editor variables (GIT_EDITOR and friends) aren't in ~/.claude/settings.json's env"
+            status=1
+        fi
+        [ "$status" -eq 0 ] && success "Status line, hooks and git editor variables are in ~/.claude/settings.json"
     fi
 
     local missing=0
