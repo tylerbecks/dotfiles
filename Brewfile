@@ -29,6 +29,14 @@ brew "difftastic"
 brew "git-delta"
 brew "shellcheck"
 brew "rtk" unless work
+brew "git"
+brew "gitleaks"
+brew "actionlint"
+brew "typos-cli"
+brew "uv"
+# Linux containers, for testing linux.sh on Ubuntu (colima start, then docker run)
+brew "colima"
+brew "docker"
 
 # CLI tools
 brew "ack"
@@ -41,6 +49,9 @@ brew "eza"
 brew "zoxide"
 brew "btop"
 brew "starship"
+brew "hyperfine"
+brew "tree"
+brew "imagemagick" # the visual-parity skill diffs screenshots with it
 # Third-party taps need trusting first: add each one to TRUSTED_TAP_FORMULAE in brew.sh
 brew "smudge/smudge/nightlight"
 brew "mas"
@@ -64,6 +75,8 @@ unless work
   cask "claude-code"
   app "dropbox", "Dropbox"
   app "whatsapp", "WhatsApp"
+  # Needed by the iOS Simulator tools; work laptops install Xcode their own way
+  mas "Xcode", id: 497799835
 end
 
 mas "Things 3", id: 904280696

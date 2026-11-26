@@ -10,7 +10,8 @@ local hyper_key = 'CTRL|ALT|CMD|SHIFT'
 -- Creates a config object which we will be adding our config to
 local config = wezterm.config_builder()
 
-config.color_scheme = 'Tokyo Night'
+-- Night Owl, like VS Code, bat, btop and fzf
+config.color_scheme = 'Night Owl (Gogh)'
 
 config.font = wezterm.font_with_fallback({
   "MesloLGS Nerd Font", -- Your primary font

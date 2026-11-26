@@ -9,6 +9,7 @@ tool_update.global_auto = true
 node = "24"      # bump majors on purpose: mise upgrade --bump node
 python = "3.14"  # bump minors on purpose: mise upgrade --bump python
 bun = "latest"
+pnpm = "latest"
 
 # Global CLIs installed with npm. Managed here instead of `npm i -g` so they
 # survive Node upgrades (npm globals live inside a single Node install).

@@ -1,0 +1,9 @@
+# ripgrep defaults, linked to ~/.config/ripgrep/config and read through
+# RIPGREP_CONFIG_PATH (zsh/config/env.zsh). Claude Code's search tool runs rg
+# too, so keep these to options that don't change what a pattern matches
+# (no --smart-case).
+
+# Search dotfiles and dot-directories (.github, .claude); .gitignore still applies
+--hidden
+# but never git's own object store
+--glob=!.git/

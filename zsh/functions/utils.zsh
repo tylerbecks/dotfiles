@@ -54,3 +54,30 @@ function c() {
 function genssh() {
   ssh-keygen -t ed25519 -C "$1"
 }
+
+# Make a new temporary directory and cd into it
+function tempd() {
+  local dir
+  dir="$(mktemp -d)" && cd "$dir" && echo "$dir"
+}
+
+# Desktop notification, e.g. `make build; notify "build done"`.
+# Usage: notify <message> [title]
+function notify() {
+  if [[ $# -lt 1 ]]; then
+    echo "Usage: notify <message> [title]" >&2
+    return 1
+  fi
+  local message="$1" title="${2:-Terminal}"
+  if command -v osascript &> /dev/null; then
+    # Passed as arguments rather than spliced into the script, so quotes in
+    # the message can't break it
+    osascript -e 'on run argv' \
+      -e 'display notification (item 1 of argv) with title (item 2 of argv)' \
+      -e 'end run' "$message" "$title"
+  elif command -v notify-send &> /dev/null; then
+    notify-send "$title" "$message"
+  else
+    echo "[$title] $message"
+  fi
+}
