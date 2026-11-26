@@ -41,6 +41,7 @@ brew "eza"
 brew "zoxide"
 brew "btop"
 brew "starship"
+# Third-party taps need trusting first: add each one to TRUSTED_TAP_FORMULAE in brew.sh
 brew "smudge/smudge/nightlight"
 brew "mas"
 

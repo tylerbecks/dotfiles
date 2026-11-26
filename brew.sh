@@ -73,6 +73,23 @@ fi
 
 header "Packages and Apps"
 
+# Homebrew refuses formulae from third-party taps until each one is trusted
+# (docs.brew.sh/Tap-Trust). List every third-party formula the Brewfile
+# installs here, after checking that its tap is the project's own and that it
+# downloads from that project with a pinned checksum. Formula-level trust
+# leaves the rest of each tap untrusted. Older Homebrew has no `brew trust`.
+TRUSTED_TAP_FORMULAE=(
+    smudge/smudge/nightlight
+)
+if brew help trust &> /dev/null; then
+    step "Trusting third-party formulae..."
+    if brew trust --formula "${TRUSTED_TAP_FORMULAE[@]}" > /dev/null; then
+        success "Trusted ${TRUSTED_TAP_FORMULAE[*]}"
+    else
+        warning "Couldn't trust ${TRUSTED_TAP_FORMULAE[*]}; brew bundle will skip them"
+    fi
+fi
+
 # Everything lives in the Brewfile (work/personal split included). Output is
 # left visible: casks can prompt for a password and mas needs an App Store
 # sign-in.
