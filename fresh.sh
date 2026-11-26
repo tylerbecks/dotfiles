@@ -260,6 +260,7 @@ echo ""
 info "Next steps:"
 list_item "Restart your Mac to apply all changes"
 list_item "Sign in to applications (1Password, Raycast, etc.)"
+list_item "Optional: sign commits with an SSH key in 1Password (see Manual Setup Steps in README.md)"
 list_item "Configure any app-specific preferences"
 
 echo ""

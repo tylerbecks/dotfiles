@@ -44,6 +44,7 @@ box's package manager; the script lists any that are missing, and notes when
 - `refresh.sh`: Updates packages and re-applies the config files
 - `doctor.sh`: Read-only check that a machine matches the repo
 - `setup-mise.sh`: Language runtimes and global CLIs via mise
+- `setup-git-signing.sh`: Opt-in commit and tag signing with an SSH key in 1Password, for one Mac at a time (see [Manual Setup Steps](#manual-setup-steps))
 - `.macos`: macOS system preferences
 - `bin/`: Personal scripts on the `PATH`, including `wt` (see [Worktree slots](#worktree-slots-for-parallel-agents)) and `browser-rules`
 - `browser/`: Chrome rules: a uBlock Origin Lite filter list and per-site Stylebot CSS, synced with `browser-rules` (setup in [browser/README.md](browser/README.md))
@@ -119,3 +120,11 @@ keeps its claim alive while it's active, and runs `wt gc` at most once a day.
 4. If setup printed "Couldn't enable Control+scroll zoom", turn on System
    Settings → Accessibility → Zoom → "Use scroll gesture with modifier keys to
    zoom" with Control as the modifier.
+5. Optional: to sign commits with an SSH key kept in 1Password, so GitHub
+   shows them as Verified, turn on 1Password → Settings → Developer → "Use the
+   SSH agent" and add an SSH key item (New Item → SSH Key → Add Private Key →
+   Generate a New Key). Then run `bash ~/dotfiles/setup-git-signing.sh` and
+   follow the GitHub step it prints. It changes only that Mac's own
+   `~/.gitconfig`, so forks and other people's Macs never sign with your key.
+   Each commit then waits for Touch ID the first time after 1Password unlocks.
+   `--off` turns it off again.

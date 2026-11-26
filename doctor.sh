@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # Checks that this machine matches the repo, without changing anything: every
-# config file in lib/config-files.sh, Claude Code's settings, skills and
-# agents, the zsh plugins, the CLI tools the config uses, and the Brewfile on
-# Macs. ✗ lines are broken setup and make it exit 1; ⚠ lines are worth a look
+# config file in lib/config-files.sh, commit signing where it's on, Claude
+# Code's settings, skills and agents, the zsh plugins, the CLI tools the
+# config uses, and the Brewfile on Macs. ✗ lines are broken setup and make it exit 1; ⚠ lines are worth a look
 # but don't fail it. fresh.sh and linux.sh run it at the end, and CI runs it
 # after linux.sh.
 #
@@ -12,11 +12,18 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/config-files.sh"
 source "${SCRIPT_DIR}/lib/zsh-plugins.sh"
+source "${SCRIPT_DIR}/lib/git-signing.sh"
 
 FAILED=0
 
 header "Config Files"
 check_config_files || FAILED=1
+
+# Only where setup-git-signing.sh turned it on
+if git_signing_on; then
+    header "Git Signing"
+    check_git_signing || FAILED=1
+fi
 
 header "Claude Code"
 check_claude_config || FAILED=1

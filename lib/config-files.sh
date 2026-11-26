@@ -18,8 +18,10 @@ source "${CONFIG_LIB_DIR}/claude-settings.sh"
 # else (an agent's worktree, say) would point this machine's config at it.
 DOTFILES_REPO="${HOME}/dotfiles"
 
-# This repo is public and personal, so it always commits with this email.
+# This repo is public and personal, so my clone of it always commits with this
+# email, even on a work laptop whose global email is the work one.
 PERSONAL_GIT_EMAIL="tylerdbecks@gmail.com"
+DOTFILES_ORIGIN="tylerbecks/dotfiles"
 
 # One row per file: "kind|source|target|machines". Targets are relative to ~.
 #
@@ -232,12 +234,13 @@ check_config_files() {
     return "$status"
 }
 
-# The git email for this machine and for this repo
+# Sets PERSONAL_GIT_EMAIL for this repo, only in a clone of mine (origin is
+# DOTFILES_ORIGIN), so a fork, or a friend's Mac set up from it, commits as
+# its owner. The global email is never set here; each machine sets its own.
 setup_git_identity() {
-    if is_personal && ! git config --global user.email &> /dev/null; then
-        git config --global user.email "$PERSONAL_GIT_EMAIL"
+    if [[ "$(git -C "$DOTFILES_REPO" remote get-url origin 2> /dev/null)" =~ [/:]${DOTFILES_ORIGIN}(\.git)?$ ]]; then
+        git -C "$DOTFILES_REPO" config user.email "$PERSONAL_GIT_EMAIL"
     fi
-    git -C "$DOTFILES_REPO" config user.email "$PERSONAL_GIT_EMAIL"
     if ! git config --global user.email &> /dev/null; then
         warning "No global git email; set one with: git config --global user.email <email>"
     fi
