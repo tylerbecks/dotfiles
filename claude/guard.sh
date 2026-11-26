@@ -82,14 +82,22 @@ COMMAND_LABELS=(
 # `git commit -m 'fix push -f'` passes while `bash -c "rm -rf x"` is still
 # caught. Quoted text that is a single word is the same word to the shell, so
 # its quotes are dropped instead: "--no-verify", '-n' and "+main" stay flags.
+# A single word that is an option's value (after = or VALUE_OPTION) stays a
+# placeholder, so `git commit -m "--no-verify"` and `git log --grep "-n"` pass.
 # Newlines separate commands, so a flag on the next line can't complete a match.
+#
+# Git options whose value is the next word. -S is left out: its key must be
+# attached, so in `-S "--no-verify"` the quoted word is a flag.
+VALUE_OPTION='(=|(^|[[:space:]])(-m|--message|-F|--file|-C|-c|--reuse-message|--reedit-message|-t|--template|--author|--date|--grep|--format|--pretty|-G|-e)[[:space:]]+)$'
+
 command_reason() {
-    local rest="${1//$'\n'/;}" quoted inner segment
+    local rest="${1//$'\n'/;}" quoted inner before segment
     local segments=()
     while [[ "$rest" =~ (\"[^\"]*\"|\'[^\']*\') ]]; do
         quoted="${BASH_REMATCH[1]}"
         inner="${quoted:1:${#quoted}-2}"
-        if [[ "$inner" =~ ^[^[:space:]\;\&\|\(\)\<\>\`\"\']+$ ]]; then
+        before="${rest%%"$quoted"*}"
+        if [[ "$inner" =~ ^[^[:space:]\;\&\|\(\)\<\>\`\"\']+$ ]] && ! [[ "$before" =~ $VALUE_OPTION ]]; then
             rest="${rest/"$quoted"/$inner}"
         else
             segments+=("$inner")
