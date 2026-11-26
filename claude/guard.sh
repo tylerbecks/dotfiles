@@ -2,8 +2,9 @@
 
 # Claude Code PreToolUse hook, merged into ~/.claude/settings.json by the setup
 # scripts. Denies commands that destroy work or history (recursive force
-# deletes, force pushes, hard resets) and edits to .env files or anything
-# inside .git/. `git push --force-with-lease` stays allowed.
+# deletes, force pushes, hard resets), commands that skip the repo's git hooks
+# (--no-verify, git commit -n), and edits to .env files or anything inside
+# .git/. `git push --force-with-lease` stays allowed.
 #
 # Test: bash claude/guard.test.sh
 
@@ -20,8 +21,15 @@ main() {
     tool=$(jq -r '.tool_name // empty' <<< "$input")
     case "$tool" in
         Bash)
-            reason=$(command_reason "$(jq -r '.tool_input.command // empty' <<< "$input")") &&
-                deny "Blocked: the command matches '$reason'. If it's really needed, ask the user to run it themselves."
+            reason=$(command_reason "$(jq -r '.tool_input.command // empty' <<< "$input")") || exit 0
+            case "$reason" in
+                "git --no-verify" | "git commit -n")
+                    deny "Blocked: the command matches '$reason', which skips the repo's git hooks. Fix what the hook reports and run the command without it, or ask the user for help."
+                    ;;
+                *)
+                    deny "Blocked: the command matches '$reason'. If it's really needed, ask the user to run it themselves."
+                    ;;
+            esac
             ;;
         Edit | Write | MultiEdit | NotebookEdit)
             reason=$(file_reason "$(jq -r '.tool_input.file_path // .tool_input.notebook_path // empty' <<< "$input")") &&
@@ -44,6 +52,12 @@ COMMAND_REGEXES=(
     "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]]--mirror([[:space:]]|$)'
     "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]][+][^[:space:]]'
     "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?reset([[:space:]][^;&|]*)*[[:space:]]--hard([[:space:]]|$)'
+    # Any git subcommand: commit, push, merge, rebase and am all take it
+    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?--no-verify([[:space:]=]|$)'
+    # -n is --no-verify only for commit (push -n is a dry run). A bundle is
+    # commit's flagless short options, then optionally one that takes an
+    # argument (-anm "msg"), so -uno (untracked-files=no) passes.
+    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?commit([[:space:]][^;&|]*)*[[:space:]]-[aeqsvz]*n[aeqsvz]*[mFCct]?([[:space:]]|$)'
 )
 COMMAND_LABELS=(
     "rm -rf"
@@ -53,6 +67,8 @@ COMMAND_LABELS=(
     "git push --mirror"
     "git push +refspec"
     "git reset --hard"
+    "git --no-verify"
+    "git commit -n"
 )
 
 # Quoted strings are checked as commands of their own and replaced by a
