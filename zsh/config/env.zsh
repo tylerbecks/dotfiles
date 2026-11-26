@@ -21,6 +21,9 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_COMPDUMP="$HOME/.cache/zsh/zcompdump-$ZSH_VERSION"
 [[ -d ${ZSH_COMPDUMP:h} ]] || mkdir -p ${ZSH_COMPDUMP:h}
 
+# ripgrep reads a config file only when this points at it
+export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/config"
+
 # Starship prompt
 export STARSHIP_CONFIG="$HOME/dotfiles/starship/starship.toml"
 

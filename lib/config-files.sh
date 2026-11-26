@@ -48,6 +48,7 @@ CONFIG_FILES=(
     "link|config/git/ignore|.config/git/ignore|all"
     "link|.better-commits.json|.better-commits.json|all"
     "link|config/bat/config|.config/bat/config|all"
+    "link|config/ripgrep/config|.config/ripgrep/config|all"
     "copy|btop/btop.conf|.config/btop/btop.conf|all"
     "copy|btop/night-owl.theme|.config/btop/themes/night-owl.theme|all"
     "link|config/mise/config.toml|.config/mise/config.toml|mac"
