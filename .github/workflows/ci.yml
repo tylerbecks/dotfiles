@@ -61,10 +61,13 @@ jobs:
           test "$(grep -c 'exec zsh' ~/.bashrc)" = 1
       - run: bash ~/dotfiles/doctor.sh
       - name: zsh starts without errors
-        # The plugins call tput, which needs a terminal type
+        # In a terminal, as it's used: `script` gives zsh a pty, and the
+        # plugins' tput calls need a terminal type. Without a pty, fzf's
+        # packaged key bindings fail to restore the zle option. Any output
+        # (errors included, since a pty merges them) fails the step.
         env:
           TERM: xterm-256color
         run: |
-          zsh -i -c exit 2> zsh-errors.txt
-          cat zsh-errors.txt
-          test ! -s zsh-errors.txt
+          script -qec "zsh -i -c exit" /dev/null < /dev/null > zsh-output.txt
+          cat -v zsh-output.txt
+          test ! -s zsh-output.txt
