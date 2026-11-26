@@ -44,21 +44,25 @@ main() {
 # subshell opener, not just a separator. Labels line up with the regexes by
 # index.
 START='(^|[;&|[:space:]()`/\\])'
+# After a flag: whitespace, the end, or a shell separator (--no-verify; echo,
+# -f&& ..., (git push --force)), so a chained command can't hide the flag.
+END='([;&|()`[:space:]]|$)'
 COMMAND_REGEXES=(
     "${START}"'rm[[:space:]]+-[[:alnum:]]*([rR][[:alnum:]]*[fF]|[fF][[:alnum:]]*[rR])'
-    "${START}"'rm[[:space:]]+([^;&|]*[[:space:]])?(-[[:alnum:]]*[rR][[:alnum:]]*|--recursive)([[:space:]][^;&|]*)*[[:space:]](-[[:alnum:]]*[fF][[:alnum:]]*|--force)([[:space:]]|$)'
-    "${START}"'rm[[:space:]]+([^;&|]*[[:space:]])?(-[[:alnum:]]*[fF][[:alnum:]]*|--force)([[:space:]][^;&|]*)*[[:space:]](-[[:alnum:]]*[rR][[:alnum:]]*|--recursive)([[:space:]]|$)'
-    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]](-[[:alnum:]]*f[[:alnum:]]*|--force)([[:space:]]|$)'
-    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]]--mirror([[:space:]]|$)'
+    "${START}"'rm[[:space:]]+([^;&|]*[[:space:]])?(-[[:alnum:]]*[rR][[:alnum:]]*|--recursive)([[:space:]][^;&|]*)*[[:space:]](-[[:alnum:]]*[fF][[:alnum:]]*|--force)'"${END}"
+    "${START}"'rm[[:space:]]+([^;&|]*[[:space:]])?(-[[:alnum:]]*[fF][[:alnum:]]*|--force)([[:space:]][^;&|]*)*[[:space:]](-[[:alnum:]]*[rR][[:alnum:]]*|--recursive)'"${END}"
+    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]](-[[:alnum:]]*f[[:alnum:]]*|--force)'"${END}"
+    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]]--mirror'"${END}"
     "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?push([[:space:]][^;&|]*)*[[:space:]][+][^[:space:]]'
-    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?reset([[:space:]][^;&|]*)*[[:space:]]--hard([[:space:]]|$)'
+    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?reset([[:space:]][^;&|]*)*[[:space:]]--hard'"${END}"
     # Any git subcommand: commit, push, merge, rebase and am all take it
-    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?--no-verify([[:space:]=]|$)'
+    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?--no-verify'"${END}"
     # -n is --no-verify only for commit (push -n is a dry run). A bundle is
-    # commit's flagless short options, then optionally one that takes a value,
+    # commit's value-free short options (a e i o p q s v z, from git commit -h),
+    # then optionally one that takes a value (F m c C t S U u),
     # given next (-anm "msg") or attached (-nmmsg, -nuall). An n after a
     # value-taking option is part of the value, so -mnope and -uno pass.
-    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?commit([[:space:]][^;&|]*)*[[:space:]]-[aeqsvz]*n[aeqsvz]*([mFCctuS][^[:space:]]*)?([[:space:]]|$)'
+    "${START}"'git[[:space:]]+([^;&|]*[[:space:]])?commit([[:space:]][^;&|]*)*[[:space:]]-[aeiopqsvz]*n[aeiopqsvz]*([mFCctSUu][^[:space:]]*)?'"${END}"
 )
 COMMAND_LABELS=(
     "rm -rf"
